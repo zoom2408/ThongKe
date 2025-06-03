@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tâm lý học Nhận thức: Thống kê trong Tâm lý học</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #222;
+            background: linear-gradient(135deg, #6dd5ed 0%, #2193b0 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1150px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 1px 2px 8px rgba(0,0,0,0.22);
+        }
+        .header p {
+            font-size: 1.12em;
+            opacity: 0.93;
+        }
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .tab {
+            padding: 11px 22px;
+            background: rgba(255,255,255,0.25);
+            border: none;
+            border-radius: 22px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(6px);
+        }
+        .tab:hover, .tab.active {
+            background: rgba(255,255,255,0.35);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.13);
+        }
+        .content {
+            background: rgba(255,255,255,0.98);
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.09);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.4s; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(15px);} to {opacity: 1; transform: translateY(0);} }
+        .highlight { background: linear-gradient(120deg, #fff6b7 0%, #f6416c11 100%); padding: 17px; border-radius: 8px; margin: 13px 0; border-left: 5px solid #f6416c; }
+        .concept-card {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            border-radius: 12px;
+            padding: 18px;
+            margin: 15px 0;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+        }
+        .experiment-card {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.07);
+        }
+        .experiment-title { font-size: 1.22em; font-weight: bold; margin-bottom: 8px; }
+        .experiment-meta { font-size: 0.99em; color: #295; margin-bottom: 8px;}
+        .example-title { font-weight: bold; margin-bottom: 8px; color: #007b83;}
+        .practical-example {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            border-radius: 10px;
+            padding: 14px;
+            margin: 10px 0;
+            font-size: 0.98em;
+        }
+        .model-diagram {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            border-radius: 14px;
+            padding: 17px;
+            margin: 18px 0;
+            text-align: center;
+        }
+        .flow-step {
+            display: inline-block;
+            background: white;
+            padding: 12px 18px;
+            margin: 7px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            position: relative;
+        }
+        .flow-step::after {
+            content: "→";
+            position: absolute;
+            right: -18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.3em;
+            color: #999;
+        }
+        .flow-step:last-child::after { display: none; }
+        .quiz-container { margin-top: 24px; }
+        .question {
+            background: #fff;
+            border-radius: 8px;
+            padding: 14px;
+            margin: 10px 0;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.04);
+            border-left: 4px solid #28a745;
+        }
+        .question h4 { color: #0d223a; margin-bottom: 12px; }
+        .options { list-style: none; padding: 0; }
+        .options li {
+            padding: 9px;
+            margin: 4px 0;
+            background: #f8f9fa;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.24s;
+        }
+        .options li:hover { background: #e9ecef; }
+        .demo-button {
+            background: linear-gradient(45deg, #2193b0, #6dd5ed);
+            color: white; border: none; padding: 11px 21px;
+            border-radius: 22px; cursor: pointer; font-size: 1em;
+            transition: all 0.24s;
+        }
+        .demo-button:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 13px rgba(0,0,0,0.13);
+        }
+        .exp-timeline {
+            margin: 12px 0 2px 0;
+            border-left: 4px solid #2293b0;
+            padding-left: 18px;
+        }
+        .exp-year { font-weight: bold; color: #2293b0; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>📊 Thống kê trong Tâm lý học</h1>
+        <p>Khái niệm – Phân loại – Thí nghiệm – Mô hình – Ứng dụng & Luyện tập trắc nghiệm</p>
+    </div>
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('definitions')">Khái niệm & Phân loại</button>
+        <button class="tab" onclick="showTab('experiments')">Timeline Thí nghiệm</button>
+        <button class="tab" onclick="showTab('models')">Sơ đồ & Mô hình</button>
+        <button class="tab" onclick="showTab('applications')">Ứng dụng & Biểu đồ</button>
+        <button class="tab" onclick="showTab('quiz')">Trắc nghiệm ôn tập</button>
+    </div>
+    <div class="content">
+        <!-- Khái niệm -->
+      <div id="definitions" class="tab-content active">
+  <h2>🎯 Trực quan hóa các khái niệm thống kê cơ bản</h2>
+  <div style="display:flex;gap:18px;flex-wrap:wrap;">
+    <div style="flex:2 1 330px;min-width:300px;">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="demo-button" id="btnData" style="font-size:0.97em;">Mean/Median/Mode</button>
+        <button class="demo-button" id="btnDist" style="font-size:0.97em;">Phân phối (Normal/Skew)</button>
+      </div>
+      <div id="viz-area">
+        <!-- JS renders here -->
+      </div>
+    </div>
+    <div id="concept-explain" style="flex:1 1 250px;min-width:220px;background:#f8fafd;border-radius:13px;padding:17px 15px;box-shadow:0 2px 8px #0001;">
+      <div style="color:#2491b4;font-weight:bold;font-size:1.1em;margin-bottom:10px;">Giải thích</div>
+      <div id="explain-txt">
+        Chọn khái niệm hoặc di chuột vào từng chỉ số để xem giải thích trực quan. <br><br>
+        <b>Mean (Trung bình):</b> là giá trị bình quân của tất cả điểm dữ liệu.<br>
+        <b>Median (Trung vị):</b> là giá trị nằm giữa khi sắp xếp dãy số.<br>
+        <b>Mode (Yếu vị):</b> là giá trị xuất hiện nhiều nhất.<br>
+        <b>Normal Distribution:</b> là phân phối đối xứng quanh trung bình.<br>
+        <b>Positive Skew:</b> đuôi phải dài hơn.<br>
+        <b>Negative Skew:</b> đuôi trái dài hơn.
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// --- DATA ---
+const dataSets = {
+  base: [1, 2, 2, 3, 4, 5],
+  normal: [3, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 9, 9, 10],
+  skewP: [2,2,3,3,3,4,4,5,6,6,7,8,10,13,16],
+  skewN: [1,3,6,7,7,8,9,10,10,10,11,11,11,12,13]
+};
+// --- DRAWING ---
+const $viz = document.getElementById('viz-area');
+const $exp = document.getElementById('explain-txt');
+let view = 'data'; // or 'dist'
+
+function renderDataChart() {
+  const data = dataSets.base;
+  const mean = +(data.reduce((a,b)=>a+b,0)/data.length).toFixed(2);
+  const sorted = [...data].sort((a,b)=>a-b);
+  const median = data.length%2===0 ? ((sorted[data.length/2-1]+sorted[data.length/2])/2) : sorted[(data.length-1)/2];
+  const mode = data.sort((a,b) =>
+    data.filter(v=>v===a).length - data.filter(v=>v===b).length
+  ).pop();
+
+  // count frequency for bar chart
+  let freq = {};
+  data.forEach(v => freq[v]=(freq[v]||0)+1);
+  const bars = Object.entries(freq).map(([k,v],i)=>{
+    let color = "#5bc0eb";
+    if (+k === mean) color="#1e90ff";
+    if (+k === median) color="#20b36c";
+    if (+k === mode) color="#ffc300";
+    return `<g>
+      <rect x="${35+55*i}" y="${110-v*24}" width="45" height="${v*24}" fill="${color}" data-type="bar" data-val="${k}" rx="8"
+        onmouseover="highlightConcept('bar',${k})" onmouseout="highlightConcept()"/>
+      <text x="${58+55*i}" y="130" font-size="15">${k}</text>
+      <text x="${58+55*i}" y="${100-v*24}" font-size="13" fill="#888">${v}</text>
+    </g>`;
+  }).join('');
+  // pointers
+  let meanX = 0, medianX = 0, modeX = 0;
+  const keys = Object.keys(freq);
+  for(let i=0;i<keys.length;i++){
+    if(+keys[i] === Math.round(mean)) meanX = 58+55*i;
+    if(+keys[i] === median) medianX = 58+55*i;
+    if(+keys[i] === mode) modeX = 58+55*i;
+  }
+  $viz.innerHTML = `
+    <svg width="370" height="145" style="background:#f7fbff;border-radius:12px;box-shadow:0 1px 6px #0001;">
+      <text x="15" y="22" font-size="14" fill="#2491b4">Biểu đồ tần suất</text>
+      ${bars}
+      <!-- Mean marker -->
+      <g onclick="highlightConcept('mean')" style="cursor:pointer;">
+        <circle cx="${meanX||180}" cy="45" r="7" fill="#1e90ff" />
+        <text x="${(meanX||180)+11}" y="49" font-size="13" fill="#1e90ff" style="font-weight:bold;">Mean</text>
+      </g>
+      <!-- Median marker -->
+      <g onclick="highlightConcept('median')" style="cursor:pointer;">
+        <rect x="${medianX||155-8}" y="65" width="16" height="9" fill="#20b36c"/>
+        <text x="${(medianX||155)+19}" y="75" font-size="13" fill="#20b36c" style="font-weight:bold;">Median</text>
+      </g>
+      <!-- Mode marker -->
+      <g onclick="highlightConcept('mode')" style="cursor:pointer;">
+        <rect x="${modeX||105-9}" y="28" width="20" height="9" fill="#ffc300"/>
+        <text x="${(modeX||105)+24}" y="36" font-size="13" fill="#ffc300" style="font-weight:bold;">Mode</text>
+      </g>
+    </svg>
+    <div style="margin-top:7px;font-size:14px;">
+      <b>Bấm hoặc rê chuột vào từng nhãn để xem giải thích cụ thể.</b>
+    </div>
+  `;
+  window.highlightConcept = function(type, val) {
+    if(type === 'mean') {
+      $exp.innerHTML = `<b>Mean (Trung bình):</b> Tổng tất cả các giá trị chia cho số lượng (2+2+3+1+4+5=17; 17/6=2.83).<br>Là trung tâm cân bằng của dữ liệu.`;
+    } else if(type === 'median') {
+      $exp.innerHTML = `<b>Median (Trung vị):</b> Giá trị giữa khi sắp xếp dãy số. <br>Với [1,2,2,3,4,5] thì median = (2+3)/2 = 2.5.<br>Dữ liệu lệch không ảnh hưởng median nhiều.`;
+    } else if(type === 'mode') {
+      $exp.innerHTML = `<b>Mode (Yếu vị):</b> Giá trị xuất hiện nhiều nhất, ở đây là <b>2</b>.<br>Thường dùng trong dữ liệu định tính hoặc số liệu lặp nhiều.`;
+    } else if(type === 'bar' && val !== undefined) {
+      $exp.innerHTML = `Cột <b>${val}</b> xuất hiện <b>${freq[val]}</b> lần.<br>Chú ý: mean, median, mode có thể giống hoặc khác nhau!`;
+    } else {
+      $exp.innerHTML = `Chọn khái niệm hoặc di chuột vào từng chỉ số để xem giải thích trực quan. <br><br>
+        <b>Mean (Trung bình):</b> là giá trị bình quân của tất cả điểm dữ liệu.<br>
+        <b>Median (Trung vị):</b> là giá trị nằm giữa khi sắp xếp dãy số.<br>
+        <b>Mode (Yếu vị):</b> là giá trị xuất hiện nhiều nhất.<br>
+        <b>Normal Distribution:</b> là phân phối đối xứng quanh trung bình.<br>
+        <b>Positive Skew:</b> đuôi phải dài hơn.<br>
+        <b>Negative Skew:</b> đuôi trái dài hơn.`;
+    }
+  }
+}
+function renderDistChart(type='normal') {
+  let data, label, exp, color="#2193b0";
+  if(type==="normal") { data=dataSets.normal; label="Phân phối chuẩn (Normal)"; color="#2193b0"; }
+  if(type==="skewP") { data=dataSets.skewP; label="Lệch dương (Positive Skew)"; color="#f7931e"; }
+  if(type==="skewN") { data=dataSets.skewN; label="Lệch âm (Negative Skew)"; color="#d72660"; }
+  let min = Math.min(...data), max = Math.max(...data);
+  let freq = {};
+  data.forEach(v=>freq[v]=(freq[v]||0)+1);
+  let keys = Object.keys(freq).map(Number).sort((a,b)=>a-b);
+  let barSvg = keys.map((k,i) =>
+    `<rect x="${35+33*i}" y="${105-freq[k]*12}" width="27" height="${freq[k]*12}" rx="5"
+      fill="${color}" data-type="bar" data-val="${k}"
+      onmouseover="distExplain(${k},${freq[k]})" onmouseout="distExplain()"/>
+      <text x="${47+33*i}" y="122" font-size="12" fill="#888">${k}</text>
+      <text x="${47+33*i}" y="${100-freq[k]*12}" font-size="12" fill="#888">${freq[k]}</text>`
+  ).join('');
+  $viz.innerHTML = `
+    <svg width="380" height="135" style="background:#f7fbff;border-radius:12px;box-shadow:0 1px 6px #0001;">
+      <text x="15" y="22" font-size="14" fill="${color}">${label}</text>
+      <polyline points="${keys.map((k,i)=>`${48+33*i},${105-freq[k]*12}`).join(' ')}" fill="none" stroke="${color}" stroke-width="2.5"/>
+      ${barSvg}
+    </svg>
+    <div style="margin-top:7px;font-size:14px;">
+      <b>Chọn phân phối để xem hình dạng và đặc trưng!</b>
+      <br>
+      <span style="color:#2193b0;cursor:pointer;" onclick="drawDist('normal')">Phân phối chuẩn</span> |
+      <span style="color:#f7931e;cursor:pointer;" onclick="drawDist('skewP')">Lệch dương</span> |
+      <span style="color:#d72660;cursor:pointer;" onclick="drawDist('skewN')">Lệch âm</span>
+    </div>
+  `;
+  window.distExplain = function(val, count) {
+    if(val!==undefined) {
+      $exp.innerHTML = `Giá trị <b>${val}</b> xuất hiện <b>${count}</b> lần.<br>Chú ý đến hình dạng tổng thể: phân phối chuẩn cân đối, lệch dương đuôi phải dài, lệch âm đuôi trái dài.`;
+    } else {
+      if(type==="normal")
+        $exp.innerHTML = `<b>Phân phối chuẩn:</b> Đỉnh ở trung bình, cân đối 2 bên.<br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/7/74/Normal_Distribution_PDF.png" style="max-width:140px;vertical-align:middle;"><br>
+        Mean = Median = Mode.<br>Ứng dụng: Chiều cao, IQ, điểm số lớn.`;
+      if(type==="skewP")
+        $exp.innerHTML = `<b>Lệch dương (Positive Skew):</b> Đuôi phải dài hơn.<br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/28/Skewness_Examples_Positive_Skew.png" style="max-width:140px;vertical-align:middle;"><br>
+        Mode &lt; Median &lt; Mean. Dữ liệu nhiều giá trị thấp, ít giá trị cao (VD: lương).`;
+      if(type==="skewN")
+        $exp.innerHTML = `<b>Lệch âm (Negative Skew):</b> Đuôi trái dài hơn.<br>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/f/f8/Skewness_Examples_Negative_Skew.png" style="max-width:140px;vertical-align:middle;"><br>
+        Mean &lt; Median &lt; Mode. Dữ liệu nhiều giá trị cao, ít giá trị thấp (VD: điểm số bài dễ).`;
+    }
+  }
+}
+function drawData() { view='data'; renderDataChart(); }
+function drawDist(type='normal') { view='dist'; renderDistChart(type); }
+// --- EVENT LISTENERS ---
+document.getElementById('btnData').onclick = () => { drawData(); };
+document.getElementById('btnDist').onclick = () => { drawDist('normal'); };
+// --- INITIAL ---
+drawData();
+</script>
+
+        <!-- Timeline thí nghiệm -->
+        <div id="experiments" class="tab-content">
+            <h2>🔬 Timeline các thí nghiệm & Ứng dụng tiêu biểu</h2>
+            <div class="exp-timeline">
+                <div class="experiment-card">
+                    <div class="experiment-title">Francis Galton – Phân phối chuẩn (Normal Distribution)</div>
+                    <div class="experiment-meta"><span class="exp-year">Năm:</span> 1889</div>
+                    <b>Mục đích:</b> Nghiên cứu chiều cao người Anh, phát hiện phân phối chuẩn (chuông).<br>
+                    <b>Kết quả:</b> Dữ liệu chiều cao phân bố đối xứng quanh giá trị trung bình.<br>
+                    <div class="practical-example"><span class="example-title">Ví dụ đời sống:</span> Phân bố chiều cao, IQ, cân nặng người thường là phân phối chuẩn.</div>
+                </div>
+                <div class="experiment-card">
+                    <div class="experiment-title">Karl Pearson – Độ lệch chuẩn & Phương sai</div>
+                    <div class="experiment-meta"><span class="exp-year">Năm:</span> 1893</div>
+                    <b>Mục đích:</b> Đưa ra khái niệm đo mức phân tán dữ liệu.<br>
+                    <b>Kết quả:</b> Phát triển khái niệm độ lệch chuẩn (SD), phương sai (Variance).<br>
+                    <div class="practical-example"><span class="example-title">Ví dụ đời sống:</span> Nếu SD lớn, điểm số học sinh dao động nhiều.</div>
+                </div>
+                <div class="experiment-card">
+                    <div class="experiment-title">Ronald Fisher – Phân tích phương sai (ANOVA)</div>
+                    <div class="experiment-meta"><span class="exp-year">Năm:</span> 1925</div>
+                    <b>Mục đích:</b> So sánh sự khác biệt giữa nhiều nhóm.<br>
+                    <b>Kết quả:</b> Phát triển ANOVA, dùng kiểm định nhiều nhóm đối tượng cùng lúc.<br>
+                    <div class="practical-example"><span class="example-title">Ví dụ đời sống:</span> So sánh điểm trung bình 3 lớp bằng ANOVA thay vì nhiều phép t-test.</div>
+                </div>
+                <div class="experiment-card">
+                    <div class="experiment-title">William Sealy Gosset (“Student”) – t-test</div>
+                    <div class="experiment-meta"><span class="exp-year">Năm:</span> 1908</div>
+                    <b>Mục đích:</b> So sánh trung bình 2 nhóm.<br>
+                    <b>Kết quả:</b> Tạo công thức t-test, ứng dụng rộng rãi trong tâm lý học.<br>
+                    <div class="practical-example"><span class="example-title">Ví dụ đời sống:</span> So sánh điểm thi của nhóm có luyện tập và nhóm không luyện tập.</div>
+                </div>
+            </div>
+        </div>
+        <!-- Mô hình & sơ đồ -->
+        <div id="models" class="tab-content">
+            <h2>🏗️ Sơ đồ & Mô hình Thống kê tâm lý học</h2>
+            <div class="model-diagram">
+                <h3>Phân loại thống kê</h3>
+                <div class="flow-step">Thu thập dữ liệu</div>
+                <div class="flow-step">Thống kê mô tả</div>
+                <div class="flow-step">Thống kê suy luận</div>
+                <div class="flow-step">Kết luận/Ứng dụng</div>
+            </div>
+            <div class="model-diagram">
+                <h3>Phân phối chuẩn & Lệch</h3>
+                <div class="flow-step">Dữ liệu</div>
+                <div class="flow-step">Phân phối chuẩn</div>
+                <div class="flow-step">Phân phối lệch dương/âm</div>
+                <div class="flow-step">Ứng dụng phép đo phù hợp</div>
+            </div>
+        </div>
+        <!-- Ứng dụng & biểu đồ -->
+        <div id="applications" class="tab-content">
+            <h2>🌟 Ứng dụng, Biểu đồ & Ý nghĩa thực tiễn</h2>
+            <div class="practical-example">
+                <div class="example-title">Biểu đồ mô tả thường dùng</div>
+                <ul>
+                    <li><b>Biểu đồ cột (Histogram, Bar chart):</b> Thể hiện tần suất, sự khác biệt giữa các nhóm.</li>
+                    <li><b>Boxplot:</b> Kiểm tra phân phối chuẩn và các điểm dị biệt.</li>
+                    <li><b>Đường kẻ (Line graph):</b> Biểu diễn mối quan hệ giữa 2 biến số.</li>
+                    <li><b>Tán xạ (Scatter plot):</b> Biểu diễn sức mạnh quan hệ giữa 2 biến.</li>
+                </ul>
+            </div>
+            <div class="practical-example">
+                <div class="example-title">Ứng dụng thực tiễn</div>
+                <ul>
+                    <li>Dùng <b>thống kê mô tả</b> để tóm tắt dữ liệu cơ bản (tuổi, giới tính, thu nhập...)</li>
+                    <li>Dùng <b>thống kê suy luận</b> để so sánh, kiểm định giả thuyết giữa các nhóm.</li>
+                    <li>Biết phân biệt loại dữ liệu & phép đo giúp chọn đúng công cụ phân tích.</li>
+                </ul>
+            </div>
+        </div>
+        <!-- Quiz -->
+        <div id="quiz" class="tab-content">
+            <h2>📝 Trắc nghiệm ôn tập</h2>
+            <div class="quiz-container" id="quiz-questions"></div>
+            <div style="text-align: center; margin-top: 28px;">
+                <button class="demo-button" onclick="calculateScore()">Tính điểm</button>
+                <button class="demo-button" style="margin-left:10px;" onclick="resetQuiz()">Làm lại</button>
+                <div id="finalScore" style="margin-top: 15px; font-size: 1.18em; font-weight: bold;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showTab(tabName) {
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+        if (tabName === 'quiz') resetQuiz();
+    }
+
+    // Quiz Data
+    const quizQuestions = [
+        {
+            q: "Khái niệm 'mean' trong thống kê là gì?",
+            a: [
+                "A. Giá trị xuất hiện nhiều nhất trong dãy số",
+                "B. Giá trị trung bình cộng của các số",
+                "C. Giá trị ở giữa dãy số đã sắp xếp",
+                "D. Độ phân tán của dãy số"
+            ],
+            correct: 1
+        },
+        {
+            q: "Thống kê mô tả có chức năng chính nào?",
+            a: [
+                "A. Tóm tắt và trình bày dữ liệu bằng số hoặc biểu đồ",
+                "B. Kiểm định giả thuyết",
+                "C. Dự báo xu hướng tương lai",
+                "D. Tạo dữ liệu mới"
+            ],
+            correct: 0
+        },
+        {
+            q: "Điểm trung vị (median) là gì?",
+            a: [
+                "A. Giá trị ở giữa dãy số đã sắp xếp",
+                "B. Giá trị thấp nhất",
+                "C. Giá trị cao nhất",
+                "D. Tổng tất cả các giá trị"
+            ],
+            correct: 0
+        },
+        {
+            q: "Mode (yếu vị) là:",
+            a: [
+                "A. Giá trị xuất hiện nhiều nhất trong dãy số",
+                "B. Giá trị ở giữa",
+                "C. Tổng các giá trị",
+                "D. Giá trị phân tán nhất"
+            ],
+            correct: 0
+        },
+        {
+            q: "Thống kê suy luận dùng để làm gì?",
+            a: [
+                "A. Tóm tắt dữ liệu mẫu",
+                "B. Suy ra đặc điểm của toàn bộ dân số dựa trên mẫu",
+                "C. Chỉ vẽ biểu đồ",
+                "D. Sắp xếp dữ liệu"
+            ],
+            correct: 1
+        },
+        {
+            q: "Chỉ số đo độ phân tán của dữ liệu quanh giá trị trung bình là:",
+            a: [
+                "A. Mean",
+                "B. Mode",
+                "C. Standard deviation (Độ lệch chuẩn)",
+                "D. Median"
+            ],
+            correct: 2
+        },
+        {
+            q: "Phân phối chuẩn (normal distribution) là:",
+            a: [
+                "A. Dữ liệu tập trung về 1 phía",
+                "B. Dữ liệu phân bố đối xứng quanh trung bình",
+                "C. Chỉ có một giá trị duy nhất",
+                "D. Dữ liệu không thể hiện qua đồ thị"
+            ],
+            correct: 1
+        },
+        {
+            q: "Đặc điểm của thang đo định danh (nominal):",
+            a: [
+                "A. Có thứ bậc rõ ràng",
+                "B. Gán mã cho thuộc tính, không có thứ bậc",
+                "C. Có khoảng cách đều giữa các giá trị",
+                "D. Có giá trị 0 tuyệt đối"
+            ],
+            correct: 1
+        },
+        {
+            q: "Biểu đồ nào thường dùng để kiểm tra phân phối chuẩn & điểm dị biệt?",
+            a: [
+                "A. Bar chart",
+                "B. Boxplot",
+                "C. Pie chart",
+                "D. Scatter plot"
+            ],
+            correct: 1
+        },
+        {
+            q: "Công thức tính mean (trung bình):",
+            a: [
+                "A. Tổng tất cả giá trị chia cho số lượng giá trị",
+                "B. Giá trị xuất hiện nhiều nhất",
+                "C. Giá trị ở giữa",
+                "D. Giá trị nhỏ nhất trừ giá trị lớn nhất"
+            ],
+            correct: 0
+        },
+        {
+            q: "Thí nghiệm nào liên quan đến kiểm tra sự khác biệt giữa hai nhóm?",
+            a: [
+                "A. ANOVA",
+                "B. t-test",
+                "C. Histogram",
+                "D. Scatter plot"
+            ],
+            correct: 1
+        },
+        {
+            q: "Ai là người đầu tiên phát hiện phân phối chuẩn trong thống kê?",
+            a: [
+                "A. William Gosset",
+                "B. Francis Galton",
+                "C. Ronald Fisher",
+                "D. Karl Pearson"
+            ],
+            correct: 1
+        },
+        {
+            q: "Phân phối lệch dương là như thế nào?",
+            a: [
+                "A. Đuôi dài về bên phải",
+                "B. Đỉnh lệch về bên trái",
+                "C. Dữ liệu phân tán đều",
+                "D. Không xác định được"
+            ],
+            correct: 0
+        },
+        {
+            q: "Standard deviation càng nhỏ thể hiện:",
+            a: [
+                "A. Dữ liệu phân tán nhiều",
+                "B. Dữ liệu tập trung gần mean",
+                "C. Dữ liệu đều nhau",
+                "D. Dữ liệu ngẫu nhiên"
+            ],
+            correct: 1
+        },
+        {
+            q: "Ý nghĩa thực tiễn của thống kê trong tâm lý học?",
+            a: [
+                "A. Giúp mô tả, phân tích, kiểm định và rút ra kết luận khoa học từ dữ liệu",
+                "B. Chỉ dùng để vẽ biểu đồ",
+                "C. Không có giá trị thực tiễn",
+                "D. Chỉ dành cho toán học"
+            ],
+            correct: 0
+        }
+    ];
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    let score = 0, answeredQuestions = 0, currentQuiz = [];
+
+    function renderQuiz() {
+        const quizContainer = document.getElementById('quiz-questions');
+        quizContainer.innerHTML = '';
+        score = 0;
+        answeredQuestions = 0;
+
+        // Deep copy and shuffle questions
+        currentQuiz = quizQuestions.map(q => {
+            const answerObjs = q.a.map((text, idx) => ({
+                text,
+                isCorrect: idx === q.correct
+            }));
+            shuffleArray(answerObjs);
+            return { q: q.q, answers: answerObjs };
+        });
+        shuffleArray(currentQuiz);
+
+        currentQuiz.forEach((qObj, i) => {
+            const opts = qObj.answers.map(aObj =>
+                `<li onclick="checkAnswer(this, ${aObj.isCorrect})">${aObj.text}</li>`
+            ).join('');
+            quizContainer.innerHTML += `
+                <div class="question">
+                    <h4>${qObj.q}</h4>
+                    <ul class="options">${opts}</ul>
+                </div>
+            `;
+        });
+
+        document.getElementById('finalScore').innerText = '';
+    }
+
+    function checkAnswer(element, isCorrect) {
+        const question = element.closest('.question');
+        if (question.classList.contains('answered')) return;
+        question.classList.add('answered');
+        answeredQuestions++;
+        const options = question.querySelectorAll('.options li');
+        options.forEach(option => { option.style.pointerEvents = 'none'; option.style.opacity = '0.7'; });
+        if (isCorrect) {
+            element.style.backgroundColor = '#d4edda'; element.style.color = '#155724'; element.style.border = '2px solid #28a745'; score++;
+        } else {
+            element.style.backgroundColor = '#f8d7da'; element.style.color = '#721c24'; element.style.border = '2px solid #dc3545';
+            options.forEach(option => {
+                if (option.onclick && option.onclick.toString().includes('true')) {
+                    option.style.backgroundColor = '#d4edda';
+                }
+            });
+        }
+    }
+    function calculateScore() {
+        document.getElementById('finalScore').innerText = `Bạn đúng ${score}/${quizQuestions.length} câu!`;
+    }
+    function resetQuiz() {
+        renderQuiz();
+    }
+    renderQuiz();
+</script>
+</body>
+</html>
