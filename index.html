@@ -32,6 +32,26 @@
     .quiz-action-btn:disabled { background: #bdbdbd; cursor: not-allowed; }
     .explain { font-size: 0.98em; margin: 7px 0 0 3px; color: #388e3c; }
     .wrong { color: #d32f2f; }
+    .quiz-sticky-actions {
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  display: flex;
+  gap: 16px;
+  padding: 18px 0 10px 0;
+  justify-content: flex-start;
+  z-index: 2;
+  border-radius: 0 0 16px 16px;
+  box-shadow: 0 12px 32px -22px #1976d280;
+}
+@media (max-width:700px) {
+  .quiz-sticky-actions {
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px 0 5px 0;
+  }
+}
+
 
     /* Org chart style (fill, scrollable, slide panel) */
     .orgchart-wrap { width:100%; max-width: 100vw; overflow-x:auto; margin-bottom:30px; }
@@ -179,8 +199,11 @@
     <!-- Quiz trắc nghiệm -->
     <div class="tab-content" id="quiz">
       <div class="quiz-container" id="quiz-area"></div>
-      <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
-      <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
+     <div class="quiz-sticky-actions">
+  <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
+  <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
+</div>
+
       <div id="quiz-score"></div>
     </div>
 
