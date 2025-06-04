@@ -69,13 +69,14 @@
     <h1>📊 Thống kê Ứng dụng trong Tâm lý học</h1>
     <p>Tổng quan, lý thuyết, sơ đồ kiểm định, ví dụ & luyện tập trắc nghiệm – Chuẩn bị cho kiểm tra!</p>
   </div>
-  <div class="tabs">
-    <button class="tab active" onclick="showTab(event, 'definitions')">Định nghĩa & Phân loại</button>
-    <button class="tab" onclick="showTab(event, 'schema')">Lưu đồ & Sơ đồ trực quan</button>
-    <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn & Minh họa</button>
-    <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
-    <button class="tab" onclick="showTab(event, 'classquiz')">Class Quiz</button>
-  </div>
+<div class="tabs">
+  <button class="tab active" onclick="showTab(event, 'definitions')">Định nghĩa & Phân loại</button>
+  <button class="tab" onclick="showTab(event, 'schema')">Lưu đồ & Sơ đồ trực quan</button>
+  <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn & Minh họa</button>
+  <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
+  <a class="tab" href="classquiz.html" target="_blank" rel="noopener">Class Quiz</a>
+</div>
+
   <div class="content">
     <!-- Định nghĩa & Phân loại -->
     <div class="tab-content active" id="definitions">
@@ -182,9 +183,6 @@
       <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
       <div id="quiz-score"></div>
     </div>
-    <div class="tab-content" id="classquiz">
-  <div id="classquiz-container" style="min-height:240px;">Đang tải câu hỏi lớp...</div>
-</div>
 
   </div>
 </div>
