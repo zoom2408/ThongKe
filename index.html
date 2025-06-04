@@ -1,125 +1,355 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>TLH Nhận thức</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      display: flex;
-      height: 100vh;
-      overflow: hidden;
-    }
-    .h2{padding: 15px;}
-    .sidebar {
-      width: 220px;
-      background-color: #1a237e;
-      color: white;
-      padding-top: 20px;
-      display: flex;
-      flex-direction: column;
-    }
-    .sidebar a, .sidebar .menu-parent {
-      padding: 15px 20px;
-      text-decoration: none;
-      color: white;
-      font-weight: bold;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      cursor: pointer;
-      display: block;
-      transition: background 0.15s;
-    }
-    .sidebar a.active, .sidebar .menu-parent.active {
-      background-color: #283593;
-      color: #ffe082;
-    }
-    .sidebar a:hover, .sidebar .menu-parent:hover {
-      background-color: #3949ab;
-    }
-    .sidebar .tree {
-      display: flex;
-      flex-direction: column;
-      background: #232d7a;
-    }
-    .sidebar .menu-parent {
-      cursor: default;
-      background: #232d7a;
-      border-bottom: none;
-    }
-    .sidebar .submenu {
-      display: flex;
-      flex-direction: column;
-      padding-left: 18px;
-      background: #232d7a;
-    }
-    .sidebar .submenu a {
-      font-weight: normal;
-      font-size: 15px;
-      border-bottom: none;
-      padding: 10px 20px;
-      border-radius: 2px;
-    }
-    .sidebar .submenu a.active {
-      background-color: #3949ab;
-      color: #ffe082;
-    }
-    .content {
-      flex-grow: 1;
-      height: 100vh;
-    }
-    iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-  </style>
-  <script>
-    function loadPage(url, menuEl, isSub = false) {
-      document.getElementById('viewer').src = url;
-      setActive(menuEl, isSub);
-    }
-
-    function setActive(menuEl, isSub) {
-      document.querySelectorAll('.sidebar a, .sidebar .menu-parent').forEach(el => {
-        el.classList.remove('active');
-      });
-      document.querySelectorAll('.submenu a').forEach(el => {
-        el.classList.remove('active');
-      });
-      if (isSub) {
-        menuEl.classList.add('active');
-        let parent = menuEl.closest('.tree').querySelector('.menu-parent');
-        if (parent) parent.classList.add('active');
-      } else {
-        menuEl.classList.add('active');
-      }
-    }
-
-    window.onload = function() {
-      document.getElementById('menu_gioithieu').classList.add('active');
-    }
-  </script>
+    <meta charset="UTF-8">
+    <title>Thống kê Ứng dụng trong Tâm lý học</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); min-height: 100vh; color: #222; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 28px 12px; }
+        .header { text-align: center; margin-bottom: 40px; color: #1a237e; }
+        .header h1 { font-size: 2.4em; margin-bottom: 8px; font-weight: 800; }
+        .header p { font-size: 1.1em; opacity: 0.93; }
+        .tabs { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 26px; }
+        .tab { padding: 11px 24px; background: #e3eafc; border: none; border-radius: 22px; color: #222; cursor: pointer; font-weight: 600; transition: all .2s; }
+        .tab:hover, .tab.active { background: #4f8ef7; color: white; }
+        .content { background: #fff; border-radius: 18px; padding: 28px 24px; box-shadow: 0 16px 32px rgba(52, 90, 182, 0.08); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn .5s; }
+        @keyframes fadeIn { from {opacity: 0; transform: translateY(18px);} to {opacity: 1; transform: translateY(0);} }
+        .highlight { background: #fffbe8; padding: 16px; border-radius: 8px; margin: 15px 0 24px 0; border-left: 5px solid #ff9800; }
+        .model-diagram, .flow-schema { background: linear-gradient(120deg, #ddefff 0%, #cce2ff 100%); border-radius: 15px; padding: 20px; margin: 18px 0; text-align: center; }
+        .flow-step { display: inline-block; background: white; padding: 10px 17px; margin: 9px 6px; border-radius: 7px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); position: relative; font-weight: 500; }
+        .flow-step::after { content: "→"; position: absolute; right: -20px; top: 50%; transform: translateY(-50%); color: #1976d2; font-size: 1.2em; }
+        .flow-step:last-child::after { display: none; }
+        .example-title { font-weight: 600; color: #2d3436; }
+        .practical-example { background: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); border-radius: 12px; padding: 13px 18px; margin: 9px 0; }
+        .chart-img { max-width: 320px; display: block; margin: 10px auto 20px auto; border-radius: 10px; border: 1px solid #d9e5f6;}
+        .quiz-container { margin-top: 30px; }
+        .question { background: #fff; border-radius: 8px; padding: 18px 20px; margin: 15px 0; box-shadow: 0 5px 15px rgba(0,0,0,0.04); border-left: 4px solid #1976d2; }
+        .question h4 { color: #222; margin-bottom: 13px; }
+        .options { list-style: none; padding: 0; margin:0; }
+        .options li { padding: 10px 12px; margin: 6px 0; background: #f5f7fa; border-radius: 5px; cursor: pointer; transition: background .2s; }
+        .options li:hover { background: #e3eafc; }
+        .quiz-action-btn { background: linear-gradient(45deg, #43cea2, #185a9d); color: white; border: none; padding: 12px 28px; border-radius: 20px; cursor: pointer; font-size: 1em; margin: 18px 10px 0 0; transition: all .2s; }
+        .quiz-action-btn:disabled { background: #bdbdbd; cursor: not-allowed; }
+        .explain { font-size: 0.98em; margin: 7px 0 0 3px; color: #388e3c; }
+        .wrong { color: #d32f2f; }
+        @media (max-width:700px) { .container {padding:8px;} .model-diagram, .content {padding: 10px;} }
+    </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h2>TLH Nhận thức</h2>
-    <a id="menu_gioithieu" onclick="loadPage('1_Basic.html', this)">01. Giới thiệu</a>
-    <a onclick="loadPage('02_Nhanthuc.html', this)">02. Nhận thức</a>
-    <a onclick="loadPage('03_TriGiac.html', this)">03. Tri giác</a>
-    <a onclick="loadPage('04_ChuY.html', this)">04. Chú ý</a>
-    <div class="tree">
-      <a class="menu-parent" onclick="loadPage('05_TriNho.html', this)" id="menu_trinho">05. Trí nhớ</a>
-      <div class="submenu">
-        <a onclick="loadPage('05.1_TriNhoSTM.html', this, true)">05.1 Trí nhớ ngắn hạn</a>
-        <a onclick="loadPage('05.2_TriNhoLTM.html', this, true)">05.2 Trí nhớ dài hạn</a>
-      </div>
+<div class="container">
+    <div class="header">
+        <h1>📊 Thống kê Ứng dụng trong Tâm lý học</h1>
+        <p>Tổng quan, lý thuyết, lưu đồ, thực nghiệm & luyện tập trắc nghiệm – Chuẩn bị cho kiểm tra!</p>
     </div>
-    <a onclick="loadPage('06_LoiTriNho.html', this)">06. Lỗi Trí nhớ</a>
-    <a onclick="loadPage('07_Vande.html', this)">07. Vấn đề</a>
-  </div>
-  <div class="content">
-    <iframe id="viewer" src="01_GioiThieu.html"></iframe>
-  </div>
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('definitions')">Định nghĩa & Phân loại</button>
+        <button class="tab" onclick="showTab('schema')">Lưu đồ & Sơ đồ trực quan</button>
+        <button class="tab" onclick="showTab('examples')">Ví dụ thực tiễn & Minh họa</button>
+        <button class="tab" onclick="showTab('quiz')">Quiz trắc nghiệm</button>
+    </div>
+    <div class="content">
+        <!-- Định nghĩa & Phân loại -->
+        <div class="tab-content active" id="definitions">
+            <div class="highlight"><b>Thống kê</b> là công cụ giúp phân tích, mô tả, và suy luận từ dữ liệu, đặc biệt trong nghiên cứu tâm lý học.</div>
+            <b>Phân loại thống kê:</b>
+            <ul>
+                <li><b>Thống kê mô tả (Descriptive statistics):</b> Tóm tắt dữ liệu (trung bình, độ lệch chuẩn, tỷ lệ, v.v) và trình bày qua bảng, biểu đồ.</li>
+                <li><b>Thống kê suy luận (Inferential statistics):</b> Suy luận về dân số từ mẫu qua kiểm định giả thuyết, ước lượng tham số, phân tích tương quan, hồi quy, v.v.</li>
+            </ul>
+            <b>Khái niệm cơ bản:</b>
+            <ul>
+                <li><b>Trung bình (Mean):</b> Tổng các giá trị chia cho số lượng quan sát.</li>
+                <li><b>Trung vị (Median):</b> Giá trị nằm giữa dãy số đã sắp xếp.</li>
+                <li><b>Mode (Yếu vị):</b> Giá trị xuất hiện nhiều nhất.</li>
+                <li><b>Độ lệch chuẩn (Standard deviation):</b> Đo độ phân tán quanh trung bình.</li>
+                <li><b>Phân phối chuẩn (Normal distribution):</b> Đường cong hình chuông, mean = median = mode.</li>
+                <li><b>Phân phối mẫu (Sampling distribution):</b> Phân phối xác suất của một thống kê từ nhiều mẫu.</li>
+                <li><b>Khoảng tin cậy (Confidence interval):</b> Khoảng giá trị tham số thực nằm trong với xác suất nhất định (vd 95%).</li>
+                <li><b>Lỗi loại I & II:</b> Bác bỏ đúng/sai giả thuyết không (Type I/II error).</li>
+                <li><b>p-value:</b> Xác suất có được kết quả như quan sát nếu giả thuyết không đúng.</li>
+            </ul>
+            <b>Phân loại thang đo:</b>
+            <ul>
+                <li><b>Định danh (Nominal):</b> Mã hóa không có thứ bậc (giới tính, tình trạng hôn nhân).</li>
+                <li><b>Thứ bậc (Ordinal):</b> Có thứ bậc, nhưng không có khoảng cách đều (trình độ học vấn).</li>
+                <li><b>Khoảng (Interval):</b> Có khoảng cách đều, không có zero tuyệt đối (nhiệt độ).</li>
+                <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối (cân nặng, chiều cao).</li>
+            </ul>
+        </div>
+        <!-- Sơ đồ, Lưu đồ -->
+        <div class="tab-content" id="schema">
+            <div class="model-diagram">
+                <b>Quy trình phân tích thống kê ứng dụng:</b><br>
+                <span class="flow-step">Xác định vấn đề</span>
+                <span class="flow-step">Thu thập dữ liệu</span>
+                <span class="flow-step">Mô tả dữ liệu (Mean, SD,...) </span>
+                <span class="flow-step">Lựa chọn kiểm định (t-test, ANOVA...)</span>
+                <span class="flow-step">Phân tích kết quả</span>
+                <span class="flow-step">Báo cáo & Giải thích</span>
+            </div>
+            <div class="model-diagram">
+                <b>Sơ đồ lựa chọn kiểm định:</b><br>
+                <span class="flow-step">Dữ liệu định tính? → Chi-square</span>
+                <span class="flow-step">So sánh 2 nhóm? → t-test</span>
+                <span class="flow-step">So sánh ≥3 nhóm? → ANOVA</span>
+                <span class="flow-step">Quan hệ biến liên tục? → Tương quan / Hồi quy</span>
+            </div>
+            <div class="model-diagram">
+                <b>Thống kê mô tả & suy luận</b>
+                <img class="chart-img" src="https://i.ibb.co/4Tctz7J/normal-dist-chart.png" alt="Biểu đồ phân phối chuẩn">
+                <div><b>Biểu đồ Boxplot</b> giúp phát hiện outlier.<br>
+                    <img class="chart-img" src="https://i.ibb.co/qm6kBf9/boxplot.png" alt="Boxplot"></div>
+            </div>
+        </div>
+        <!-- Ví dụ thực tiễn -->
+        <div class="tab-content" id="examples">
+            <div class="practical-example">
+                <div class="example-title">Ví dụ 1: t-test độc lập</div>
+                Một nhà tâm lý học so sánh điểm trầm cảm giữa hai nhóm – có và không tập thể dục. <br>
+                <b>Kiểm định:</b> <i>Independent sample t-test</i>
+            </div>
+            <div class="practical-example">
+                <div class="example-title">Ví dụ 2: ANOVA một chiều</div>
+                Nghiên cứu đánh giá ảnh hưởng của 3 phương pháp học đến điểm kiểm tra tâm lý. <br>
+                <b>Kiểm định:</b> <i>One-way ANOVA</i>
+            </div>
+            <div class="practical-example">
+                <div class="example-title">Ví dụ 3: Kiểm định Chi-square</div>
+                So sánh tỷ lệ mắc stress ở các khoa khác nhau trong trường đại học.<br>
+                <b>Kiểm định:</b> <i>Chi-square Test</i>
+            </div>
+            <div class="practical-example">
+                <div class="example-title">Ví dụ 4: Hồi quy tuyến tính</div>
+                Dự đoán điểm hài lòng trong công việc dựa trên số giờ ngủ mỗi đêm.<br>
+                <b>Phân tích:</b> <i>Linear Regression</i>
+            </div>
+        </div>
+        <!-- Quiz trắc nghiệm -->
+        <div class="tab-content" id="quiz">
+            <div class="quiz-container" id="quiz-area"></div>
+            <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
+            <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
+            <div id="quiz-score"></div>
+        </div>
+    </div>
+</div>
+<script>
+/* ========= TAB HANDLER ========== */
+function showTab(tab) {
+    document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(e=>e.classList.remove('active'));
+    document.querySelector('[onclick="showTab(\''+tab+'\')"]').classList.add('active');
+    document.getElementById(tab).classList.add('active');
+   if(tab === "quiz") {
+        resetQuiz(); // luôn reset quiz khi vào tab quiz
+    }
+}
+/* ========== QUIZ ENGINE ========== */
+// 60 câu hỏi lý thuyết & thực tiễn (phong cách Demo_Test.pdf), shuffle hiển thị 20 câu/lần, order đáp án random
+const allQuestions = [
+    // Các câu hỏi nên dịch ngắn gọn, bám sát khái niệm & thực tiễn
+    {q: "Một nhà nghiên cứu kiểm tra tác động của chương trình can thiệp giảm lo âu. Sau phân tích, bác bỏ giả thuyết không, dù chương trình thật ra không hiệu quả. Đây là lỗi gì?",
+     opts: ["Lỗi loại II", "Lỗi loại I", "Sai mô hình", "Không đáp án nào đúng"], ans: 1, explain: "Lỗi loại I: Bác bỏ giả thuyết không khi nó đúng."},
+    {q: "Nếu p-value < 0.05 trong kiểm định giả thuyết, nghĩa là gì?",
+     opts: ["Chấp nhận giả thuyết không", "Bác bỏ giả thuyết không", "Dữ liệu không ý nghĩa", "Dữ liệu phân phối chuẩn"], ans: 1, explain: "p < 0.05: Kết quả có ý nghĩa thống kê, bác bỏ giả thuyết không."},
+    {q: "Một phân phối lệch phải (positively skewed) có đặc điểm nào?",
+     opts: ["Đuôi phải dài hơn đuôi trái", "Đuôi trái dài hơn đuôi phải", "Trung bình < trung vị", "Trung bình = trung vị"], ans: 0, explain: "Lệch phải: Đuôi bên phải dài hơn, mean > median."},
+    {q: "Trong kiểm định ANOVA 2 yếu tố có lặp, kiểm tra đồng nhất phương sai bằng?",
+     opts: ["Mauchly's Test for Sphericity", "Shapiro-Wilk Test", "Collinearity", "Homogeneity Test"], ans: 0, explain: "ANOVA repeated: kiểm tra sphericity = Mauchly's Test."},
+    {q: "Mixed ANOVA kiểm tra hiệu quả giảm stress theo nhóm và thời gian. Tương tác nào quan trọng nhất?",
+     opts: ["Main effect of time", "Main effect of group", "Group × Time interaction", "Random error"], ans: 2, explain: "Quan trọng nhất là sự tương tác giữa nhóm và thời gian."},
+    {q: "Biểu đồ nào giúp phát hiện outlier?",
+     opts: ["Scatter plot", "Box plot", "Line plot", "Histogram"], ans: 1, explain: "Boxplot thể hiện outlier bằng các điểm ngoài hộp."},
+    {q: "Dữ liệu không phân phối chuẩn và phương sai không đồng nhất, nên dùng kiểm định nào?",
+     opts: ["Phân tích hồi quy", "Welch t-test + Paired t-test", "Mann-Whitney U + Wilcoxon", "Chuyển đổi dữ liệu rồi t-test"], ans: 2, explain: "Nên dùng test phi tham số khi dữ liệu vi phạm giả định."},
+    {q: "So sánh điểm trước và sau trị liệu trên cùng nhóm. Dùng kiểm định nào?",
+     opts: ["One-way Repeated Measure ANOVA", "Independent t-test", "Paired sample t-test", "Linear regression"], ans: 2, explain: "Cùng nhóm, đo hai lần: paired sample t-test."},
+    {q: "ANOVA một chiều: F = 4.67, p = 0.002, df = 2/28. Kết luận gì?",
+     opts: ["Không khác biệt giữa nhóm", "Có ít nhất một nhóm khác biệt", "Tất cả nhóm đều giống nhau", "Không kết luận được"], ans: 1, explain: "p < 0.05, có sự khác biệt giữa các nhóm."},
+    {q: "Định lý giới hạn trung tâm (Central Limit Theorem) nói về điều gì?",
+     opts: ["Mẫu đủ lớn, trung bình mẫu xấp xỉ chuẩn", "Mẫu nhỏ sẽ không chính xác", "Dữ liệu luôn chuẩn", "Chỉ dùng cho t-test"], ans: 0, explain: "Lấy mẫu đủ lớn thì phân phối trung bình mẫu gần chuẩn."},
+    {q: "Thang đo nào có zero tuyệt đối, có thể nhân chia?",
+     opts: ["Nominal", "Ordinal", "Interval", "Ratio"], ans: 3, explain: "Ratio: có zero tuyệt đối, phép toán + - × ÷."},
+    {q: "Hệ số tương quan r = 0.8 cho biết gì?",
+     opts: ["Tương quan yếu", "Tương quan trung bình", "Tương quan mạnh", "Không có tương quan"], ans: 2, explain: "r > 0.7: tương quan rất mạnh."},
+    {q: "Trong hồi quy, giả định đồng phương sai (homoscedasticity) nghĩa là?",
+     opts: ["Sai số có phương sai không đổi", "Dữ liệu phải chuẩn", "Sai số độc lập", "Biến dự báo phải chuẩn"], ans: 0, explain: "Homoscedasticity: Phương sai của residual không đổi."},
+    {q: "Kiểm định Chi-square thường áp dụng khi nào?",
+     opts: ["Dữ liệu liên tục", "So sánh tỉ lệ hai nhóm", "Dữ liệu phân loại/định tính", "Dữ liệu định lượng"], ans: 2, explain: "Chi-square: dùng cho dữ liệu phân loại."},
+    {q: "Yếu tố nào không phải là yêu cầu của Independent t-test?",
+     opts: ["Dữ liệu độc lập", "Dữ liệu chuẩn", "Phương sai đồng nhất", "Dữ liệu ordinal"], ans: 3, explain: "t-test dùng cho interval/ratio, không phải ordinal."},
+    {q: "Trong nghiên cứu mô hình trung gian (mediation), biến trung gian là gì?",
+     opts: ["Biến làm thay đổi độ mạnh của mối quan hệ", "Biến nằm trên đường truyền nhân quả", "Biến độc lập", "Biến phụ thuộc"], ans: 1, explain: "Mediator là biến nằm giữa X và Y trên chuỗi nhân quả."},
+    {q: "Trong mô hình điều tiết (moderation), moderator là gì?",
+     opts: ["Biến nằm giữa X và Y", "Biến làm thay đổi hiệu ứng của X lên Y", "Biến kết quả", "Biến kiểm soát"], ans: 1, explain: "Moderator điều chỉnh độ mạnh/mối liên hệ giữa X-Y."},
+    {q: "Outlier có thể phát hiện qua?",
+     opts: ["Histogram", "Boxplot", "Bar chart", "Pie chart"], ans: 1, explain: "Boxplot thể hiện outlier tốt nhất."},
+    {q: "Trong kiểm định giả thuyết, giả thuyết không (H0) thường là gì?",
+     opts: ["Có hiệu ứng", "Không có hiệu ứng", "Hiệu ứng mạnh", "Dữ liệu có tương quan"], ans: 1, explain: "H0 là giả thuyết không có hiệu ứng hoặc khác biệt."},
+    {q: "Nếu nghiên cứu đo mức độ hài lòng 3 nhóm khác nhau, nên dùng?",
+     opts: ["t-test", "Chi-square", "One-way ANOVA", "Hồi quy"], ans: 2, explain: "So sánh 3 nhóm: one-way ANOVA."},
+
+    // (Tiếp tục bổ sung 40 câu: Lý thuyết + thực tiễn - có thể lấy ý tưởng từ file Demo_Test.pdf)
+    {q: "Để mô tả dữ liệu định danh, nên dùng chỉ số nào?",
+     opts: ["Mean", "Median", "Mode", "SD"], ans: 2, explain: "Mode phù hợp cho dữ liệu định danh."},
+    {q: "Trung vị phù hợp nhất mô tả khi dữ liệu như thế nào?",
+     opts: ["Không lệch", "Lệch nhiều", "Chỉ với nominal", "Chỉ với ratio"], ans: 1, explain: "Median tốt khi dữ liệu bị lệch."},
+    {q: "Tại sao cần kiểm tra giả định normality trước t-test?",
+     opts: ["Vì t-test cần dữ liệu chuẩn", "Vì t-test cần outlier", "Không cần thiết", "Chỉ ANOVA mới cần"], ans: 0, explain: "t-test yêu cầu dữ liệu phân phối chuẩn."},
+    {q: "Biểu đồ histogram chủ yếu dùng để?",
+     opts: ["Kiểm tra mối quan hệ", "Kiểm tra phân phối dữ liệu", "Kiểm tra độ tin cậy", "Kiểm tra nhóm"], ans: 1, explain: "Histogram mô tả phân phối dữ liệu."},
+    {q: "Mục đích của kiểm định Shapiro-Wilk?",
+     opts: ["Kiểm tra outlier", "Kiểm tra normality", "Kiểm tra tương quan", "Kiểm tra tỷ lệ"], ans: 1, explain: "Shapiro-Wilk test kiểm tra phân phối chuẩn."},
+    {q: "Boxplot không thể hiện điều nào sau đây?",
+     opts: ["Giá trị trung bình", "Outlier", "Khoảng tứ phân vị", "Median"], ans: 0, explain: "Boxplot không thể hiện mean."},
+    {q: "p-value là gì?",
+     opts: ["Xác suất bác bỏ H0 đúng", "Xác suất có kết quả như quan sát nếu H0 đúng", "Xác suất của giả thuyết thay thế", "Xác suất dữ liệu chuẩn"], ans: 1, explain: "p-value: Xác suất có kết quả như quan sát nếu H0 đúng."},
+    {q: "Biến định danh ví dụ nào sau đây?",
+     opts: ["Giới tính", "Điểm số", "Nhiệt độ", "Chiều cao"], ans: 0, explain: "Giới tính là nominal variable."},
+    {q: "Yêu cầu dữ liệu của ANOVA là?",
+     opts: ["Interval/ratio", "Nominal", "Ordinal", "Không yêu cầu"], ans: 0, explain: "ANOVA dùng cho interval hoặc ratio scale."},
+    {q: "Mục đích chính của kiểm định post hoc sau ANOVA?",
+     opts: ["So sánh từng cặp nhóm", "So sánh toàn bộ", "Kiểm tra normality", "Kiểm tra outlier"], ans: 0, explain: "Post hoc test để biết nhóm nào khác nhóm nào."},
+    {q: "Cronbach’s alpha là gì?",
+     opts: ["Độ tin cậy thang đo", "Hệ số tương quan", "Giá trị trung bình", "Độ lệch chuẩn"], ans: 0, explain: "Cronbach's alpha đánh giá độ tin cậy nội bộ."},
+    {q: "Test-retest reliability dùng để?",
+     opts: ["Kiểm tra lặp lại", "Kiểm tra outlier", "Kiểm tra mean", "Kiểm tra phương sai"], ans: 0, explain: "Test-retest đo tính ổn định qua thời gian."},
+    {q: "Nếu Spearman rho = -0.6 nghĩa là?",
+     opts: ["Không có liên hệ", "Liên hệ nghịch vừa", "Liên hệ đồng biến mạnh", "Liên hệ yếu"], ans: 1, explain: "Âm, độ lớn vừa: liên hệ nghịch trung bình."},
+    {q: "Nếu kiểm định độc lập phương sai không đồng nhất thì dùng?",
+     opts: ["Independent t-test", "Welch t-test", "ANOVA", "Mann-Whitney"], ans: 1, explain: "Welch t-test không yêu cầu phương sai đồng nhất."},
+    {q: "Phi tham số là gì?",
+     opts: ["Không yêu cầu giả định về phân phối", "Dùng cho nominal", "Chỉ với nhỏ", "Chỉ ANOVA"], ans: 0, explain: "Test phi tham số không yêu cầu dữ liệu chuẩn."},
+    {q: "Trong ANOVA, phương sai giữa nhóm lớn nghĩa là?",
+     opts: ["Không có khác biệt", "Khác biệt nhóm lớn", "Outlier nhiều", "Không kết luận"], ans: 1, explain: "Variance giữa nhóm lớn: các nhóm khác biệt rõ."},
+    {q: "Trong hồi quy tuyến tính, hệ số R2 là gì?",
+     opts: ["Tỷ lệ phương sai giải thích được", "Độ lệch chuẩn", "Độ tin cậy", "Độ mạnh mối liên hệ"], ans: 0, explain: "R2: tỉ lệ phương sai biến phụ thuộc giải thích được."},
+    {q: "Hồi quy dùng cho loại biến nào?",
+     opts: ["Chỉ nominal", "Chỉ ordinal", "Chỉ interval/ratio", "Tất cả các loại"], ans: 2, explain: "Regression dùng cho biến liên tục."},
+    {q: "Nếu phương sai dư thay đổi theo X, vi phạm giả định gì?",
+     opts: ["Normality", "Homoscedasticity", "Independence", "Linearity"], ans: 1, explain: "Phương sai dư thay đổi: heteroscedasticity."},
+    {q: "Nếu có hai biến dự báo mạnh tương quan nhau trong hồi quy là hiện tượng gì?",
+     opts: ["Heteroscedasticity", "Multicollinearity", "Normality", "Outlier"], ans: 1, explain: "Hai biến dự báo mạnh tương quan: đa cộng tuyến."},
+    {q: "Để kiểm tra normality cho dữ liệu nhỏ, dùng test nào?",
+     opts: ["Shapiro-Wilk", "ANOVA", "Chi-square", "Cronbach"], ans: 0, explain: "Shapiro-Wilk kiểm tra dữ liệu nhỏ (<50)."},
+
+    // + 20 câu thực tiễn và khái niệm
+    {q: "Mục đích của nghiên cứu điều tiết (moderation) là?",
+     opts: ["Kiểm tra trung gian", "Kiểm tra ảnh hưởng biến thứ ba lên mối quan hệ", "Kiểm tra sự lặp lại", "Kiểm tra biến độc lập"], ans: 1, explain: "Moderation: kiểm tra tác động biến thứ ba lên mối quan hệ X-Y."},
+    {q: "Mục đích của nghiên cứu mediation là gì?",
+     opts: ["Kiểm tra cơ chế ảnh hưởng", "Kiểm tra phương sai", "Kiểm tra outlier", "Kiểm tra mean"], ans: 0, explain: "Mediation kiểm tra cơ chế tác động giữa X và Y."},
+    {q: "Dữ liệu càng lớn thì khoảng tin cậy như thế nào?",
+     opts: ["Rộng hơn", "Hẹp hơn", "Không thay đổi", "Không liên quan"], ans: 1, explain: "Sample size lớn, khoảng tin cậy hẹp lại."},
+    {q: "Phân phối mẫu là gì?",
+     opts: ["Phân phối dữ liệu gốc", "Phân phối của 1 thống kê từ nhiều mẫu", "Phân phối của outlier", "Phân phối không chuẩn"], ans: 1, explain: "Sampling distribution là phân phối của một thống kê từ nhiều mẫu."},
+    {q: "Giá trị F trong ANOVA là?",
+     opts: ["Tỉ số phương sai giữa nhóm và trong nhóm", "Giá trị mean", "p-value", "Tỉ lệ độ tin cậy"], ans: 0, explain: "F = variance between / variance within."},
+    {q: "Biến định lượng là gì?",
+     opts: ["Có thể đếm hoặc đo", "Chỉ có tên", "Chỉ có thứ bậc", "Chỉ cho yes/no"], ans: 0, explain: "Biến định lượng: đo lường được bằng số."},
+    {q: "Hệ số alpha ≥ 0.9 là gì?",
+     opts: ["Không đáng tin cậy", "Rất tốt", "Trung bình", "Nghi ngờ"], ans: 1, explain: "Cronbach's alpha ≥ 0.9: độ tin cậy rất tốt."},
+    {q: "Bước đầu tiên của phân tích dữ liệu là gì?",
+     opts: ["Kiểm tra giả thuyết", "Hiểu và mô tả dữ liệu", "Báo cáo", "So sánh nhóm"], ans: 1, explain: "Bước đầu tiên luôn là mô tả dữ liệu."},
+    {q: "Khi nào nên dùng Kruskal-Wallis test?",
+     opts: ["So sánh 2 nhóm", "So sánh ≥3 nhóm, phi tham số", "Kiểm tra tương quan", "Kiểm tra mean"], ans: 1, explain: "Kruskal-Wallis dùng khi so sánh nhiều nhóm, dữ liệu không chuẩn."},
+    {q: "Tương quan mạnh khi hệ số r ở mức nào?",
+     opts: ["0-0.3", "0.3-0.5", "0.5-0.7", "≥0.7"], ans: 3, explain: "r ≥ 0.7: rất mạnh."},
+    {q: "Giả định independence trong hồi quy nghĩa là gì?",
+     opts: ["Dữ liệu phải độc lập", "Mean không đổi", "Sai số độc lập", "Tất cả đúng"], ans: 2, explain: "Sai số (residuals) cần độc lập với nhau."},
+    {q: "Mối quan hệ tuyến tính giữa X và Y là gì?",
+     opts: ["X tăng, Y tăng/tăng tỉ lệ", "Không liên quan", "Có outlier", "Phương sai không đổi"], ans: 0, explain: "Linear relationship: X tăng → Y tăng đều."},
+    {q: "Khi kiểm định giả thuyết, nếu không đủ bằng chứng bác bỏ H0 thì?",
+     opts: ["Chấp nhận H0", "Không bác bỏ H0", "Bác bỏ H1", "Từ chối nghiên cứu"], ans: 1, explain: "Không đủ bằng chứng bác bỏ H0 thì giữ H0."},
+    {q: "Ví dụ biến confounder là gì?",
+     opts: ["Biến ảnh hưởng cả X và Y", "Biến nằm giữa X và Y", "Biến kiểm soát", "Biến kết quả"], ans: 0, explain: "Confounder ảnh hưởng đến cả X và Y."},
+    {q: "Khi kiểm định độc lập phương sai không đồng nhất thì dùng?",
+     opts: ["Independent t-test", "Welch t-test", "ANOVA", "Mann-Whitney"], ans: 1, explain: "Welch t-test không yêu cầu phương sai đồng nhất."},
+    {q: "Điều kiện sử dụng Pearson correlation?",
+     opts: ["Hai biến nominal", "Hai biến interval/ratio, dữ liệu chuẩn", "Hai biến ordinal", "Hai nhóm độc lập"], ans: 1, explain: "Pearson dùng cho hai biến interval/ratio, dữ liệu chuẩn."},
+    {q: "Hồi quy tuyến tính đơn giản gồm những biến nào?",
+     opts: ["Một biến dự báo, một biến kết quả", "Hai biến dự báo", "Nhiều biến phụ thuộc", "Tất cả đều đúng"], ans: 0, explain: "Simple linear regression: 1 predictor, 1 outcome."},
+    {q: "Nếu hệ số hồi quy âm, nghĩa là gì?",
+     opts: ["X tăng, Y tăng", "X tăng, Y giảm", "Không liên hệ", "Tăng cùng chiều"], ans: 1, explain: "Hệ số âm: X tăng thì Y giảm."},
+    {q: "Trong SPSS/Jamovi, muốn kiểm tra sự tương quan giữa 2 biến dùng?",
+     opts: ["Chi-square", "T-test", "Correlation", "Regression"], ans: 2, explain: "Phân tích correlation kiểm tra tương quan."},
+];
+// Lấy ngẫu nhiên 20 câu, shuffle đáp án
+let quizQuestions = [];
+function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+function generateQuiz() {
+    quizQuestions = [];
+    const indexes = Array.from(Array(allQuestions.length).keys());
+    shuffleArray(indexes);
+    const picked = indexes.slice(0, 20);
+    picked.forEach(i => {
+        let q = allQuestions[i];
+        let opts = q.opts.slice();
+        let correct = q.ans;
+        let origIdx = [...opts.keys()];
+        shuffleArray(origIdx);
+        let shuffledOpts = origIdx.map(k => opts[k]);
+        let newAns = origIdx.indexOf(correct);
+        quizQuestions.push({...q, opts: shuffledOpts, ans: newAns});
+    });
+}
+function renderQuiz() {
+    let html = '';
+    quizQuestions.forEach((q, idx) => {
+        html += `<div class="question" data-idx="${idx}">
+            <h4>Câu ${idx+1}: ${q.q}</h4>
+            <ul class="options">` + q.opts.map((opt, j) =>
+            `<li onclick="chooseOption(${idx},${j})" id="q${idx}o${j}">${opt}</li>`
+        ).join('') + `</ul>
+            <div class="explain" id="explain${idx}"></div>
+        </div>`;
+    });
+    document.getElementById('quiz-area').innerHTML = html;
+    document.getElementById('quiz-score').innerHTML = '';
+}
+let userAnswers = {};
+function chooseOption(qIdx, optIdx) {
+    if (window.quizSubmitted) return;
+    userAnswers[qIdx] = optIdx;
+    // Highlight selection
+    quizQuestions[qIdx].opts.forEach((_,j)=>{
+        document.getElementById(`q${qIdx}o${j}`).style.background = j===optIdx ? "#dbeafe" : "#f5f7fa";
+    });
+}
+function submitQuiz() {
+    if (window.quizSubmitted) return;
+    let score = 0;
+    quizQuestions.forEach((q, i) => {
+        let user = userAnswers[i];
+        let ex = document.getElementById('explain'+i);
+        if (user === q.ans) {
+            score++;
+            ex.innerHTML = '<span>✔️ Đúng. ' + q.explain + '</span>';
+            ex.classList.remove('wrong');
+        } else {
+            ex.innerHTML = '<span class="wrong">❌ Sai.</span> ' + q.explain;
+            ex.classList.add('wrong');
+        }
+    });
+    document.getElementById('quiz-score').innerHTML =
+        `<div style="font-weight:700; font-size:1.2em; margin:16px 0;">Bạn đúng ${score}/20 câu.</div>`;
+    window.quizSubmitted = true;
+}
+function resetQuiz() {
+    window.quizSubmitted = false;
+    userAnswers = {};
+    generateQuiz();
+    renderQuiz();
+    document.getElementById('quiz-score').innerHTML = '';
+}
+window.onload = () => { generateQuiz(); renderQuiz(); }
+</script>
 </body>
 </html>
