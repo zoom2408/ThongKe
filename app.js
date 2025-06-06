@@ -1,12 +1,3 @@
-    // Tab handler
-    function showTab(event, tabName) {
-      document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-      if (event) event.target.classList.add('active');
-      document.getElementById(tabName).classList.add('active');
-      if (tabName === "quiz") resetQuiz();
-      if (tabName !== "schema") closePanel();
-    }
     // Slide panel data
     const panelData = {
       "t-test": {
@@ -143,29 +134,7 @@
       document.getElementById('panel').classList.remove('open');
     }
     // QUIZ ENGINE
-    const allQuestions = [
-      { q: "Một nhà nghiên cứu kiểm tra tác động của chương trình can thiệp giảm lo âu. Sau phân tích, bác bỏ giả thuyết không, dù chương trình thật ra không hiệu quả. Đây là lỗi gì?", opts: ["Lỗi loại II", "Lỗi loại I", "Sai mô hình", "Không đáp án nào đúng"], ans: 1, explain: "Lỗi loại I: Bác bỏ giả thuyết không khi nó đúng." },
-      { q: "Nếu p-value < 0.05 trong kiểm định giả thuyết, nghĩa là gì?", opts: ["Chấp nhận giả thuyết không", "Bác bỏ giả thuyết không", "Dữ liệu không ý nghĩa", "Dữ liệu phân phối chuẩn"], ans: 1, explain: "p < 0.05: Kết quả có ý nghĩa thống kê, bác bỏ giả thuyết không." },
-      { q: "Một phân phối lệch phải (positively skewed) có đặc điểm nào?", opts: ["Đuôi phải dài hơn đuôi trái", "Đuôi trái dài hơn đuôi phải", "Trung bình < trung vị", "Trung bình = trung vị"], ans: 0, explain: "Lệch phải: Đuôi bên phải dài hơn, mean > median." },
-      { q: "Trong kiểm định ANOVA 2 yếu tố có lặp, kiểm tra đồng nhất phương sai bằng?", opts: ["Mauchly's Test for Sphericity", "Shapiro-Wilk Test", "Collinearity", "Homogeneity Test"], ans: 0, explain: "ANOVA repeated: kiểm tra sphericity = Mauchly's Test." },
-      { q: "Mixed ANOVA kiểm tra hiệu quả giảm stress theo nhóm và thời gian. Tương tác nào quan trọng nhất?", opts: ["Main effect of time", "Main effect of group", "Group × Time interaction", "Random error"], ans: 2, explain: "Quan trọng nhất là sự tương tác giữa nhóm và thời gian." },
-      { q: "Biểu đồ nào giúp phát hiện outlier?", opts: ["Scatter plot", "Box plot", "Line plot", "Histogram"], ans: 1, explain: "Boxplot thể hiện outlier bằng các điểm ngoài hộp." },
-      { q: "Dữ liệu không phân phối chuẩn và phương sai không đồng nhất, nên dùng kiểm định nào?", opts: ["Phân tích hồi quy", "Welch t-test + Paired t-test", "Mann-Whitney U + Wilcoxon", "Chuyển đổi dữ liệu rồi t-test"], ans: 2, explain: "Nên dùng test phi tham số khi dữ liệu vi phạm giả định." },
-      { q: "So sánh điểm trước và sau trị liệu trên cùng nhóm. Dùng kiểm định nào?", opts: ["One-way Repeated Measure ANOVA", "Independent t-test", "Paired sample t-test", "Linear regression"], ans: 2, explain: "Cùng nhóm, đo hai lần: paired sample t-test." },
-      { q: "ANOVA một chiều: F = 4.67, p = 0.002, df = 2/28. Kết luận gì?", opts: ["Không khác biệt giữa nhóm", "Có ít nhất một nhóm khác biệt", "Tất cả nhóm đều giống nhau", "Không kết luận được"], ans: 1, explain: "p < 0.05, có sự khác biệt giữa các nhóm." },
-      { q: "Định lý giới hạn trung tâm (Central Limit Theorem) nói về điều gì?", opts: ["Mẫu đủ lớn, trung bình mẫu xấp xỉ chuẩn", "Mẫu nhỏ sẽ không chính xác", "Dữ liệu luôn chuẩn", "Chỉ dùng cho t-test"], ans: 0, explain: "Lấy mẫu đủ lớn thì phân phối trung bình mẫu gần chuẩn." },
-      { q: "Thang đo nào có zero tuyệt đối, có thể nhân chia?", opts: ["Nominal", "Ordinal", "Interval", "Ratio"], ans: 3, explain: "Ratio: có zero tuyệt đối, phép toán + - × ÷." },
-      { q: "Hệ số tương quan r = 0.8 cho biết gì?", opts: ["Tương quan yếu", "Tương quan trung bình", "Tương quan mạnh", "Không có tương quan"], ans: 2, explain: "r > 0.7: tương quan rất mạnh." },
-      { q: "Trong hồi quy, giả định đồng phương sai (homoscedasticity) nghĩa là?", opts: ["Sai số có phương sai không đổi", "Dữ liệu phải chuẩn", "Sai số độc lập", "Biến dự báo phải chuẩn"], ans: 0, explain: "Homoscedasticity: Phương sai của residual không đổi." },
-      { q: "Kiểm định Chi-square thường áp dụng khi nào?", opts: ["Dữ liệu liên tục", "So sánh tỉ lệ hai nhóm", "Dữ liệu phân loại/định tính", "Dữ liệu định lượng"], ans: 2, explain: "Chi-square: dùng cho dữ liệu phân loại." },
-      { q: "Yếu tố nào không phải là yêu cầu của Independent t-test?", opts: ["Dữ liệu độc lập", "Dữ liệu chuẩn", "Phương sai đồng nhất", "Dữ liệu ordinal"], ans: 3, explain: "t-test dùng cho interval/ratio, không phải ordinal." },
-      { q: "Trong nghiên cứu mô hình trung gian (mediation), biến trung gian là gì?", opts: ["Biến làm thay đổi độ mạnh của mối quan hệ", "Biến nằm trên đường truyền nhân quả", "Biến độc lập", "Biến phụ thuộc"], ans: 1, explain: "Mediator là biến nằm giữa X và Y trên chuỗi nhân quả." },
-      { q: "Trong mô hình điều tiết (moderation), moderator là gì?", opts: ["Biến nằm giữa X và Y", "Biến làm thay đổi hiệu ứng của X lên Y", "Biến kết quả", "Biến kiểm soát"], ans: 1, explain: "Moderator điều chỉnh độ mạnh/mối liên hệ giữa X-Y." },
-      { q: "Outlier có thể phát hiện qua?", opts: ["Histogram", "Boxplot", "Bar chart", "Pie chart"], ans: 1, explain: "Boxplot thể hiện outlier tốt nhất." },
-      { q: "Trong kiểm định giả thuyết, giả thuyết không (H0) thường là gì?", opts: ["Có hiệu ứng", "Không có hiệu ứng", "Hiệu ứng mạnh", "Dữ liệu có tương quan"], ans: 1, explain: "H0 là giả thuyết không có hiệu ứng hoặc khác biệt." },
-      { q: "Nếu nghiên cứu đo mức độ hài lòng 3 nhóm khác nhau, nên dùng?", opts: ["t-test", "Chi-square", "One-way ANOVA", "Hồi quy"], ans: 2, explain: "So sánh 3 nhóm: one-way ANOVA." }
-      // (Bạn có thể bổ sung thêm câu hỏi tại đây)
-    ];
+    // questionPool được nạp từ questions.js
     // Lấy ngẫu nhiên 20 câu, shuffle đáp án
     let quizQuestions = [];
     function shuffleArray(arr) {
@@ -176,11 +145,11 @@
     }
     function generateQuiz() {
       quizQuestions = [];
-      const indexes = Array.from(Array(allQuestions.length).keys());
+      const indexes = Array.from(Array(questionPool.length).keys());
       shuffleArray(indexes);
       const picked = indexes.slice(0, 20);
       picked.forEach(i => {
-        let q = allQuestions[i];
+        let q = questionPool[i];
         let opts = q.opts.slice();
         let correct = q.ans;
         let origIdx = [...opts.keys()];
