@@ -209,29 +209,12 @@
     }
     window.onload = () => { generateQuiz(); renderQuiz(); }
 
-    // Quiz từ thầy Tùng
-    function loadClassQuizHtml() {
-      // Đảm bảo chỉ load 1 lần
-      if (document.getElementById('classquiz-container').dataset.loaded) return;
-      fetch('classquiz.html') // đổi thành tên file HTML quiz lớp của bạn
-        .then(r => r.text())
-        .then(html => {
-          document.getElementById('classquiz-container').innerHTML = html;
-          document.getElementById('classquiz-container').dataset.loaded = '1';
-        })
-        .catch(err => {
-          document.getElementById('classquiz-container').innerHTML = 'Không tải được nội dung Class Quiz.<br><small>' + err + '</small>';
-        });
-    }
-
-    // Sửa lại showTab để auto load khi mở tab classquiz
     function showTab(event, tabName) {
       document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
       if (event) event.target.classList.add('active');
       document.getElementById(tabName).classList.add('active');
       if (tabName === "quiz") resetQuiz();
-      if (tabName === "classquiz") loadClassQuizHtml();
       if (tabName !== "schema") closePanel();
     }
 
