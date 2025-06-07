@@ -493,5 +493,27 @@ const allQuestions = [
     ],
     ans: 2,
     explain: "Để kiểm tra sự thay đổi trước và sau can thiệp, paired samples t-test là phù hợp nhất vì nó so sánh hai nhóm liên quan (trước và sau) và biểu đồ 'Difference' đạt phân phối chuẩn.",
+  },
+  {
+    q:"Tính điểm trung bình trong chuỗi dưới đây: 10, 10, 40, 30, 10",
+    opts: [
+      "10",
+      "20",
+      "30",
+      "40"
+    ],
+    ans: 1,
+    explain: "Điểm trung bình được tính bằng tổng các giá trị chia cho số lượng giá trị. (10 + 10 + 40 + 30 + 10) / 5 = 20."
+  },
+  {
+    q:"Tính số trung vị trong chuỗi dưới đây: 13, 12, 11, 15, 22}",
+    opts: [
+      "12",
+      "13",
+      "15",
+      "11"
+    ],
+    ans: 1,
+    explain: "Sắp xếp chuỗi theo thứ tự tăng dần: 11, 12, 13, 15, 22. Số trung vị là giá trị ở giữa, tức là 13."
   }
 ];
