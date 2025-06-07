@@ -16,7 +16,7 @@ if (typeof window !== 'undefined') {
   // QUIZ ENGINE
   let quizQuestions = [];
   let userAnswers = {};
-  let numQuizQuestions = 20; // mặc định, luôn cập nhật từ select khi bấm "Làm bài"
+  let numQuizQuestions = 20; // sẽ lấy lại từ dropdown khi bắt đầu
 
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
@@ -26,27 +26,15 @@ if (typeof window !== 'undefined') {
   }
 
   function startQuiz() {
-    // Lấy số câu từ select dropdown (không dùng biến cũ)
     const select = document.getElementById('numQuizQuestions');
-    numQuizQuestions = parseInt(select.value);
-    // Bảo vệ tránh lỗi khi questionPool không đủ số câu (hiếm gặp)
+    numQuizQuestions = parseInt(select.value) || 20;
     const maxQ = Math.min(numQuizQuestions, window.allQuestions.length);
-    generateQuiz(maxQ);
-    renderQuiz();
-    window.quizSubmitted = false;
-    userAnswers = {};
-    document.getElementById('quiz-area').style.display = '';
-    document.getElementById('quiz-actions').style.display = 'flex';
-    document.getElementById('quiz-setup').style.display = 'none';
-    document.getElementById('quiz-score').innerHTML = '';
-    document.getElementById('quiz-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
 
-  function generateQuiz(qNum) {
+    // Sinh quiz mới
     quizQuestions = [];
     const indexes = Array.from(Array(window.allQuestions.length).keys());
     shuffleArray(indexes);
-    const picked = indexes.slice(0, qNum);
+    const picked = indexes.slice(0, maxQ);
     picked.forEach(i => {
       let q = window.allQuestions[i];
       let opts = q.opts.slice();
@@ -57,6 +45,17 @@ if (typeof window !== 'undefined') {
       let newAns = origIdx.indexOf(correct);
       quizQuestions.push({ ...q, opts: shuffledOpts, ans: newAns });
     });
+
+    renderQuiz();
+    window.quizSubmitted = false;
+    userAnswers = {};
+
+    // SHOW quiz + nút, HIDE setup
+    document.getElementById('quiz-area').style.display = '';
+    document.getElementById('quiz-actions').style.display = 'flex';
+    document.getElementById('quiz-setup').style.display = 'none';
+    document.getElementById('quiz-score').innerHTML = '';
+    document.getElementById('quiz-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function renderQuiz() {
@@ -103,17 +102,18 @@ if (typeof window !== 'undefined') {
   }
 
   function resetQuiz() {
-    // Quay về bước chọn số câu, ẩn quiz
+    // Ẩn quiz, hiện lại setup
     document.getElementById('quiz-area').style.display = 'none';
     document.getElementById('quiz-actions').style.display = 'none';
     document.getElementById('quiz-setup').style.display = '';
     document.getElementById('quiz-score').innerHTML = '';
   }
 
-  // KHÔNG tự động render quiz khi onload, chỉ hiện setup
+  // Khi vào tab quiz, mặc định ẩn quiz, chỉ hiện phần chọn số câu
   window.onload = () => {
     resetQuiz();
   };
+
 
   //End quiz engine
 
