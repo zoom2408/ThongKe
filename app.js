@@ -13,6 +13,22 @@ if (typeof window !== 'undefined') {
     extra.style.display = (extra.style.display === 'block') ? 'none' : 'block';
     card.classList.toggle('active');
   }
+
+  function showOverlay() {
+    const ov = document.getElementById('overlay');
+    if (ov) ov.classList.add('active');
+  }
+
+  function hideOverlay() {
+    const ov = document.getElementById('overlay');
+    if (ov) ov.classList.remove('active');
+  }
+
+  function closeOverlay() {
+    hideOverlay();
+    closeSEPanel();
+    closeTestPanel();
+  }
   // QUIZ ENGINE
 let quizQuestions = [];
 let userAnswers = {};
@@ -268,9 +284,11 @@ function showTab(event, tabName) {
   function showTestPanel(key) {
     document.getElementById('stat-panel-content').innerHTML = `<h2 style="margin-top:0;font-size:1.25em">${STAT_PANEL[key].title}</h2>` + STAT_PANEL[key].html;
     document.getElementById('stat-panel').classList.add('open');
+    showOverlay();
   }
   function closeTestPanel() {
     document.getElementById('stat-panel').classList.remove('open');
+    hideOverlay();
   }
   const SE_PANEL = {
     "mota": {
@@ -367,9 +385,11 @@ function showTab(event, tabName) {
   function showSEPanel(key) {
     document.getElementById('se-panel-content').innerHTML = `<h2 style="margin-top:0;font-size:1.15em">${SE_PANEL[key].title}</h2>${SE_PANEL[key].html}`;
     document.getElementById('se-panel').classList.add('open');
+    showOverlay();
   }
   function closeSEPanel() {
     document.getElementById('se-panel').classList.remove('open');
+    hideOverlay();
   }
 
 
