@@ -126,6 +126,17 @@
       </div>
       <!-- Quiz trắc nghiệm -->
       <div class="tab-content" id="quiz">
+        <div class="quiz-config">
+          <label for="question-count">Số câu hỏi:</label>
+          <select id="question-count" onchange="resetQuiz()">
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20" selected>20</option>
+            <option value="25">25</option>
+            <option value="30">30</option>
+            <option value="40">40</option>
+          </select>
+        </div>
         <div class="quiz-container" id="quiz-area"></div>
         <div class="quiz-sticky-actions">
           <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>

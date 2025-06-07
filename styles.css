@@ -122,6 +122,15 @@ body {
     margin-top: 30px;
 }
 
+.quiz-config {
+    margin-bottom: 15px;
+}
+
+.quiz-config select {
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
 .question {
     background: #fff;
     border-radius: 8px;
