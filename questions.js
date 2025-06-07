@@ -438,5 +438,38 @@ const allQuestions = [
     ],
     ans: 1,
     explain: "Giảm α làm tăng ngưỡng bác bỏ Ho, dẫn đến giảm power (khả năng phát hiện hiệu ứng thực)."
+  },
+  {
+    q: "Một nhà quản lý giáo dục đã nhận được báo cáo từ tỉnh liệt kê thứ hạng của các trường học theo thành tích của học sinh. Thang đo nào được thể hiện trong báo cáo này?",
+    opts: [
+      "Thang đo tỉ lệ.",
+      "Thang đo thứ bậc.",
+      "Thang đo khoảng.",
+      "Thang đo định danh."
+    ],
+    ans: 1,
+    explain: "Thứ bậc: có thể so sánh thứ tự (ví dụ: xếp hạng)"
+  },
+  {
+    q:"Trong một thí nghiệm so sánh các phản ứng hung hăng sau khi tiếp xúc với bạo lực trên phương tiện truyền thông trong chương trình truyền hình và trò chơi điện tử, “phản ứng hung hăng” là __________ và “tiếp xúc với bạo lực trên phương tiện truyền thông” là__________.",
+    opts: [
+      "Biến độc lập; biến phụ thuộc",
+      "Biến phụ thuộc; biến độc lập",
+      "Biến kiểm soát; biến phụ thuộc",
+      "Biến độc lập; biến nhân khẩu"
+    ],
+    ans: 1,
+    explain: "Phản ứng hung hăng là biến phụ thuộc (đo lường kết quả), tiếp xúc với bạo lực là biến độc lập (nguyên nhân)."
+  },
+  {
+    p: "Năm đứa trẻ được yêu cầu chọn màu sắc yêu thích của chúng bên dưới. Yếu vị trong chuỗi [Hồng, hồng, xanh, hồng, hồng] này là gì?",
+    opts: [
+      "Hồng",
+      "Xanh",
+      "Không có yếu vị",
+      "Không thể xác định"
+      ],
+    ans: 0,
+    explain: "Yếu vị là giá trị xuất hiện nhiều nhất trong tập dữ liệu. Trong trường hợp này, 'Hồng' xuất hiện 4 lần, nhiều hơn bất kỳ màu nào khác."
   }
 ];
