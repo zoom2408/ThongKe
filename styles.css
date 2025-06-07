@@ -210,7 +210,6 @@
       padding: 18px 0 10px 0;
       justify-content: flex-start;
       z-index: 2;
-      border-radius: 0 0 16px 16px;
       box-shadow: 0 12px 32px -22px #1976d280;
     }
 
@@ -231,6 +230,11 @@
       background: #bdbdbd;
       cursor: not-allowed;
     }
+#quiz-score{
+  margin-top: 12px;
+  margin-bottom: 12px;
+  display: block;
+}
 
     .explain {
       font-size: 0.98em;
