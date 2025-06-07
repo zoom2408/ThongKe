@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8">
   <title>Thống kê Ứng dụng trong Tâm lý học</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
 <div class="container">
   <div class="header">
@@ -24,71 +22,85 @@
   <div class="content">
     <!-- Định nghĩa & Phân loại -->
 <div class="tab-content active" id="definitions">
-  <div class="stat-explain">
-    <h2>Thống kê mô tả & suy luận – Cốt lõi và ứng dụng</h2>
-    <p>
-      <b>Thống kê mô tả</b> (Descriptive statistics) giúp <u>tóm tắt, mô tả</u> các đặc điểm của dữ liệu (như trung bình, trung vị, độ lệch chuẩn, tần suất).  
-      <br><b>Thống kê suy luận</b> (Inferential statistics) cho phép <u>suy luận, kiểm định giả thuyết</u> về dân số dựa trên số liệu mẫu qua các kiểm định (t-test, ANOVA, hồi quy, v.v).
-    </p>
-    <ul>
-      <li><b>Trung bình (Mean):</b> Đại diện cho mức độ "điển hình" của dãy số. Nên đọc cùng độ lệch chuẩn.</li>
-      <li><b>Trung vị (Median):</b> Giá trị ở giữa, giúp nhận biết lệch/phân phối bất đối xứng.</li>
-      <li><b>Mode (Mốt):</b> Giá trị xuất hiện nhiều nhất (xem ở bảng tần suất).</li>
-      <li><b>Độ lệch chuẩn (SD):</b> Đo độ phân tán dữ liệu quanh trung bình. SD nhỏ = đồng đều, SD lớn = phân tán mạnh.</li>
-      <li><b>Tỷ lệ & Tần suất:</b> Thường gặp ở dữ liệu định tính/phân loại.</li>
-    </ul>
-    <p><b>Cách đọc bảng số liệu/biểu đồ:</b></p>
-    <ul>
-      <li>So sánh trung bình/median để nhận biết phân phối lệch hay chuẩn.</li>
-      <li>Chú ý SD và min-max để phát hiện outlier hoặc nhóm đặc biệt.</li>
-      <li>Với bảng tần suất/tỷ lệ, tìm nhóm phổ biến nhất hoặc nhóm ít gặp.</li>
-    </ul>
-    <h3 style="margin-top:18px;">Kiểm định tham số & phi tham số – Khi nào chọn?</h3>
-    <ul>
-      <li><b>Kiểm định tham số:</b> (t-test, ANOVA, hồi quy...) dùng khi dữ liệu liên tục, phân phối gần chuẩn, phương sai các nhóm xấp xỉ bằng nhau. Kết quả có độ tin cậy cao.</li>
-      <li><b>Kiểm định phi tham số:</b> (Mann-Whitney, Wilcoxon, Chi-square...) dùng khi dữ liệu thứ bậc, định tính hoặc không chuẩn, mẫu nhỏ, có outlier.</li>
-    </ul>
-    <div class="highlight" style="margin:10px 0 14px 0;">
-      <b>Mẹo:</b> Luôn kiểm tra phân phối dữ liệu trước (bằng histogram, boxplot, kiểm định chuẩn hóa...). Nếu dữ liệu lệch nhiều hoặc có outlier → ưu tiên kiểm định phi tham số.
+  <div class="stat-explain-boxes">
+
+<div class="stat-explain-boxes">
+  <div class="se-box" onclick="showSEPanel('mota')">
+    <div class="se-ico se-blue">📊</div>
+    <div>
+      <div class="se-title">Thống kê mô tả là gì?</div>
+      <div class="se-desc">Tóm tắt, mô tả đặc điểm của dữ liệu bằng các chỉ số như <b>trung bình</b>, <b>trung vị</b>, <b>độ lệch chuẩn</b>, <b>tỷ lệ</b>... Đây là nền tảng để nhận diện mẫu số liệu trước khi suy luận.</div>
     </div>
-    <h3>Biến phụ thuộc & độc lập là gì?</h3>
-    <ul>
-      <li><b>Biến phụ thuộc (DV):</b> Kết quả bạn đo lường (ví dụ: điểm thi, mức stress...)</li>
-      <li><b>Biến độc lập (IV):</b> Yếu tố phân nhóm, hoặc yếu tố bạn muốn xem tác động (ví dụ: nam/nữ, có can thiệp hay không...)</li>
-    </ul>
-    <h3>Cách đọc bảng kiểm định & chú ý thông số</h3>
-    <ul>
-      <li>Xác định rõ đâu là DV, đâu là IV trong đề bài & bảng kết quả.</li>
-      <li>Chú ý các cột: <b>trung bình, median mỗi nhóm</b> (nếu có), <b>SD</b>, <b>tần suất</b>.</li>
-      <li>Đọc kỹ các thông số: <b>giá trị kiểm định (t, F, U, Chi-square...)</b>, <b>p-value</b> (ý nghĩa thống kê nếu p &lt; 0.05), <b>effect size</b> (nếu có).</li>
-      <li>Ghi nhớ: Không phải kết quả có ý nghĩa thống kê đều có ý nghĩa thực tiễn!</li>
-    </ul>
   </div>
-  <div class="highlight"><b>Thống kê</b> là công cụ giúp phân tích, mô tả, và suy luận từ dữ liệu, đặc biệt trong nghiên cứu tâm lý học.</div>
-  <b>Phân loại thống kê:</b>
-  <ul>
-    <li><b>Thống kê mô tả (Descriptive statistics):</b> Tóm tắt dữ liệu (trung bình, độ lệch chuẩn, tỷ lệ, v.v) và trình bày qua bảng, biểu đồ.</li>
-    <li><b>Thống kê suy luận (Inferential statistics):</b> Suy luận về dân số từ mẫu qua kiểm định giả thuyết, ước lượng tham số, phân tích tương quan, hồi quy, v.v.</li>
-  </ul>
-  <b>Khái niệm cơ bản:</b>
-  <ul>
-    <li><b>Trung bình (Mean):</b> Tổng các giá trị chia cho số lượng quan sát.</li>
-    <li><b>Trung vị (Median):</b> Giá trị nằm giữa dãy số đã sắp xếp.</li>
-    <li><b>Mode (Yếu vị):</b> Giá trị xuất hiện nhiều nhất.</li>
-    <li><b>Độ lệch chuẩn (Standard deviation):</b> Đo độ phân tán quanh trung bình.</li>
-    <li><b>Phân phối chuẩn (Normal distribution):</b> Đường cong hình chuông, mean = median = mode.</li>
-    <li><b>Phân phối mẫu (Sampling distribution):</b> Phân phối xác suất của một thống kê từ nhiều mẫu.</li>
-    <li><b>Khoảng tin cậy (Confidence interval):</b> Khoảng giá trị tham số thực nằm trong với xác suất nhất định (vd 95%).</li>
-    <li><b>Lỗi loại I & II:</b> Bác bỏ đúng/sai giả thuyết không (Type I/II error).</li>
-    <li><b>p-value:</b> Xác suất có được kết quả như quan sát nếu giả thuyết không đúng.</li>
-  </ul>
-  <b>Phân loại thang đo:</b>
-  <ul>
-    <li><b>Định danh (Nominal):</b> Mã hóa không có thứ bậc (giới tính, tình trạng hôn nhân).</li>
-    <li><b>Thứ bậc (Ordinal):</b> Có thứ bậc, nhưng không có khoảng cách đều (trình độ học vấn).</li>
-    <li><b>Khoảng (Interval):</b> Có khoảng cách đều, không có zero tuyệt đối (nhiệt độ).</li>
-    <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối (cân nặng, chiều cao).</li>
-  </ul>
+  <div class="se-box" onclick="showSEPanel('docbang')">
+    <div class="se-ico se-yellow">🔍</div>
+    <div>
+      <div class="se-title">Cách đọc bảng số liệu, biểu đồ</div>
+      <ul class="se-list">
+        <li><b>Trung bình (Mean):</b> Đọc cùng <b>SD</b> để biết sự phân tán.</li>
+        <li><b>Trung vị (Median):</b> Nếu khác nhiều so với Mean thì có thể có outlier hoặc dữ liệu lệch.</li>
+        <li><b>Tỷ lệ (%), tần suất:</b> Giúp nhận biết nhóm phổ biến, nhóm nhỏ nhất.</li>
+        <li><b>SD nhỏ:</b> Dữ liệu đồng đều. <b>SD lớn:</b> Dữ liệu phân tán mạnh.</li>
+        <li>So sánh <b>min-max</b> để phát hiện outlier.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="se-box" onclick="showSEPanel('thamso')">
+    <div class="se-ico se-green">🧪</div>
+    <div>
+      <div class="se-title">Kiểm định tham số & phi tham số</div>
+      <div class="se-desc">
+        <b>Tham số:</b> (t-test, ANOVA, hồi quy...) khi dữ liệu liên tục, phân phối gần chuẩn, phương sai các nhóm xấp xỉ bằng nhau.<br>
+        <b>Phi tham số:</b> (Mann-Whitney, Wilcoxon, Chi-square...) khi dữ liệu thứ bậc, định tính, không chuẩn, có outlier hoặc cỡ mẫu nhỏ.
+      </div>
+      <div class="se-tip"><b>Mẹo:</b> Luôn kiểm tra histogram/boxplot hoặc kiểm định chuẩn hóa trước khi chọn kiểm định!</div>
+    </div>
+  </div>
+  <div class="se-box" onclick="showSEPanel('bienphu')">
+    <div class="se-ico se-red">🔗</div>
+    <div>
+      <div class="se-title">Biến phụ thuộc & độc lập</div>
+      <ul class="se-list">
+        <li><b>Biến phụ thuộc (DV):</b> Kết quả bạn đo lường (ví dụ: điểm, mức stress...)</li>
+        <li><b>Biến độc lập (IV):</b> Yếu tố phân nhóm, yếu tố bạn muốn xem ảnh hưởng (ví dụ: nhóm giới tính, có can thiệp hay không...)</li>
+      </ul>
+    </div>
+  </div>
+  <div class="se-box" onclick="showSEPanel('thongso')">
+    <div class="se-ico se-purple">📝</div>
+    <div>
+      <div class="se-title">Cách đọc bảng kiểm định & chú ý thông số</div>
+      <ul class="se-list">
+        <li>Xác định rõ đâu là DV, đâu là IV trong đề bài & bảng kết quả.</li>
+        <li>Chú ý các cột: <b>trung bình, median mỗi nhóm</b> (nếu có), <b>SD</b>, <b>tần suất</b>.</li>
+        <li>Đọc kỹ các thông số: <b>giá trị kiểm định (t, F, U, Chi-square...)</b>, <b>p-value</b> (ý nghĩa thống kê nếu p &lt; 0.05), <b>effect size</b> (nếu có).</li>
+        <li><b>Ghi nhớ:</b> Không phải kết quả có ý nghĩa thống kê đều có ý nghĩa thực tiễn!</li>
+      </ul>
+    </div>
+  </div>
+  <div class="se-box" onclick="showSEPanel('thangdo')">
+    <div class="se-ico se-gray">📏</div>
+    <div>
+      <div class="se-title">Các loại thang đo</div>
+      <ul class="se-list">
+        <li><b>Định danh (Nominal):</b> Không có thứ bậc (giới tính, nhóm máu...)</li>
+        <li><b>Thứ bậc (Ordinal):</b> Có thứ tự nhưng khoảng cách không đều (hài lòng, trình độ...)</li>
+        <li><b>Khoảng (Interval):</b> Có khoảng cách đều, không zero tuyệt đối (nhiệt độ...)</li>
+        <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối (cân nặng, chiều cao...)</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+
+  </div>
+  
+  <!--Slide out panel -->
+  <div class="se-panel" id="se-panel">
+  <button class="se-panel-close" onclick="closeSEPanel()">&times;</button>
+  <div id="se-panel-content"></div>
+</div>
+
 </div>
     
     <!-- Lưu đồ & Sơ đồ trực quan -->
@@ -225,26 +237,6 @@
         <div class="example-title">Ví dụ 4: Hồi quy tuyến tính</div>
         Dự đoán điểm hài lòng trong công việc dựa trên số giờ ngủ mỗi đêm.<br>
         <b>Phân tích:</b> <i>Linear Regression</i>
-      <!-- Quiz trắc nghiệm -->
-      <div class="tab-content" id="quiz">
-        <div class="quiz-config">
-          <label for="question-count">Số câu hỏi:</label>
-          <select id="question-count" onchange="resetQuiz()">
-            <option value="10">10</option>
-            <option value="15">15</option>
-            <option value="20" selected>20</option>
-            <option value="25">25</option>
-            <option value="30">30</option>
-            <option value="40">40</option>
-          </select>
-        </div>
-        <div class="quiz-container" id="quiz-area"></div>
-        <div class="quiz-sticky-actions">
-          <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
-          <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
-        </div>
-
-        <div id="quiz-score"></div>
       </div>
     </div>
     <!-- Quiz trắc nghiệm -->
@@ -256,9 +248,7 @@
     </div>
   </div>
 </div>
-
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>
-
 </html>
