@@ -250,19 +250,24 @@
       </div>
       <!-- Quiz trắc nghiệm -->
       <div class="tab-content" id="quiz">
-        <div class="quiz-setup">
+        <div class="quiz-setup" id="quiz-setup">
           <label for="numQuizQuestions" style="font-weight:600; font-size:1.06em;">Chọn số câu hỏi muốn làm:</label>
-          <input type="number" id="numQuizQuestions" min="5" max="40" value="20" style="width:54px; margin: 0 10px;">
+          <select id="numQuizQuestions" style="margin: 0 10px;">
+            <option value="10">10 câu</option>
+            <option value="15">15 câu</option>
+            <option value="20" selected>20 câu</option>
+            <option value="30">30 câu</option>
+          </select>
           <button class="quiz-action-btn" id="startQuizBtn" onclick="startQuiz()">Làm bài</button>
         </div>
-
-        <div class="quiz-container" id="quiz-area"></div>
-        <div class="quiz-footer">
+        <div class="quiz-container" id="quiz-area" style="display:none"></div>
+        <div class="quiz-sticky-actions" id="quiz-actions" style="display:none;">
           <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
           <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
         </div>
         <div id="quiz-score"></div>
       </div>
+
     </div>
   </div>
   <script src="questions.js"></script>
