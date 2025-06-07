@@ -3,6 +3,20 @@ if (typeof window !== 'undefined') {
   let userAnswers = {};
   let numQuizQuestions = 20;
 
+  // Ensure the dropdown includes an option for the maximum available questions
+  document.addEventListener('DOMContentLoaded', () => {
+    const select = document.getElementById('numQuizQuestions');
+    if (!select || typeof allQuestions === 'undefined') return;
+    const max = allQuestions.length;
+    const exists = Array.from(select.options).some(opt => parseInt(opt.value) === max);
+    if (!exists) {
+      const opt = document.createElement('option');
+      opt.value = max;
+      opt.textContent = `${max} câu`;
+      select.appendChild(opt);
+    }
+  });
+
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
