@@ -9,121 +9,222 @@
 </head>
 
 <body>
-  <div class="container">
-    <div class="header">
-      <h1>📊 Thống kê Ứng dụng trong Tâm lý học</h1>
-      <p>Tổng quan, lý thuyết, sơ đồ kiểm định, ví dụ & luyện tập trắc nghiệm – Chuẩn bị cho kiểm tra!</p>
+<div class="container">
+  <div class="header">
+    <h1>📊 Thống kê Ứng dụng trong Tâm lý học</h1>
+    <p>Tổng quan, lý thuyết, lưu đồ, thực nghiệm & luyện tập trắc nghiệm – Chuẩn bị cho kiểm tra!</p>
+  </div>
+  <div class="tabs">
+    <button class="tab active" onclick="showTab(event, 'definitions')">Định nghĩa & Phân loại</button>
+    <button class="tab" onclick="showTab(event, 'schema')">Lưu đồ & Sơ đồ trực quan</button>
+    <button class="tab" onclick="showTab(event, 'cheatsheet')">Bảng Tham Chiếu</button>
+    <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn & Minh họa</button>
+    <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
+  </div>
+  <div class="content">
+    <!-- Định nghĩa & Phân loại -->
+<div class="tab-content active" id="definitions">
+  <div class="stat-explain">
+    <h2>Thống kê mô tả & suy luận – Cốt lõi và ứng dụng</h2>
+    <p>
+      <b>Thống kê mô tả</b> (Descriptive statistics) giúp <u>tóm tắt, mô tả</u> các đặc điểm của dữ liệu (như trung bình, trung vị, độ lệch chuẩn, tần suất).  
+      <br><b>Thống kê suy luận</b> (Inferential statistics) cho phép <u>suy luận, kiểm định giả thuyết</u> về dân số dựa trên số liệu mẫu qua các kiểm định (t-test, ANOVA, hồi quy, v.v).
+    </p>
+    <ul>
+      <li><b>Trung bình (Mean):</b> Đại diện cho mức độ "điển hình" của dãy số. Nên đọc cùng độ lệch chuẩn.</li>
+      <li><b>Trung vị (Median):</b> Giá trị ở giữa, giúp nhận biết lệch/phân phối bất đối xứng.</li>
+      <li><b>Mode (Mốt):</b> Giá trị xuất hiện nhiều nhất (xem ở bảng tần suất).</li>
+      <li><b>Độ lệch chuẩn (SD):</b> Đo độ phân tán dữ liệu quanh trung bình. SD nhỏ = đồng đều, SD lớn = phân tán mạnh.</li>
+      <li><b>Tỷ lệ & Tần suất:</b> Thường gặp ở dữ liệu định tính/phân loại.</li>
+    </ul>
+    <p><b>Cách đọc bảng số liệu/biểu đồ:</b></p>
+    <ul>
+      <li>So sánh trung bình/median để nhận biết phân phối lệch hay chuẩn.</li>
+      <li>Chú ý SD và min-max để phát hiện outlier hoặc nhóm đặc biệt.</li>
+      <li>Với bảng tần suất/tỷ lệ, tìm nhóm phổ biến nhất hoặc nhóm ít gặp.</li>
+    </ul>
+    <h3 style="margin-top:18px;">Kiểm định tham số & phi tham số – Khi nào chọn?</h3>
+    <ul>
+      <li><b>Kiểm định tham số:</b> (t-test, ANOVA, hồi quy...) dùng khi dữ liệu liên tục, phân phối gần chuẩn, phương sai các nhóm xấp xỉ bằng nhau. Kết quả có độ tin cậy cao.</li>
+      <li><b>Kiểm định phi tham số:</b> (Mann-Whitney, Wilcoxon, Chi-square...) dùng khi dữ liệu thứ bậc, định tính hoặc không chuẩn, mẫu nhỏ, có outlier.</li>
+    </ul>
+    <div class="highlight" style="margin:10px 0 14px 0;">
+      <b>Mẹo:</b> Luôn kiểm tra phân phối dữ liệu trước (bằng histogram, boxplot, kiểm định chuẩn hóa...). Nếu dữ liệu lệch nhiều hoặc có outlier → ưu tiên kiểm định phi tham số.
     </div>
-    <div class="tabs">
-      <button class="tab active" onclick="showTab(event, 'definitions')">Định nghĩa & Phân loại</button>
-      <button class="tab" onclick="showTab(event, 'schema')">Lưu đồ & Sơ đồ trực quan</button>
-      <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn & Minh họa</button>
-      <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
-    </div>
+    <h3>Biến phụ thuộc & độc lập là gì?</h3>
+    <ul>
+      <li><b>Biến phụ thuộc (DV):</b> Kết quả bạn đo lường (ví dụ: điểm thi, mức stress...)</li>
+      <li><b>Biến độc lập (IV):</b> Yếu tố phân nhóm, hoặc yếu tố bạn muốn xem tác động (ví dụ: nam/nữ, có can thiệp hay không...)</li>
+    </ul>
+    <h3>Cách đọc bảng kiểm định & chú ý thông số</h3>
+    <ul>
+      <li>Xác định rõ đâu là DV, đâu là IV trong đề bài & bảng kết quả.</li>
+      <li>Chú ý các cột: <b>trung bình, median mỗi nhóm</b> (nếu có), <b>SD</b>, <b>tần suất</b>.</li>
+      <li>Đọc kỹ các thông số: <b>giá trị kiểm định (t, F, U, Chi-square...)</b>, <b>p-value</b> (ý nghĩa thống kê nếu p &lt; 0.05), <b>effect size</b> (nếu có).</li>
+      <li>Ghi nhớ: Không phải kết quả có ý nghĩa thống kê đều có ý nghĩa thực tiễn!</li>
+    </ul>
+  </div>
+  <div class="highlight"><b>Thống kê</b> là công cụ giúp phân tích, mô tả, và suy luận từ dữ liệu, đặc biệt trong nghiên cứu tâm lý học.</div>
+  <b>Phân loại thống kê:</b>
+  <ul>
+    <li><b>Thống kê mô tả (Descriptive statistics):</b> Tóm tắt dữ liệu (trung bình, độ lệch chuẩn, tỷ lệ, v.v) và trình bày qua bảng, biểu đồ.</li>
+    <li><b>Thống kê suy luận (Inferential statistics):</b> Suy luận về dân số từ mẫu qua kiểm định giả thuyết, ước lượng tham số, phân tích tương quan, hồi quy, v.v.</li>
+  </ul>
+  <b>Khái niệm cơ bản:</b>
+  <ul>
+    <li><b>Trung bình (Mean):</b> Tổng các giá trị chia cho số lượng quan sát.</li>
+    <li><b>Trung vị (Median):</b> Giá trị nằm giữa dãy số đã sắp xếp.</li>
+    <li><b>Mode (Yếu vị):</b> Giá trị xuất hiện nhiều nhất.</li>
+    <li><b>Độ lệch chuẩn (Standard deviation):</b> Đo độ phân tán quanh trung bình.</li>
+    <li><b>Phân phối chuẩn (Normal distribution):</b> Đường cong hình chuông, mean = median = mode.</li>
+    <li><b>Phân phối mẫu (Sampling distribution):</b> Phân phối xác suất của một thống kê từ nhiều mẫu.</li>
+    <li><b>Khoảng tin cậy (Confidence interval):</b> Khoảng giá trị tham số thực nằm trong với xác suất nhất định (vd 95%).</li>
+    <li><b>Lỗi loại I & II:</b> Bác bỏ đúng/sai giả thuyết không (Type I/II error).</li>
+    <li><b>p-value:</b> Xác suất có được kết quả như quan sát nếu giả thuyết không đúng.</li>
+  </ul>
+  <b>Phân loại thang đo:</b>
+  <ul>
+    <li><b>Định danh (Nominal):</b> Mã hóa không có thứ bậc (giới tính, tình trạng hôn nhân).</li>
+    <li><b>Thứ bậc (Ordinal):</b> Có thứ bậc, nhưng không có khoảng cách đều (trình độ học vấn).</li>
+    <li><b>Khoảng (Interval):</b> Có khoảng cách đều, không có zero tuyệt đối (nhiệt độ).</li>
+    <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối (cân nặng, chiều cao).</li>
+  </ul>
+</div>
+    
+    <!-- Lưu đồ & Sơ đồ trực quan -->
 
-    <div class="content">
-      <!-- Định nghĩa & Phân loại -->
-      <div class="tab-content active" id="definitions">
-        <div class="highlight"><b>Thống kê</b> là công cụ giúp phân tích, mô tả, và suy luận từ dữ liệu, đặc biệt trong
-          nghiên cứu tâm lý học.</div>
-        <b>Phân loại thống kê:</b>
-        <ul>
-          <li><b>Thống kê mô tả (Descriptive statistics):</b> Tóm tắt dữ liệu (trung bình, độ lệch chuẩn, tỷ lệ, v.v) và
-            trình bày qua bảng, biểu đồ.</li>
-          <li><b>Thống kê suy luận (Inferential statistics):</b> Suy luận về dân số từ mẫu qua kiểm định giả thuyết, ước
-            lượng tham số, phân tích tương quan, hồi quy, v.v.</li>
-        </ul>
-        <b>Khái niệm cơ bản:</b>
-        <ul>
-          <li><b>Trung bình (Mean):</b> Tổng các giá trị chia cho số lượng quan sát.</li>
-          <li><b>Trung vị (Median):</b> Giá trị nằm giữa dãy số đã sắp xếp.</li>
-          <li><b>Mode (Yếu vị):</b> Giá trị xuất hiện nhiều nhất.</li>
-          <li><b>Độ lệch chuẩn (Standard deviation):</b> Đo độ phân tán quanh trung bình.</li>
-          <li><b>Phân phối chuẩn (Normal distribution):</b> Đường cong hình chuông, mean = median = mode.</li>
-          <li><b>Phân phối mẫu (Sampling distribution):</b> Phân phối xác suất của một thống kê từ nhiều mẫu.</li>
-          <li><b>Khoảng tin cậy (Confidence interval):</b> Khoảng giá trị tham số thực nằm trong với xác suất nhất định
-            (vd 95%).</li>
-          <li><b>Lỗi loại I & II:</b> Bác bỏ đúng/sai giả thuyết không (Type I/II error).</li>
-          <li><b>p-value:</b> Xác suất có được kết quả như quan sát nếu giả thuyết không đúng.</li>
-        </ul>
-        <b>Phân loại thang đo:</b>
-        <ul>
-          <li><b>Định danh (Nominal):</b> Mã hóa không có thứ bậc (giới tính, tình trạng hôn nhân).</li>
-          <li><b>Thứ bậc (Ordinal):</b> Có thứ bậc, nhưng không có khoảng cách đều (trình độ học vấn).</li>
-          <li><b>Khoảng (Interval):</b> Có khoảng cách đều, không có zero tuyệt đối (nhiệt độ).</li>
-          <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối (cân nặng, chiều cao).</li>
-        </ul>
+<div class="tab-content" id="schema">
+  <div class="stat-board">
+    <div class="stat-board-col">
+      <div class="stat-board-header descr">Thống kê mô tả</div>
+      <div class="stat-card" onclick="showTestPanel('mota-mean')">Trung bình</div>
+      <div class="stat-card" onclick="showTestPanel('mota-median')">Trung vị</div>
+      <div class="stat-card" onclick="showTestPanel('mota-mode')">Mốt (Mode)</div>
+      <div class="stat-card" onclick="showTestPanel('mota-std')">Độ lệch chuẩn (SD)</div>
+      <div class="stat-card" onclick="showTestPanel('mota-percent')">Tỉ lệ & Tần suất</div>
+      <div class="stat-card" onclick="showTestPanel('mota-hist')">Biểu đồ tần số</div>
+    </div>
+    <div class="stat-board-col">
+      <div class="stat-board-header para">Kiểm định tham số</div>
+      <div class="stat-card" onclick="showTestPanel('t1')">Kiểm định t một mẫu</div>
+      <div class="stat-card" onclick="showTestPanel('t2i')">Kiểm định t hai mẫu độc lập</div>
+      <div class="stat-card" onclick="showTestPanel('t2c')">Kiểm định t hai mẫu cặp</div>
+      <div class="stat-card" onclick="showTestPanel('anova')">Kiểm định ANOVA</div>
+      <div class="stat-card" onclick="showTestPanel('reg')">Hồi quy tuyến tính</div>
+    </div>
+    <div class="stat-board-col">
+      <div class="stat-board-header nonpara">Kiểm định phi tham số</div>
+      <div class="stat-card" onclick="showTestPanel('chi2')">Kiểm định Chi bình phương</div>
+      <div class="stat-card" onclick="showTestPanel('mw')">Mann-Whitney U</div>
+      <div class="stat-card" onclick="showTestPanel('wil')">Wilcoxon</div>
+      <div class="stat-card" onclick="showTestPanel('sign')">Sign test</div>
+      <div class="stat-card" onclick="showTestPanel('runs')">Runs test</div>
+    </div>
+  </div>
+  <div class="stat-panel" id="stat-panel">
+    <button class="stat-panel-close" onclick="closeTestPanel()">&times;</button>
+    <div id="stat-panel-content"></div>
+  </div>
+</div>
+<!-- Tham chiếu -->
+    <div class="tab-content" id="cheatsheet">
+  <div class="stat-cheatsheet">
+    <h2>Bảng tham chiếu nhanh khi đọc bảng số liệu & kết quả kiểm định</h2>
+    <table>
+      <tr>
+        <th>Chỉ số</th>
+        <th>Ý nghĩa/Khoảng</th>
+        <th>Cách diễn giải</th>
+      </tr>
+      <tr>
+        <td><b>p-value</b></td>
+        <td>
+          <b>&lt; 0.001</b><br>
+          <b>&lt; 0.01</b><br>
+          <b>&lt; 0.05</b><br>
+          <b>≥ 0.05</b>
+        </td>
+        <td>
+          Rất có ý nghĩa thống kê (bác bỏ H0 rất mạnh)<br>
+          Có ý nghĩa thống kê cao<br>
+          Có ý nghĩa thống kê (phổ biến nhất)<br>
+          Không có ý nghĩa thống kê (thường không bác bỏ H0)
+        </td>
+      </tr>
+      <tr>
+        <td><b>Hệ số tương quan r</b> (Pearson/Spearman)</td>
+        <td>
+          <b>|r| &lt; 0.1</b><br>
+          <b>0.1 ≤ |r| &lt; 0.3</b><br>
+          <b>0.3 ≤ |r| &lt; 0.5</b><br>
+          <b>|r| ≥ 0.5</b>
+        </td>
+        <td>
+          Không/tương quan rất yếu<br>
+          Tương quan yếu<br>
+          Tương quan vừa<br>
+          Tương quan mạnh
+        </td>
+      </tr>
+      <tr>
+        <td><b>Hiệu ứng (effect size)</b> <br>(Cohen’s d, R²...)</td>
+        <td>
+          <b>d ≈ 0.2</b><br>
+          <b>d ≈ 0.5</b><br>
+          <b>d ≥ 0.8</b><br>
+          <b>R² = 0.01</b><br>
+          <b>R² = 0.09</b><br>
+          <b>R² = 0.25</b>
+        </td>
+        <td>
+          Hiệu ứng nhỏ<br>
+          Hiệu ứng trung bình<br>
+          Hiệu ứng lớn<br>
+          (R²) Nhỏ<br>
+          (R²) Trung bình<br>
+          (R²) Lớn
+        </td>
+      </tr>
+      <tr>
+        <td><b>Bảng mô tả</b> <br>(Mean, Median, SD...)</td>
+        <td>
+          Trung bình &amp; Trung vị<br>
+          SD (độ lệch chuẩn)<br>
+          Min - Max<br>
+          Tần suất, tỉ lệ %
+        </td>
+        <td>
+          Nếu mean ≈ median: phân phối chuẩn<br>
+          SD nhỏ: dữ liệu đồng đều<br>
+          Xem min/max để phát hiện outlier<br>
+          Tần suất % nhóm nhiều nhất là nhóm đặc trưng
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+    <!-- Ví dụ thực tiễn -->
+    <div class="tab-content" id="examples">
+      <div class="practical-example">
+        <div class="example-title">Ví dụ 1: t-test độc lập</div>
+        Một nhà tâm lý học so sánh điểm trầm cảm giữa hai nhóm – có và không tập thể dục.<br>
+        <b>Kiểm định:</b> <i>Independent sample t-test</i>
       </div>
-      <!-- Lưu đồ & Sơ đồ trực quan -->
-      <div class="tab-content" id="schema">
-        <div class="model-diagram"><b>🌳 Sơ đồ các kiểm định thống kê thường dùng</b></div>
-        <div class="orgchart-wrap">
-          <div class="orgchart-scroll">
-            <div class="org-level">
-              <div class="card" onclick="showPanel('t-test')">
-                <div class="card-title">t-test độc lập</div>
-                <div class="card-content">So sánh trung bình 2 nhóm độc lập</div>
-              </div>
-              <div class="card" onclick="showPanel('anova')">
-                <div class="card-title">ANOVA</div>
-                <div class="card-content">So sánh trung bình ≥3 nhóm</div>
-              </div>
-              <div class="card" onclick="showPanel('chi2')">
-                <div class="card-title">Chi-square test</div>
-                <div class="card-content">So sánh tỷ lệ/phân loại giữa các nhóm</div>
-              </div>
-              <div class="card" onclick="showPanel('correlation')">
-                <div class="card-title">Tương quan Pearson/Spearman</div>
-                <div class="card-content">Mối liên hệ giữa 2 biến liên tục</div>
-              </div>
-              <div class="card" onclick="showPanel('regression')">
-                <div class="card-title">Hồi quy tuyến tính</div>
-                <div class="card-content">Dự đoán biến liên tục từ biến khác</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="model-diagram" style="margin-top:20px;">
-          <b>🔑 Cách nhận diện nhanh các loại biến</b>
-          <ul style="text-align:left; display:inline-block;">
-            <li><b>Định danh (Nominal):</b> Chỉ gán tên/mã (Giới tính, nhóm máu)</li>
-            <li><b>Thứ bậc (Ordinal):</b> Có thứ tự (Hài lòng: thấp-vừa-cao, xếp loại học lực)</li>
-            <li><b>Khoảng (Interval):</b> Khoảng cách đều, không có zero tuyệt đối (Nhiệt độ, điểm IQ)</li>
-            <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối, nhân chia được (Tuổi, chiều cao, cân nặng)</li>
-          </ul>
-          <i>Lưu ý: Biến đo bằng thang điểm Likert (&lt;7 lựa chọn) thường xem là Ordinal.</i>
-        </div>
-        <div id="panel" class="slide-panel">
-          <div class="panel-content">
-            <button class="close-btn" onclick="closePanel()">&times;</button>
-            <div id="panel-title"></div>
-            <div id="panel-detail"></div>
-          </div>
-        </div>
+      <div class="practical-example">
+        <div class="example-title">Ví dụ 2: ANOVA một chiều</div>
+        Nghiên cứu đánh giá ảnh hưởng của 3 phương pháp học đến điểm kiểm tra tâm lý.<br>
+        <b>Kiểm định:</b> <i>One-way ANOVA</i>
       </div>
-      <!-- Ví dụ thực tiễn -->
-      <div class="tab-content" id="examples">
-        <div class="practical-example">
-          <div class="example-title">Ví dụ 1: t-test độc lập</div>
-          Một nhà tâm lý học so sánh điểm trầm cảm giữa hai nhóm – có và không tập thể dục.<br>
-          <b>Kiểm định:</b> <i>Independent sample t-test</i>
-        </div>
-        <div class="practical-example">
-          <div class="example-title">Ví dụ 2: ANOVA một chiều</div>
-          Nghiên cứu đánh giá ảnh hưởng của 3 phương pháp học đến điểm kiểm tra tâm lý.<br>
-          <b>Kiểm định:</b> <i>One-way ANOVA</i>
-        </div>
-        <div class="practical-example">
-          <div class="example-title">Ví dụ 3: Kiểm định Chi-square</div>
-          So sánh tỷ lệ mắc stress ở các khoa khác nhau trong trường đại học.<br>
-          <b>Kiểm định:</b> <i>Chi-square Test</i>
-        </div>
-        <div class="practical-example">
-          <div class="example-title">Ví dụ 4: Hồi quy tuyến tính</div>
-          Dự đoán điểm hài lòng trong công việc dựa trên số giờ ngủ mỗi đêm.<br>
-          <b>Phân tích:</b> <i>Linear Regression</i>
-        </div>
+      <div class="practical-example">
+        <div class="example-title">Ví dụ 3: Kiểm định Chi-square</div>
+        So sánh tỷ lệ mắc stress ở các khoa khác nhau trong trường đại học.<br>
+        <b>Kiểm định:</b> <i>Chi-square Test</i>
       </div>
+      <div class="practical-example">
+        <div class="example-title">Ví dụ 4: Hồi quy tuyến tính</div>
+        Dự đoán điểm hài lòng trong công việc dựa trên số giờ ngủ mỗi đêm.<br>
+        <b>Phân tích:</b> <i>Linear Regression</i>
       <!-- Quiz trắc nghiệm -->
       <div class="tab-content" id="quiz">
         <div class="quiz-config">
@@ -145,9 +246,17 @@
 
         <div id="quiz-score"></div>
       </div>
-
+    </div>
+    <!-- Quiz trắc nghiệm -->
+    <div class="tab-content" id="quiz">
+      <div class="quiz-container" id="quiz-area"></div>
+      <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
+      <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
+      <div id="quiz-score"></div>
     </div>
   </div>
+</div>
+
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>
