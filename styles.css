@@ -295,8 +295,8 @@
     .stat-panel {
       position: fixed;
       top: 0;
-      right: -480px;
-      width: 420px;
+      right: -70vw;
+      width: 66vw;
       max-width: 98vw;
       height: 100vh;
       background: #fff;
@@ -533,8 +533,8 @@
     .se-panel {
       position: fixed;
       top: 0;
-      right: -460px;
-      width: 400px;
+      right: -70vw;
+      width: 66vw;
       max-width: 98vw;
       height: 100vh;
       background: #fff;
