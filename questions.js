@@ -1,4 +1,4 @@
-const questionPool = [
+const allQuestions = [
   {
     q: "Một nhà nghiên cứu tiến hành một cuộc khảo sát để kiểm tra xem liệu một chương trình can thiệp tâm lý có làm giảm lo âu ở sinh viên hay không. Giả thuyết không (null hypothesis) được đặt ra là 'chương trình không có tác dụng'. Sau khi phân tích dữ liệu, nhà nghiên cứu thấy rằng nhóm sinh viên tham gia chương trình có mức độ lo âu thấp hơn so với nhóm không tham gia, và quyết định bác bỏ giả thuyết không. Tuy nhiên, trên thực tế, chương trình không có tác dụng trong việc giảm lo âu. Tình huống này là ví dụ về:",
     opts: [
