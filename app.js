@@ -1,3 +1,4 @@
+if (typeof window !== 'undefined') {
     // Slide panel data
     const panelData = {
       "t-test": {
@@ -135,8 +136,14 @@
     }
     // QUIZ ENGINE
     // questionPool được nạp từ questions.js
-    // Lấy ngẫu nhiên 20 câu, shuffle đáp án
+    // Lấy ngẫu nhiên N câu (tùy chọn), shuffle đáp án
     let quizQuestions = [];
+    let questionCount = 20;
+
+    function updateQuestionCount() {
+      const sel = document.getElementById('question-count');
+      if (sel) questionCount = parseInt(sel.value, 10) || 20;
+    }
     function shuffleArray(arr) {
       for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -145,9 +152,10 @@
     }
     function generateQuiz() {
       quizQuestions = [];
+      updateQuestionCount();
       const indexes = Array.from(Array(questionPool.length).keys());
       shuffleArray(indexes);
-      const picked = indexes.slice(0, 20);
+      const picked = indexes.slice(0, questionCount);
       picked.forEach(i => {
         let q = questionPool[i];
         let opts = q.opts.slice();
@@ -197,17 +205,18 @@
         }
       });
       document.getElementById('quiz-score').innerHTML =
-        `<div style="font-weight:700; font-size:1.2em; margin:16px 0;">Bạn đúng ${score}/20 câu.</div>`;
+        `<div style="font-weight:700; font-size:1.2em; margin:16px 0;">Bạn đúng ${score}/${questionCount} câu.</div>`;
       window.quizSubmitted = true;
     }
-    function resetQuiz() {
-      window.quizSubmitted = false;
-      userAnswers = {};
+   function resetQuiz() {
+     window.quizSubmitted = false;
+     userAnswers = {};
+      updateQuestionCount();
       generateQuiz();
       renderQuiz();
       document.getElementById('quiz-score').innerHTML = '';
     }
-    window.onload = () => { generateQuiz(); renderQuiz(); }
+    window.onload = () => { updateQuestionCount(); generateQuiz(); renderQuiz(); }
 
     function showTab(event, tabName) {
       document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
@@ -218,3 +227,4 @@
       if (tabName !== "schema") closePanel();
     }
 
+}
