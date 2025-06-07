@@ -451,7 +451,7 @@ const allQuestions = [
     explain: "Thứ bậc: có thể so sánh thứ tự (ví dụ: xếp hạng)"
   },
   {
-    q:"Trong một thí nghiệm so sánh các phản ứng hung hăng sau khi tiếp xúc với bạo lực trên phương tiện truyền thông trong chương trình truyền hình và trò chơi điện tử, “phản ứng hung hăng” là __________ và “tiếp xúc với bạo lực trên phương tiện truyền thông” là__________.",
+    q: "Trong một thí nghiệm so sánh các phản ứng hung hăng sau khi tiếp xúc với bạo lực trên phương tiện truyền thông trong chương trình truyền hình và trò chơi điện tử, “phản ứng hung hăng” là __________ và “tiếp xúc với bạo lực trên phương tiện truyền thông” là__________.",
     opts: [
       "Biến độc lập; biến phụ thuộc",
       "Biến phụ thuộc; biến độc lập",
@@ -468,8 +468,30 @@ const allQuestions = [
       "Xanh",
       "Không có yếu vị",
       "Không thể xác định"
-      ],
+    ],
     ans: 0,
     explain: "Yếu vị là giá trị xuất hiện nhiều nhất trong tập dữ liệu. Trong trường hợp này, 'Hồng' xuất hiện 4 lần, nhiều hơn bất kỳ màu nào khác."
+  },
+  {
+    q: "Một nhóm gồm 20 học sinh được lựa chọn ngẫu nhiên tham gia một khoá học Yoga kéo dài 3 tuần. Mục tiêu của nghiên cứu này nhằm so sánh phong cách sống lành mạnh (wellness life style) của nhóm có tham gia khoá học yoga và một nhóm khác không tham gia khoá học yoga. Loại kiểm định thống kê nào sẽ phù hợp để kiểm tra mục tiêu này? Biết rằng phong cách sống lành mạnh được nghiệm thể trả lời câu hỏi tự đánh giá theo mức độ từ 1 đến 10.",
+    opts: [
+      "Kiểm định t-test độc lập (Independent Samples t-test)",
+      "Kiểm định t-test cặp (Paired Samples t-test)",
+      "ANOVA một chiều (One-Way ANOVA)",
+      "Kiểm định Chi-bình phương (Chi-Square Test)"
+    ],
+    ans: 0,
+    explain: "T-test độc lập phù hợp để so sánh hai nhóm khác nhau về phong cách sống lành mạnh."
+  },
+  {
+    q: "Các biểu đồ histogram dưới đây hiển thị phân phối mức tiêu thụ rượu ở những bệnh nhân được chẩn đoán mắc bệnh gan do rượu tại thời điểm trước (xem Before) và sau (xem After) khi tiếp nhận can thiệp. Một biểu đồ histogram về sự khác biệt (Before trừ After) (xem Difference) cũng được trình bày.<br> <img src='img/img_q_1.png' alt='Histogram of Alcohol Consumption Before and After Intervention' style='width: 600px; height: 400px;'><br> Nếu bạn quan tâm đến việc kiểm tra xem có sự thay đổi đáng kể nào trong mức tiêu thụ rượu trước và sau can thiệp hay không, bạn sẽ sử dụng?",
+    opts: [
+      "One sample t-test do biểu đồ “Before” đạt phân phối chuẩn",
+      "Independent samples t-test do biểu đồ “Before” đạt phân phối chuẩn",
+      "Paired samples t-test do biểu đồ “Difference” đạt phân phối chuẩn",
+      "Không có kiểm định nào phù hợp do biểu đồ “After” không đạt phân phối chuẩn"
+    ],
+    ans: 2,
+    explain: "Để kiểm tra sự thay đổi trước và sau can thiệp, paired samples t-test là phù hợp nhất vì nó so sánh hai nhóm liên quan (trước và sau) và biểu đồ 'Difference' đạt phân phối chuẩn.",
   }
 ];
