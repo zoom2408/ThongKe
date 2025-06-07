@@ -484,7 +484,7 @@ const allQuestions = [
     explain: "T-test độc lập phù hợp để so sánh hai nhóm khác nhau về phong cách sống lành mạnh."
   },
   {
-    q: "Các biểu đồ histogram dưới đây hiển thị phân phối mức tiêu thụ rượu ở những bệnh nhân được chẩn đoán mắc bệnh gan do rượu tại thời điểm trước (xem Before) và sau (xem After) khi tiếp nhận can thiệp. Một biểu đồ histogram về sự khác biệt (Before trừ After) (xem Difference) cũng được trình bày.<br> <img src='img/img_q_1.png' alt='Histogram of Alcohol Consumption Before and After Intervention' style='width: 600px; height: 400px;'><br> Nếu bạn quan tâm đến việc kiểm tra xem có sự thay đổi đáng kể nào trong mức tiêu thụ rượu trước và sau can thiệp hay không, bạn sẽ sử dụng?",
+    q: "Các biểu đồ histogram dưới đây hiển thị phân phối mức tiêu thụ rượu ở những bệnh nhân được chẩn đoán mắc bệnh gan do rượu tại thời điểm trước (xem Before) và sau (xem After) khi tiếp nhận can thiệp. Một biểu đồ histogram về sự khác biệt (Before trừ After) (xem Difference) cũng được trình bày.<br> <img src='img/img_q_1.png' alt='Histogram of Alcohol Consumption Before and After Intervention' style='width: 400px; height: auto;'><br> Nếu bạn quan tâm đến việc kiểm tra xem có sự thay đổi đáng kể nào trong mức tiêu thụ rượu trước và sau can thiệp hay không, bạn sẽ sử dụng?",
     opts: [
       "One sample t-test do biểu đồ “Before” đạt phân phối chuẩn",
       "Independent samples t-test do biểu đồ “Before” đạt phân phối chuẩn",
