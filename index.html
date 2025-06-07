@@ -17,6 +17,7 @@
     <div class="tabs">
       <button class="tab active" onclick="showTab(event, 'definitions')">Định nghĩa & Phân loại</button>
       <button class="tab" onclick="showTab(event, 'schema')">Lưu đồ & Sơ đồ trực quan</button>
+      <button class="tab" onclick="showTab(event, 'terms')">Thuật ngữ</button>
       <button class="tab" onclick="showTab(event, 'cheatsheet')">Bảng Tham Chiếu</button>
       <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn & Minh họa</button>
       <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
@@ -111,9 +112,7 @@
         </div>
 
       </div>
-
       <!-- Lưu đồ & Sơ đồ trực quan -->
-
       <div class="tab-content" id="schema">
         <div class="stat-board">
           <div class="stat-board-col">
@@ -147,6 +146,19 @@
           <div id="stat-panel-content"></div>
         </div>
       </div>
+      <!-- Thuật ngữ-->
+      <div class="tab-content" id="terms">
+        <div class="stat-terms">
+          <h2>Thuật ngữ quan trọng</h2>
+          <ul>
+            <li><b>p-value:</b> Xác suất để bác bỏ giả thuyết không (H0). Thường dùng ngưỡng 0.05.</li>
+            <li><b>Hệ số tương quan (r):</b> Đo lường mối liên hệ giữa hai biến. Giá trị từ -1 đến 1.</li>
+            <li><b>Hiệu ứng (Effect size):</b> Đo lường mức độ ảnh hưởng của IV lên DV (Cohen’s d, R²...)</li>
+            <li><b>Biến phụ thuộc (DV):</b> Biến được đo lường, phụ thuộc vào IV.</li>
+            <li><b>Biến độc lập (IV):</b> Biến phân nhóm, tác động đến DV.</li>
+            <li><b>Thang đo:</b> Cách phân loại dữ liệu (định danh, thứ bậc, khoảng, tỷ lệ).</li>
+          </ul>
+        </div>
       <!-- Tham chiếu -->
       <div class="tab-content" id="cheatsheet">
         <div class="stat-cheatsheet">
@@ -266,7 +278,7 @@
           <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
           <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
         </div>
-        
+
       </div>
 
     </div>
