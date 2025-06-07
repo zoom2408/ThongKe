@@ -16,19 +16,38 @@ function showExtra(card) {
 // QUIZ ENGINE
 // Lấy ngẫu nhiên 20 câu, shuffle đáp án
 let quizQuestions = [];
+let numQuizQuestions = 20; // mặc định
+
 function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 }
+
+// Gọi khi bấm "Làm bài" hoặc "Làm lại"
+function startQuiz() {
+    let numInput = document.getElementById('numQuizQuestions').value;
+    numQuizQuestions = parseInt(numInput);
+    if (isNaN(numQuizQuestions) || numQuizQuestions < 1 || numQuizQuestions > window.allQuestions.length) {
+        numQuizQuestions = 20;
+        document.getElementById('numQuizQuestions').value = 20;
+    }
+    generateQuiz();
+    renderQuiz();
+    window.quizSubmitted = false;
+    userAnswers = {};
+    document.getElementById('quiz-score').innerHTML = '';
+    document.getElementById('quiz-area').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 function generateQuiz() {
     quizQuestions = [];
-    const indexes = Array.from(Array(questionPool.length).keys());
+    const indexes = Array.from(Array(window.allQuestions.length).keys());
     shuffleArray(indexes);
-    const picked = indexes.slice(0, 20);
+    const picked = indexes.slice(0, numQuizQuestions);
     picked.forEach(i => {
-        let q = questionPool[i];
+        let q = window.allQuestions[i];
         let opts = q.opts.slice();
         let correct = q.ans;
         let origIdx = [...opts.keys()];
@@ -38,6 +57,7 @@ function generateQuiz() {
         quizQuestions.push({...q, opts: shuffledOpts, ans: newAns});
     });
 }
+
 function renderQuiz() {
     let html = '';
     quizQuestions.forEach((q, idx) => {
@@ -52,7 +72,9 @@ function renderQuiz() {
     document.getElementById('quiz-area').innerHTML = html;
     document.getElementById('quiz-score').innerHTML = '';
 }
+
 let userAnswers = {};
+
 function chooseOption(qIdx, optIdx) {
     if (window.quizSubmitted) return;
     userAnswers[qIdx] = optIdx;
@@ -60,6 +82,7 @@ function chooseOption(qIdx, optIdx) {
         document.getElementById(`q${qIdx}o${j}`).style.background = j===optIdx ? "#dbeafe" : "#f5f7fa";
     });
 }
+
 function submitQuiz() {
     if (window.quizSubmitted) return;
     let score = 0;
@@ -76,18 +99,19 @@ function submitQuiz() {
         }
     });
     document.getElementById('quiz-score').innerHTML =
-        `<div style="font-weight:700; font-size:1.2em; margin:16px 0;">Bạn đúng ${score}/20 câu.</div>`;
+        `<div style="font-weight:700; font-size:1.2em; margin:16px 0;">Bạn đúng ${score}/${numQuizQuestions} câu.</div>`;
     window.quizSubmitted = true;
 }
+
 function resetQuiz() {
-    window.quizSubmitted = false;
-    userAnswers = {};
-    generateQuiz();
-    renderQuiz();
-    document.getElementById('quiz-score').innerHTML = '';
-    document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+    startQuiz(); // gọi lại để random lại số câu cũ
 }
-window.onload = () => { generateQuiz(); renderQuiz(); }
+
+// Auto chạy quiz khi load trang (giữ mặc định 20 câu)
+window.onload = () => { startQuiz(); }
+
+
+
   const STAT_PANEL = {
   // THỐNG KÊ MÔ TẢ
   "mota-mean": {
