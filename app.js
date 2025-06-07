@@ -85,6 +85,7 @@ function resetQuiz() {
     generateQuiz();
     renderQuiz();
     document.getElementById('quiz-score').innerHTML = '';
+    document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
 }
 window.onload = () => { generateQuiz(); renderQuiz(); }
   const STAT_PANEL = {
