@@ -105,6 +105,7 @@ if (typeof window !== 'undefined') {
   }
 
   function resetQuiz() {
+    ensureMaxOption();
     document.getElementById('quiz-area').style.display = 'none';
     document.getElementById('quiz-actions').style.display = 'none';
     document.getElementById('quiz-setup').style.display = '';
