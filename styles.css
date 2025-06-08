@@ -11,9 +11,10 @@
     }
 
     .sidebar {
-      width: 220px;
+      width: 250px;
       padding: 20px;
-      background: #fff;
+      background: linear-gradient(180deg, #1d3557, #457b9d);
+      color: #fff;
       position: fixed;
       top: 0;
       bottom: 0;
@@ -23,7 +24,7 @@
     }
 
     .main {
-      margin-left: 220px;
+      margin-left: 250px;
       padding: 28px 24px;
       flex: 1;
     }
@@ -35,40 +36,41 @@
     }
 
     .header h1 {
-      font-size: 2.4em;
+      font-size: 1.5em;
       margin-bottom: 8px;
       font-weight: 800;
     }
 
     .header p {
-      font-size: 1.1em;
+      font-size: 0.88em;
       opacity: 0.93;
     }
 
     .tabs {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
     }
 
     .tab {
       padding: 10px 18px;
       width: 100%;
       text-align: left;
-      background: #e3eafc;
+      background: transparent;
       border: none;
-      border-radius: 22px;
-      color: #222;
+      border-radius: 6px;
+      border-left: 4px solid transparent;
+      color: #fff;
       cursor: pointer;
       font-weight: 600;
-      transition: all .2s;
+      transition: background .2s;
     }
 
     .tab:hover,
     .tab.active {
-      background: #4f8ef7;
-      color: white;
+      background: rgba(255,255,255,0.2);
+      border-left: 4px solid #f1fa8c;
     }
 
     .content {
@@ -76,6 +78,8 @@
       border-radius: 18px;
       padding: 28px 24px;
       box-shadow: 0 16px 32px rgba(52, 90, 182, 0.08);
+      max-width: 980px;
+      margin: 0 auto;
     }
 
     .overlay {
