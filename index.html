@@ -7,18 +7,34 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="sidebar">
-    <h2>Thống kê Ứng dụng</h2>
-    <a id="menu_intro" onclick="loadPage(event, '01_intro.html')">01. Giới thiệu</a>
-    <a onclick="loadPage(event, '02_descriptiveStat.html')">02. Thống kê mô tả</a>
-    <a onclick="loadPage(event, '03_test_1.html')">03. Chi-square &amp; T-test</a>
-    <a onclick="loadPage(event, 'cheatsheet.html')">04. Bảng tham chiếu</a>
-    <a onclick="loadPage(event, 'examples.html')">05. Ví dụ thực tiễn</a>
-    <a onclick="loadPage(event, 'quiz.html')">06. Quiz trắc nghiệm</a>
-  </div>
-  <div class="content">
-    <iframe id="viewer" src="01_intro.html" class="page-frame" data-default="01_intro.html"></iframe>
+  <div class="layout">
+    <div class="sidebar">
+      <h2>Thống kê Ứng dụng</h2>
+      <a id="menu_intro" data-file="01_intro.html" onclick="loadPage(event, '01_intro.html')">01. Giới thiệu</a>
+      <a data-file="02_descriptiveStat.html" onclick="loadPage(event, '02_descriptiveStat.html')">02. Thống kê mô tả</a>
+      <a data-file="03_test_1.html" onclick="loadPage(event, '03_test_1.html')">03. Chi-square &amp; T-test</a>
+      <a data-file="cheatsheet.html" onclick="loadPage(event, 'cheatsheet.html')">04. Bảng tham chiếu</a>
+      <a data-file="examples.html" onclick="loadPage(event, 'examples.html')">05. Ví dụ thực tiễn</a>
+      <a data-file="quiz.html" onclick="loadPage(event, 'quiz.html')">06. Quiz trắc nghiệm</a>
+    </div>
+    <div class="content">
+      <iframe id="viewer" src="01_intro.html" class="page-frame" data-default="01_intro.html"></iframe>
+    </div>
   </div>
   <script src="common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const viewer = document.getElementById('viewer');
+      if (!viewer) return;
+      const current = viewer.getAttribute('src');
+      document.querySelectorAll('.sidebar a').forEach(a => {
+        if (a.dataset.file === current) {
+          a.classList.add('active');
+        } else {
+          a.classList.remove('active');
+        }
+      });
+    });
+  </script>
 </body>
 </html>
