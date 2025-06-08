@@ -396,21 +396,22 @@
     }
 
     .stat-cheatsheet table {
-      width: 100%;
       border-collapse: collapse;
-      font-size: 0.99em;
+      width: 100%;
+      margin: 25px 0;
+      background: #fff;
+      box-shadow: 0 2px 8px #e0e8ef;
     }
 
     .stat-cheatsheet th,
     .stat-cheatsheet td {
-      border: 1px solid #e2eaf7;
-      padding: 8px 7px 7px 9px;
+      border: 1px solid #c1d0e0;
+      padding: 10px 14px;
       text-align: left;
-      vertical-align: top;
     }
 
     .stat-cheatsheet th {
-      background: #e8f0fc;
+      background: #eaf4fa;
       color: #1b3b79;
       font-weight: 700;
     }
@@ -429,6 +430,11 @@
       padding: 12px;
       margin: 16px 0;
     }
+
+    b {
+      color: #133e7c;
+    }
+
 
     @media (max-width:700px) {
       .stat-cheatsheet {
