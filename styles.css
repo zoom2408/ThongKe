@@ -10,7 +10,7 @@
       min-height: 100vh;
     }
 
-    .sidebar {
+.sidebar {
       width: 240px;
       padding: 20px;
       background: linear-gradient(180deg, #1d3557, #457b9d);
@@ -21,8 +21,28 @@
       flex-shrink: 0;
       position: sticky;
       top: 0;
-      align-self: flex-start;
-    }
+    align-self: flex-start;
+}
+
+/* simple sidebar links for cognitive psychology page */
+.sidebar a {
+  display: block;
+  padding: 8px 12px;
+  color: #fff;
+  text-decoration: none;
+  border-left: 4px solid transparent;
+  margin-bottom: 4px;
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+  background: rgba(255,255,255,0.2);
+  border-left-color: #f1fa8c;
+}
+
+.tree .submenu {
+  margin-left: 16px;
+}
 
     .main {
       padding: 28px 24px;
