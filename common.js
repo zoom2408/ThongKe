@@ -40,10 +40,14 @@ if (typeof window !== 'undefined') {
     if (typeof closeTestPanel === "function") closeTestPanel();
   }
 
-  function loadPage(event, file) {
+  function loadPage(event, file, samePage = false) {
     const container = document.querySelector('.content.main');
     if (!container) return;
-    container.innerHTML = `<iframe src="${file}" class="page-frame"></iframe>`;
+    if (samePage) {
+      container.innerHTML = defaultMainHTML;
+    } else if (file) {
+      container.innerHTML = `<iframe src="${file}" class="page-frame"></iframe>`;
+    }
     document.querySelectorAll('.page-link').forEach(btn => btn.classList.remove('active'));
     if (event) event.currentTarget.classList.add('active');
   }
