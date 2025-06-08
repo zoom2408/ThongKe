@@ -32,17 +32,17 @@
     .header {
       text-align: center;
       margin-bottom: 40px;
-      color: #1d3557;
+      color: #ffffff;
     }
 
     .header h1 {
-      font-size: 2.4em;
+      font-size: 1.5em;
       margin-bottom: 8px;
       font-weight: 800;
     }
 
     .header p {
-      font-size: 1.1em;
+      font-size: 0.88em;
       opacity: 0.93;
     }
 
