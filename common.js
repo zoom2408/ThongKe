@@ -11,7 +11,7 @@ if (typeof window !== 'undefined') {
     document.querySelectorAll('.page-link').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
-    if (event) event.target.classList.add('active');
+    if (event) event.currentTarget.classList.add('active');
     const target = document.getElementById(tabName);
     if (target) target.classList.add('active');
     if (tabName === 'quiz') resetQuiz();
@@ -45,7 +45,7 @@ if (typeof window !== 'undefined') {
     if (!container) return;
     container.innerHTML = `<iframe src="${file}" class="page-frame"></iframe>`;
     document.querySelectorAll('.page-link').forEach(btn => btn.classList.remove('active'));
-    if (event) event.target.classList.add('active');
+    if (event) event.currentTarget.classList.add('active');
   }
 
 }

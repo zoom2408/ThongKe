@@ -3,8 +3,9 @@ if (typeof window !== 'undefined') {
   let userAnswers = {};
   let numQuizQuestions = 20;
 
+
   // Ensure the dropdown includes an option for the maximum available questions
-  document.addEventListener('DOMContentLoaded', () => {
+  function ensureMaxOption() {
     const select = document.getElementById('numQuizQuestions');
     if (!select || typeof allQuestions === 'undefined') return;
     const max = allQuestions.length;
@@ -15,8 +16,13 @@ if (typeof window !== 'undefined') {
       opt.textContent = `${max} câu`;
       select.appendChild(opt);
     }
-  });
+  }
 
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', ensureMaxOption);
+  } else {
+    ensureMaxOption();
+  }
   function shuffleArray(arr) {
     for (let i = arr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
