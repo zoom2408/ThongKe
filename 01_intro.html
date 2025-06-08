@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thống kê ứng dụng trong Tâm lý học - Buổi 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #718096;
+            font-size: 1.2em;
+        }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #4299e1;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #4299e1;
+            padding-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .concept-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .concept-card:hover {
+            border-color: #4299e1;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(66, 153, 225, 0.2);
+        }
+
+        .concept-card h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .interactive-example {
+            background: #edf2f7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .calculator {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #4299e1;
+        }
+
+        .input-group {
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .calc-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px 0 0;
+        }
+
+        .calc-btn:hover {
+            background: #3182ce;
+        }
+
+        .result {
+            background: #c6f6d5;
+            border: 1px solid #68d391;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .question h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .option.selected {
+            border-color: #4299e1;
+            background: #bee3f8;
+        }
+
+        .option.correct {
+            border-color: #48bb78;
+            background: #c6f6d5;
+        }
+
+        .option.incorrect {
+            border-color: #f56565;
+            background: #fed7d7;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .quiz-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .quiz-btn:hover {
+            background: #3182ce;
+        }
+
+        .quiz-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .score {
+            background: #68d391;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .distribution-demo {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .distribution-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .distribution-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .chart-description {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .animated-chart {
+            transition: all 0.3s ease;
+        }
+
+        .animated-chart:hover {
+            transform: scale(1.05);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #68d391);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .concept-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>THỐNG KÊ ỨNG DỤNG TRONG TÂM LÝ HỌC</h1>
+            <p class="subtitle">Buổi 1: Vai trò của thống kê và thống kê mô tả</p>
+            <p><strong>Giảng viên:</strong> ThS. Lê Nguyễn Sơn Tùng</p>
+        </div>
+
+        <div class="lesson-nav">
+            <button class="nav-btn active" onclick="showSection('vai-tro')">Vai trò</button>
+            <button class="nav-btn" onclick="showSection('phan-loai')">Phân loại</button>
+            <button class="nav-btn" onclick="showSection('quy-trinh')">Quy trình</button>
+            <button class="nav-btn" onclick="showSection('khai-niem')">Khái niệm</button>
+            <button class="nav-btn" onclick="showSection('thuat-ngu')">Thuật ngữ</button>
+            <button class="nav-btn" onclick="showSection('bieu-do')">Biểu đồ</button>
+            <button class="nav-btn" onclick="showSection('quiz')">Bài tập</button>
+        </div>
+
+        <!-- Vai trò -->
+        <div id="vai-tro" class="content-section active">
+            <h2 class="section-title">Vai trò của Thống kê trong Tâm lý học</h2>
+            
+            <div class="highlight-box">
+                <h3>Thống kê giúp chúng ta:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Phân tích dữ liệu</strong> từ các nghiên cứu tâm lý</li>
+                    <li><strong>Kiểm tra giả thuyết</strong> nghiên cứu</li>
+                    <li><strong>Đánh giá kết quả và đưa ra dự báo</strong></li>
+                    <li><strong>Phát triển mô hình/công cụ tâm lý</strong></li>
+                </ul>
+            </div>
+
+            <div class="interactive-example">
+                <h3>Ví dụ thực tế:</h3>
+                <p><strong>Nghiên cứu về tập thể dục và kiệt sức nghề nghiệp:</strong></p>
+                <p>Một nhà nghiên cứu muốn tìm hiểu mối quan hệ giữa số giờ tập thể dục hàng tuần và mức độ kiệt sức nghề nghiệp của nhân viên văn phòng. Thống kê sẽ giúp:</p>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li>Mô tả đặc điểm mẫu nghiên cứu (tuổi, thu nhập, trình độ)</li>
+                    <li>Phân tích mối tương quan giữa các biến</li>
+                    <li>So sánh sự khác biệt giữa nhóm có tập và không tập</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Phân loại -->
+        <div id="phan-loai" class="content-section">
+            <h2 class="section-title">Phân loại Thống kê</h2>
+            
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>🔍 Thống kê Mô tả</h3>
+                    <p><strong>Mục đích:</strong> Tóm tắt đầy đủ về dữ liệu</p>
+                    <p><strong>Hình thức:</strong></p>
+                    <ul style="margin-left: 20px;">
+                        <li>Dạng số: M, SD, %, v.v.</li>
+                        <li>Dạng biểu đồ: cột, đường, v.v.</li>
+                    </ul>
+                    <p><strong>Ví dụ:</strong> Tuổi trung bình = 25.3, SD = 4.2</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📊 Thống kê Suy luận</h3>
+                    <p><strong>Mục đích:</strong> Sử dụng mẫu nhỏ để suy luận về toàn bộ dân số</p>
+                    <p><strong>Điều kiện:</strong> Mẫu được thu thập ngẫu nhiên</p>
+                    <p><strong>Ví dụ:</strong> t-test, ANOVA, tương quan, hồi quy</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Quy trình nghiên cứu:</h3>
+                <p><strong>Bước 1:</strong> Mô tả dữ liệu bằng thống kê mô tả</p>
+                <p><strong>Bước 2:</strong> Phân tích và kiểm định bằng thống kê suy luận</p>
+                <p style="margin-top: 15px;"><em>"Hiểu rõ về dữ liệu của mình trước khi phân tích!"</em></p>
+            </div>
+        </div>
+
+        <!-- Quy trình nghiên cứu -->
+        <div id="quy-trinh" class="content-section">
+            <h2 class="section-title">Quy trình Nghiên cứu và Chọn Kiểm định</h2>
+            
+            <div class="highlight-box">
+                <h3>🔄 Quy trình nghiên cứu thống kê:</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>1. Thu thập dữ liệu</strong><br>
+                        <small>Thiết kế nghiên cứu, chọn mẫu</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>2. Làm sạch dữ liệu</strong><br>
+                        <small>Kiểm tra missing, outliers</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>3. Mô tả dữ liệu</strong><br>
+                        <small>Thống kê mô tả, biểu đồ</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>4. Kiểm tra giả định</strong><br>
+                        <small>Normality, homogeneity</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>5. Chọn kiểm định</strong><br>
+                        <small>Dựa trên loại dữ liệu, mục đích</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>6. Phân tích & diễn giải</strong><br>
+                        <small>Chạy test, giải thích kết quả</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>📊 Bước 3: Mô tả dữ liệu - Cần đọc gì?</h3>
+                    <h4>Dữ liệu định lượng:</h4>
+                    <ul style="margin-left: 20px; margin-bottom: 10px;">
+                        <li><strong>N:</strong> Kích thước mẫu</li>
+                        <li><strong>M (Mean):</strong> Giá trị trung bình</li>
+                        <li><strong>SD:</strong> Độ lệch chuẩn</li>
+                        <li><strong>Min/Max:</strong> Giá trị nhỏ nhất/lớn nhất</li>
+                        <li><strong>Skewness/Kurtosis:</strong> Độ lệch phân phối</li>
+                    </ul>
+                    <h4>Dữ liệu định tính:</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Tần suất (n):</strong> Số lượng từng nhóm</li>
+                        <li><strong>Tỷ lệ (%):</strong> Phần trăm từng nhóm</li>
+                        <li><strong>Mode:</strong> Nhóm phổ biến nhất</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🔍 Bước 4: Kiểm tra các giả định</h3>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Normality:</strong> Shapiro-Wilk, Q-Q plot</li>
+                        <li><strong>Homogeneity:</strong> Levene's test</li>
+                        <li><strong>Independence:</strong> Không có auto-correlation</li>
+                        <li><strong>Linearity:</strong> Mối quan hệ tuyến tính</li>
+                        <li><strong>Missing data:</strong> Kiểm tra pattern</li>
+                        <li><strong>Outliers:</strong> Z-score > ±3.29</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="interactive-example">
+                <h3>🎯 Decision Tree: Chọn kiểm định thống kê</h3>
+                <div class="calculator">
+                    <h4>Trả lời các câu hỏi để tìm kiểm định phù hợp:</h4>
+                    
+                    <div class="input-group">
+                        <label>1. Mục đích nghiên cứu của bạn là gì?</label>
+                        <select id="purpose" onchange="updateRecommendation()">
+                            <option value="">-- Chọn mục đích --</option>
+                            <option value="compare">So sánh nhóm</option>
+                            <option value="relationship">Tìm mối quan hệ</option>
+                            <option value="predict">Dự báo/Dự đoán</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>2. Số lượng biến độc lập:</label>
+                        <select id="independent" onchange="updateRecommendation()">
+                            <option value="">-- Chọn số biến --</option>
+                            <option value="1">1 biến</option>
+                            <option value="2">2 biến</option>
+                            <option value="multiple">Nhiều hơn 2 biến</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>3. Loại dữ liệu biến phụ thuộc:</label>
+                        <select id="dataType" onchange="updateRecommendation()">
+                            <option value="">-- Chọn loại dữ liệu --</option>
+                            <option value="continuous">Liên tục (Interval/Ratio)</option>
+                            <option value="ordinal">Thứ bậc (Ordinal)</option>
+                            <option value="categorical">Phân loại (Nominal)</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>4. Số nhóm so sánh (nếu có):</label>
+                        <select id="groups" onchange="updateRecommendation()">
+                            <option value="">-- Chọn số nhóm --</option>
+                            <option value="1">1 nhóm (so với giá trị chuẩn)</option>
+                            <option value="2">2 nhóm</option>
+                            <option value="multiple">Nhiều hơn 2 nhóm</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>5. Dữ liệu có phân phối chuẩn không?</label>
+                        <select id="normality" onchange="updateRecommendation()">
+                            <option value="">-- Chọn --</option>
+                            <option value="yes">Có (p > 0.05 trong Shapiro-Wilk)</option>
+                            <option value="no">Không (p ≤ 0.05 trong Shapiro-Wilk)</option>
+                        </select>
+                    </div>
+
+                    <div id="testRecommendation" class="result" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>📈 Kiểm định So sánh nhóm</h3>
+                    <h4>Parametric Tests (Dữ liệu chuẩn):</h4>
+                    <ul style="margin-left: 20px; margin-bottom: 10px;">
+                        <li><strong>One-sample t-test:</strong> 1 nhóm vs giá trị chuẩn</li>
+                        <li><strong>Independent t-test:</strong> 2 nhóm độc lập</li>
+                        <li><strong>Paired t-test:</strong> 2 nhóm phụ thuộc</li>
+                        <li><strong>ANOVA:</strong> ≥3 nhóm</li>
+                    </ul>
+                    <h4>Non-parametric Tests (Dữ liệu không chuẩn):</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Wilcoxon signed-rank:</strong> 1 nhóm hoặc paired</li>
+                        <li><strong>Mann-Whitney U:</strong> 2 nhóm độc lập</li>
+                        <li><strong>Kruskal-Wallis:</strong> ≥3 nhóm</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🔗 Kiểm định Mối quan hệ</h3>
+                    <h4>Correlation:</h4>
+                    <ul style="margin-left: 20px; margin-bottom: 10px;">
+                        <li><strong>Pearson:</strong> 2 biến liên tục, phân phối chuẩn</li>
+                        <li><strong>Spearman:</strong> Dữ liệu thứ bậc hoặc không chuẩn</li>
+                        <li><strong>Kendall's tau:</strong> Mẫu nhỏ, nhiều ties</li>
+                    </ul>
+                    <h4>Regression:</h4>
+                    <ul style="margin-left: 20px;">
+                        <li><strong>Linear Regression:</strong> Dự báo biến liên tục</li>
+                        <li><strong>Multiple Regression:</strong> Nhiều biến dự báo</li>
+                        <li><strong>Logistic Regression:</strong> Biến phụ thuộc categorical</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>⚠️ Lưu ý quan trọng khi chọn kiểm định:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Kích thước mẫu:</strong> n < 30 → cẩn thận với assumption</li>
+                    <li><strong>Effect size:</strong> Luôn báo cáo cùng với p-value</li>
+                    <li><strong>Multiple testing:</strong> Điều chỉnh alpha khi test nhiều lần</li>
+                    <li><strong>Practical significance:</strong> Không chỉ dựa vào statistical significance</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Khái niệm -->
+        <div id="khai-niem" class="content-section">
+            <h2 class="section-title">Các khái niệm cơ bản</h2>
+            
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>📏 Thang đo Định danh</h3>
+                    <p>Mã hóa thuộc tính, không có tính thứ bậc</p>
+                    <p><strong>Ví dụ:</strong> Giới tính (Nam=0, Nữ=1)</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📶 Thang đo Thứ bậc</h3>
+                    <p>Xếp hạng, có thứ bậc nhưng khoảng cách không đều</p>
+                    <p><strong>Ví dụ:</strong> Trình độ học vấn (1-5)</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📐 Thang đo Khoảng</h3>
+                    <p>Khoảng cách đều nhau, có thể +,- nhưng không x,÷</p>
+                    <p><strong>Ví dụ:</strong> Nhiệt độ (°C)</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📊 Thang đo Tỉ lệ</h3>
+                    <p>Có điểm 0 tuyệt đối, đầy đủ tính đại số</p>
+                    <p><strong>Ví dụ:</strong> Cân nặng, chiều cao</p>
+                </div>
+            </div>
+
+            <div class="interactive-example">
+                <h3>Máy tính thống kê mô tả</h3>
+                <div class="calculator">
+                    <div class="input-group">
+                        <label>Nhập dãy số (cách nhau bằng dấu phẩy):</label>
+                        <input type="text" id="numbers" placeholder="1, 2, 3, 4, 5" value="1, 2, 2, 3, 4, 5">
+                    </div>
+                    <button class="calc-btn" onclick="calculateStats()">Tính toán</button>
+                    <button class="calc-btn" onclick="clearCalculator()">Xóa</button>
+                    <div id="statsResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>Xu hướng tập trung (Central Tendency):</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Mean (M):</strong> Σx/n - Điểm trung bình</li>
+                    <li><strong>Median:</strong> Giá trị ở chính giữa khi sắp xếp</li>
+                    <li><strong>Mode:</strong> Giá trị xuất hiện nhiều nhất</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Thuật ngữ -->
+        <div id="thuat-ngu" class="content-section">
+            <h2 class="section-title">Thuật ngữ và Ý nghĩa Thống kê</h2>
+            
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>📍 Mean (M) - Trung bình</h3>
+                    <p><strong>Công thức:</strong> Σx / n</p>
+                    <p><strong>Ý nghĩa:</strong> Điểm "cân bằng" của dữ liệu</p>
+                    <p><strong>Ví dụ:</strong> Điểm stress trung bình = 6.2/10 có nghĩa nhóm nghiên cứu có mức stress trung bình khá cao</p>
+                    <p><strong>Lưu ý:</strong> Bị ảnh hưởng bởi outliers</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🎯 Median - Trung vị</h3>
+                    <p><strong>Định nghĩa:</strong> Giá trị ở chính giữa khi sắp xếp</p>
+                    <p><strong>Ý nghĩa:</strong> 50% dữ liệu nằm dưới, 50% nằm trên</p>
+                    <p><strong>Ví dụ:</strong> Tuổi median = 25 có nghĩa một nửa mẫu nghiên cứu dưới 25 tuổi</p>
+                    <p><strong>Ưu điểm:</strong> Không bị ảnh hưởng bởi outliers</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🔝 Mode - Yếu vị</h3>
+                    <p><strong>Định nghĩa:</strong> Giá trị xuất hiện nhiều nhất</p>
+                    <p><strong>Ý nghĩa:</strong> Đặc điểm phổ biến nhất trong nhóm</p>
+                    <p><strong>Ví dụ:</strong> Nghề nghiệp mode = "Sinh viên" có nghĩa đa số tham gia là sinh viên</p>
+                    <p><strong>Sử dụng:</strong> Tốt cho dữ liệu phân loại</p>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📊 Variance - Phương sai</h3>
+                    <p><strong>Công thức:</strong> Σ(x - M)² / n</p>
+                    <p><strong>Ý nghĩa:</strong> Độ biến thiên trung bình của dữ liệu</p>
+                    <p><strong>Đơn vị:</strong> Bình phương của đơn vị gốc</p>
+                    <p><strong>Mối quan hệ:</strong> SD = √Variance</p>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>📏 Độ lệch chuẩn (Standard Deviation) - Thuật ngữ quan trọng nhất!</h3>
+                <p style="font-size: 1.1em; margin-bottom: 15px;"><strong>Định nghĩa đơn giản:</strong> Độ lệch chuẩn cho biết dữ liệu "rải rác" hay "tập trung" như thế nào quanh giá trị trung bình.</p>
+            </div>
+
+            <div class="interactive-example">
+                <h3>🔍 Hiểu ý nghĩa của Độ lệch chuẩn</h3>
+                <div class="calculator">
+                    <div class="input-group">
+                        <label>Nhập Mean và SD để hiểu ý nghĩa:</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <div>
+                                <label>Mean (M):</label>
+                                <input type="number" id="meanInput" value="70" min="0" max="100">
+                            </div>
+                            <div>
+                                <label>Standard Deviation (SD):</label>
+                                <input type="number" id="sdInput" value="10" min="0.1" max="50" step="0.1">
+                            </div>
+                        </div>
+                    </div>
+                    <button class="calc-btn" onclick="interpretSD()">Giải thích ý nghĩa</button>
+                    <div id="sdInterpretation" class="result" style="display: none;"></div>
+                </div>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>🎯 SD nhỏ (1-5) - Dữ liệu đồng đều</h3>
+                    <p><strong>Ý nghĩa:</strong> Hầu hết giá trị gần Mean</p>
+                    <p><strong>Ví dụ:</strong> Điểm IQ: M=100, SD=2<br>→ Hầu hết người có IQ 98-102</p>
+                    <p><strong>Thực tế:</strong> Nhóm đồng chất, ít biến thiên</p>
+                    <div style="background: #c6f6d5; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <small><strong>Trong nghiên cứu:</strong> Dễ dự đoán, kết quả ổn định</small>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>⚖️ SD trung bình (5-15) - Dữ liệu cân bằng</h3>
+                    <p><strong>Ý nghĩa:</strong> Có sự biến thiên hợp lý</p>
+                    <p><strong>Ví dụ:</strong> Điểm Stress: M=6, SD=1.5<br>→ Đa số người có stress 4.5-7.5</p>
+                    <p><strong>Thực tế:</strong> Phân bố tự nhiên, bình thường</p>
+                    <div style="background: #bee3f8; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <small><strong>Trong nghiên cứu:</strong> Phù hợp cho hầu hết phân tích</small>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📈 SD lớn (>15) - Dữ liệu phân tán</h3>
+                    <p><strong>Ý nghĩa:</strong> Có sự khác biệt lớn giữa các cá thể</p>
+                    <p><strong>Ví dụ:</strong> Thu nhập: M=50triệu, SD=30triệu<br>→ Khoảng từ 20-80 triệu</p>
+                    <p><strong>Thực tế:</strong> Nhóm không đồng nhất, có outliers</p>
+                    <div style="background: #fed7d7; padding: 10px; border-radius: 5px; margin-top: 10px;">
+                        <small><strong>Trong nghiên cứu:</strong> Cần kiểm tra outliers, xem xét chia nhóm</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="distribution-demo">
+                <h3>📊 Bảng tra cứu nhanh - Ý nghĩa các giá trị thống kê</h3>
+                
+                <div style="overflow-x: auto; margin: 20px 0;">
+                    <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <thead style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                            <tr>
+                                <th style="padding: 15px; text-align: left;">Chỉ số</th>
+                                <th style="padding: 15px; text-align: left;">Giá trị thấp</th>
+                                <th style="padding: 15px; text-align: left;">Giá trị trung bình</th>
+                                <th style="padding: 15px; text-align: left;">Giá trị cao</th>
+                                <th style="padding: 15px; text-align: left;">Ý nghĩa thực tế</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 12px; font-weight: 600;">Standard Deviation</td>
+                                <td style="padding: 12px; background: #c6f6d5;">0.1 - 5</td>
+                                <td style="padding: 12px; background: #bee3f8;">5 - 15</td>
+                                <td style="padding: 12px; background: #fed7d7;">15+</td>
+                                <td style="padding: 12px;">Độ phân tán dữ liệu</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 12px; font-weight: 600;">Correlation (r)</td>
+                                <td style="padding: 12px; background: #fed7d7;">0 - 0.3</td>
+                                <td style="padding: 12px; background: #bee3f8;">0.3 - 0.7</td>
+                                <td style="padding: 12px; background: #c6f6d5;">0.7 - 1.0</td>
+                                <td style="padding: 12px;">Độ mạnh mối quan hệ</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e2e8f0;">
+                                <td style="padding: 12px; font-weight: 600;">P-value</td>
+                                <td style="padding: 12px; background: #c6f6d5;">< 0.01</td>
+                                <td style="padding: 12px; background: #bee3f8;">0.01 - 0.05</td>
+                                <td style="padding: 12px; background: #fed7d7;">> 0.05</td>
+                                <td style="padding: 12px;">Mức ý nghĩa thống kê</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 12px; font-weight: 600;">Sample Size (N)</td>
+                                <td style="padding: 12px; background: #fed7d7;">< 30</td>
+                                <td style="padding: 12px; background: #bee3f8;">30 - 100</td>
+                                <td style="padding: 12px; background: #c6f6d5;">100+</td>
+                                <td style="padding: 12px;">Độ tin cậy kết quả</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h3>🧠 Ví dụ trong Tâm lý học</h3>
+                    <h4>Nghiên cứu về Anxiety:</h4>
+                    <ul style="margin-left: 20px; margin-bottom: 10px;">
+                        <li><strong>M = 7.2, SD = 2.1</strong><br>
+                        → Mức anxiety trung bình cao, nhưng có sự biến thiên hợp lý</li>
+                        <li><strong>68% người có anxiety 5.1-9.3</strong><br>
+                        → Phạm vi dự đoán cho cá thể mới</li>
+                        <li><strong>SD = 2.1 → không quá phân tán</strong><br>
+                        → Nhóm tương đối đồng nhất</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📈 Cách diễn giải trong báo cáo</h3>
+                    <p><strong>Thay vì viết:</strong> "SD = 1.5"</p>
+                    <p><strong>Nên viết:</strong> "Độ lệch chuẩn 1.5 cho thấy dữ liệu tập trung tốt quanh giá trị trung bình, với 68% tham gia viên có điểm số trong khoảng..."</p>
+                    <div style="background: #e6fffa; padding: 10px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #38b2ac;">
+                        <small><strong>💡 Mẹo:</strong> Luôn diễn giải ý nghĩa thực tế, đừng chỉ báo cáo con số!</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>⚠️ Lưu ý quan trọng khi diễn giải thống kê:</h3>
+                <ul style="margin-left: 20px; margin-top: 10px;">
+                    <li><strong>Luôn xem xét bối cảnh:</strong> SD = 5 có thể nhỏ với thu nhập nhưng lớn với điểm thi</li>
+                    <li><strong>So sánh với nghiên cứu khác:</strong> SD của bạn so với literature như thế nào?</li>
+                    <li><strong>Kiểm tra assumption:</strong> SD chỉ có nghĩa khi dữ liệu phân phối chuẩn</li>
+                    <li><strong>Practical significance:</strong> Không chỉ statistical significance</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Biểu đồ -->
+        <div id="bieu-do" class="content-section">
+            <h2 class="section-title">Các loại Biểu đồ</h2>
+            
+            <div class="chart-grid">
+                <div class="concept-card">
+                    <h3>📊 Histogram</h3>
+                    <div class="chart-container">
+                        <div class="chart-title">Biểu đồ tần suất</div>
+                        <svg width="240" height="160" class="animated-chart">
+                            <defs>
+                                <linearGradient id="histGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4299e1;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#2d5a87;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Axes -->
+                            <line x1="40" y1="20" x2="40" y2="140" stroke="#333" stroke-width="2"/>
+                            <line x1="40" y1="140" x2="220" y2="140" stroke="#333" stroke-width="2"/>
+                            <!-- Bars -->
+                            <rect x="50" y="120" width="20" height="20" fill="url(#histGradient)" rx="2">
+                                <animate attributeName="height" values="0;20;0;20" dur="4s" repeatCount="indefinite"/>
+                                <animate attributeName="y" values="140;120;140;120" dur="4s" repeatCount="indefinite"/>
+                            </rect>
+                            <rect x="75" y="100" width="20" height="40" fill="url(#histGradient)" rx="2">
+                                <animate attributeName="height" values="0;40;0;40" dur="4s" repeatCount="indefinite" begin="0.5s"/>
+                                <animate attributeName="y" values="140;100;140;100" dur="4s" repeatCount="indefinite" begin="0.5s"/>
+                            </rect>
+                            <rect x="100" y="70" width="20" height="70" fill="url(#histGradient)" rx="2">
+                                <animate attributeName="height" values="0;70;0;70" dur="4s" repeatCount="indefinite" begin="1s"/>
+                                <animate attributeName="y" values="140;70;140;70" dur="4s" repeatCount="indefinite" begin="1s"/>
+                            </rect>
+                            <rect x="125" y="50" width="20" height="90" fill="url(#histGradient)" rx="2">
+                                <animate attributeName="height" values="0;90;0;90" dur="4s" repeatCount="indefinite" begin="1.5s"/>
+                                <animate attributeName="y" values="140;50;140;50" dur="4s" repeatCount="indefinite" begin="1.5s"/>
+                            </rect>
+                            <rect x="150" y="80" width="20" height="60" fill="url(#histGradient)" rx="2">
+                                <animate attributeName="height" values="0;60;0;60" dur="4s" repeatCount="indefinite" begin="2s"/>
+                                <animate attributeName="y" values="140;80;140;80" dur="4s" repeatCount="indefinite" begin="2s"/>
+                            </rect>
+                            <rect x="175" y="110" width="20" height="30" fill="url(#histGradient)" rx="2">
+                                <animate attributeName="height" values="0;30;0;30" dur="4s" repeatCount="indefinite" begin="2.5s"/>
+                                <animate attributeName="y" values="140;110;140;110" dur="4s" repeatCount="indefinite" begin="2.5s"/>
+                            </rect>
+                            <!-- Labels -->
+                            <text x="130" y="155" text-anchor="middle" font-size="12" fill="#666">Điểm số</text>
+                            <text x="25" y="85" text-anchor="middle" font-size="12" fill="#666" transform="rotate(-90, 25, 85)">Tần suất</text>
+                        </svg>
+                        <div class="chart-description">Thể hiện số lần mỗi điểm giá trị xuất hiện</div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📦 Boxplot</h3>
+                    <div class="chart-container">
+                        <div class="chart-title">Biểu đồ hộp</div>
+                        <svg width="240" height="160" class="animated-chart">
+                            <defs>
+                                <linearGradient id="boxGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#48bb78;stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:#68d391;stop-opacity:0.8" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Scale -->
+                            <line x1="60" y1="140" x2="200" y2="140" stroke="#333" stroke-width="1"/>
+                            <!-- Whiskers -->
+                            <line x1="70" y1="70" x2="70" y2="110" stroke="#333" stroke-width="2"/>
+                            <line x1="190" y1="70" x2="190" y2="110" stroke="#333" stroke-width="2"/>
+                            <line x1="70" y1="90" x2="90" y2="90" stroke="#333" stroke-width="2"/>
+                            <line x1="170" y1="90" x2="190" y2="90" stroke="#333" stroke-width="2"/>
+                            <!-- Box -->
+                            <rect x="90" y="70" width="80" height="40" fill="url(#boxGradient)" stroke="#333" stroke-width="2" rx="3">
+                                <animate attributeName="width" values="0;80;0;80" dur="3s" repeatCount="indefinite"/>
+                                <animate attributeName="x" values="130;90;130;90" dur="3s" repeatCount="indefinite"/>
+                            </rect>
+                            <!-- Median line -->
+                            <line x1="130" y1="70" x2="130" y2="110" stroke="#2d5a87" stroke-width="3">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite"/>
+                            </line>
+                            <!-- Outliers -->
+                            <circle cx="50" cy="90" r="3" fill="#f56565">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1s"/>
+                            </circle>
+                            <circle cx="210" cy="90" r="3" fill="#f56565">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1s"/>
+                            </circle>
+                            <!-- Labels -->
+                            <text x="50" y="125" text-anchor="middle" font-size="10" fill="#666">Outlier</text>
+                            <text x="130" y="125" text-anchor="middle" font-size="10" fill="#666">Median</text>
+                            <text x="210" y="125" text-anchor="middle" font-size="10" fill="#666">Outlier</text>
+                        </svg>
+                        <div class="chart-description">Kiểm tra phân phối chuẩn & điểm dị biệt</div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>📈 Line Graph</h3>
+                    <div class="chart-container">
+                        <div class="chart-title">Biểu đồ đường</div>
+                        <svg width="240" height="160" class="animated-chart">
+                            <defs>
+                                <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#ed8936;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#dd6b20;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Axes -->
+                            <line x1="40" y1="20" x2="40" y2="140" stroke="#333" stroke-width="2"/>
+                            <line x1="40" y1="140" x2="220" y2="140" stroke="#333" stroke-width="2"/>
+                            <!-- Grid lines -->
+                            <line x1="40" y1="100" x2="220" y2="100" stroke="#e2e8f0" stroke-width="1"/>
+                            <line x1="40" y1="60" x2="220" y2="60" stroke="#e2e8f0" stroke-width="1"/>
+                            <!-- Line path -->
+                            <path d="M50,120 L80,100 L110,80 L140,70 L170,90 L200,60" 
+                                  stroke="url(#lineGradient)" stroke-width="3" fill="none" stroke-linecap="round">
+                                <animate attributeName="stroke-dasharray" values="0,200;200,0;0,200" dur="4s" repeatCount="indefinite"/>
+                            </path>
+                            <!-- Data points -->
+                            <circle cx="50" cy="120" r="4" fill="#ed8936"/>
+                            <circle cx="80" cy="100" r="4" fill="#ed8936"/>
+                            <circle cx="110" cy="80" r="4" fill="#ed8936"/>
+                            <circle cx="140" cy="70" r="4" fill="#ed8936"/>
+                            <circle cx="170" cy="90" r="4" fill="#ed8936"/>
+                            <circle cx="200" cy="60" r="4" fill="#ed8936"/>
+                            <!-- Labels -->
+                            <text x="130" y="155" text-anchor="middle" font-size="12" fill="#666">Thời gian</text>
+                            <text x="25" y="85" text-anchor="middle" font-size="12" fill="#666" transform="rotate(-90, 25, 85)">Giá trị</text>
+                        </svg>
+                        <div class="chart-description">Thể hiện mối quan hệ giữa 2 biến theo thời gian</div>
+                    </div>
+                </div>
+
+                <div class="concept-card">
+                    <h3>🎯 Scatter Plot</h3>
+                    <div class="chart-container">
+                        <div class="chart-title">Biểu đồ tán xạ</div>
+                        <svg width="240" height="160" class="animated-chart">
+                            <!-- Axes -->
+                            <line x1="40" y1="20" x2="40" y2="140" stroke="#333" stroke-width="2"/>
+                            <line x1="40" y1="140" x2="220" y2="140" stroke="#333" stroke-width="2"/>
+                            <!-- Trend line -->
+                            <line x1="50" y1="120" x2="200" y2="40" stroke="#9f7aea" stroke-width="2" stroke-dasharray="5,5" opacity="0.7">
+                                <animate attributeName="opacity" values="0;0.7;0;0.7" dur="3s" repeatCount="indefinite"/>
+                            </line>
+                            <!-- Scatter points -->
+                            <circle cx="60" cy="115" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="0.2s"/>
+                            </circle>
+                            <circle cx="80" cy="100" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="0.4s"/>
+                            </circle>
+                            <circle cx="100" cy="90" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="0.6s"/>
+                            </circle>
+                            <circle cx="120" cy="80" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="0.8s"/>
+                            </circle>
+                            <circle cx="140" cy="70" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1s"/>
+                            </circle>
+                            <circle cx="160" cy="60" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1.2s"/>
+                            </circle>
+                            <circle cx="180" cy="50" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1.4s"/>
+                            </circle>
+                            <circle cx="75" cy="110" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1.6s"/>
+                            </circle>
+                            <circle cx="95" cy="95" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="1.8s"/>
+                            </circle>
+                            <circle cx="150" cy="65" r="3" fill="#9f7aea" opacity="0.8">
+                                <animate attributeName="r" values="0;3;0;3" dur="3s" repeatCount="indefinite" begin="2s"/>
+                            </circle>
+                            <!-- Labels -->
+                            <text x="130" y="155" text-anchor="middle" font-size="12" fill="#666">Biến X</text>
+                            <text x="25" y="85" text-anchor="middle" font-size="12" fill="#666" transform="rotate(-90, 25, 85)">Biến Y</text>
+                        </svg>
+                        <div class="chart-description">Thể hiện độ mạnh của mối quan hệ giữa 2 biến</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="distribution-demo">
+                <h3>🔔 Các dạng Phân phối dữ liệu</h3>
+                <p style="text-align: center; color: #718096; margin-bottom: 20px;">
+                    Hiểu được dạng phân phối giúp chọn đúng phương pháp phân tích thống kê
+                </p>
+                
+                <div class="distribution-grid">
+                    <div class="distribution-card">
+                        <div class="chart-title">📊 Phân phối Chuẩn (Normal)</div>
+                        <svg width="220" height="140" class="animated-chart">
+                            <defs>
+                                <linearGradient id="normalGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4299e1;stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:#2b6cb0;stop-opacity:0.3" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Bell curve -->
+                            <path d="M30,120 Q110,30 190,120" stroke="#2b6cb0" stroke-width="3" fill="url(#normalGradient)">
+                                <animate attributeName="d" values="M30,120 Q110,120 190,120;M30,120 Q110,30 190,120;M30,120 Q110,120 190,120;M30,120 Q110,30 190,120" 
+                                         dur="4s" repeatCount="indefinite"/>
+                            </path>
+                            <!-- Mean line -->
+                            <line x1="110" y1="30" x2="110" y2="120" stroke="#1a365d" stroke-width="2" stroke-dasharray="3,3">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="2s" repeatCount="indefinite"/>
+                            </line>
+                            <!-- Labels -->
+                            <text x="110" y="135" text-anchor="middle" font-size="10" fill="#2d3748" font-weight="bold">Mean = Median = Mode</text>
+                            <text x="70" y="25" text-anchor="middle" font-size="9" fill="#4a5568">68%</text>
+                            <text x="150" y="25" text-anchor="middle" font-size="9" fill="#4a5568">68%</text>
+                        </svg>
+                        <div class="chart-description">
+                            <strong>Đặc điểm:</strong> Đối xứng, hình chuông<br>
+                            <strong>Sử dụng:</strong> Parametric tests (t-test, ANOVA)
+                        </div>
+                    </div>
+
+                    <div class="distribution-card">
+                        <div class="chart-title">📈 Lệch Dương (Positive Skew)</div>
+                        <svg width="220" height="140" class="animated-chart">
+                            <defs>
+                                <linearGradient id="posSkewGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#f6ad55;stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:#ed8936;stop-opacity:0.3" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Positively skewed curve -->
+                            <path d="M30,120 Q70,30 120,50 Q160,70 190,120" stroke="#c05621" stroke-width="3" fill="url(#posSkewGradient)">
+                                <animate attributeName="d" values="M30,120 Q100,120 190,120;M30,120 Q70,30 120,50 Q160,70 190,120;M30,120 Q100,120 190,120;M30,120 Q70,30 120,50 Q160,70 190,120" 
+                                         dur="4s" repeatCount="indefinite"/>
+                            </path>
+                            <!-- Mode, Median, Mean lines -->
+                            <line x1="65" y1="35" x2="65" y2="120" stroke="#68d391" stroke-width="2">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite" begin="0s"/>
+                            </line>
+                            <line x1="85" y1="40" x2="85" y2="120" stroke="#4299e1" stroke-width="2">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+                            </line>
+                            <line x1="110" y1="60" x2="110" y2="120" stroke="#f56565" stroke-width="2">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite" begin="1s"/>
+                            </line>
+                            <!-- Labels -->
+                            <text x="65" y="135" text-anchor="middle" font-size="8" fill="#38a169">Mode</text>
+                            <text x="85" y="135" text-anchor="middle" font-size="8" fill="#3182ce">Median</text>
+                            <text x="110" y="135" text-anchor="middle" font-size="8" fill="#e53e3e">Mean</text>
+                            <text x="160" y="25" text-anchor="middle" font-size="9" fill="#c05621" font-weight="bold">Đuôi dài →</text>
+                        </svg>
+                        <div class="chart-description">
+                            <strong>Đặc điểm:</strong> Đuôi dài bên phải<br>
+                            <strong>Sử dụng:</strong> Non-parametric tests, Median
+                        </div>
+                    </div>
+
+                    <div class="distribution-card">
+                        <div class="chart-title">📉 Lệch Âm (Negative Skew)</div>
+                        <svg width="220" height="140" class="animated-chart">
+                            <defs>
+                                <linearGradient id="negSkewGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#fc8181;stop-opacity:0.8" />
+                                    <stop offset="100%" style="stop-color:#e53e3e;stop-opacity:0.3" />
+                                </linearGradient>
+                            </defs>
+                            <!-- Negatively skewed curve -->
+                            <path d="M30,120 Q60,70 100,50 Q150,30 190,120" stroke="#c53030" stroke-width="3" fill="url(#negSkewGradient)">
+                                <animate attributeName="d" values="M30,120 Q100,120 190,120;M30,120 Q60,70 100,50 Q150,30 190,120;M30,120 Q100,120 190,120;M30,120 Q60,70 100,50 Q150,30 190,120" 
+                                         dur="4s" repeatCount="indefinite"/>
+                            </path>
+                            <!-- Mean, Median, Mode lines -->
+                            <line x1="110" y1="60" x2="110" y2="120" stroke="#f56565" stroke-width="2">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite" begin="0s"/>
+                            </line>
+                            <line x1="135" y1="40" x2="135" y2="120" stroke="#4299e1" stroke-width="2">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite" begin="0.5s"/>
+                            </line>
+                            <line x1="155" y1="35" x2="155" y2="120" stroke="#68d391" stroke-width="2">
+                                <animate attributeName="opacity" values="0;1;0;1" dur="3s" repeatCount="indefinite" begin="1s"/>
+                            </line>
+                            <!-- Labels -->
+                            <text x="110" y="135" text-anchor="middle" font-size="8" fill="#e53e3e">Mean</text>
+                            <text x="135" y="135" text-anchor="middle" font-size="8" fill="#3182ce">Median</text>
+                            <text x="155" y="135" text-anchor="middle" font-size="8" fill="#38a169">Mode</text>
+                            <text x="60" y="25" text-anchor="middle" font-size="9" fill="#c53030" font-weight="bold">← Đuôi dài</text>
+                        </svg>
+                        <div class="chart-description">
+                            <strong>Đặc điểm:</strong> Đuôi dài bên trái<br>
+                            <strong>Sử dụng:</strong> Non-parametric tests, Median
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Hướng dẫn chọn biểu đồ phù hợp:</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>📊 Histogram:</strong><br>
+                        <small>• Kiểm tra phân phối dữ liệu<br>• Tìm outliers<br>• Quyết định parametric/non-parametric</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>📦 Boxplot:</strong><br>
+                        <small>• So sánh nhiều nhóm<br>• Phát hiện outliers<br>• Kiểm tra độ phân tán</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>📈 Line Graph:</strong><br>
+                        <small>• Xu hướng theo thời gian<br>• Mối quan hệ cause-effect<br>• Dữ liệu liên tục</small>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                        <strong>🎯 Scatter Plot:</strong><br>
+                        <small>• Tương quan giữa 2 biến<br>• Kiểm tra tính tuyến tính<br>• Dự báo regression</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz -->
+        <div id="quiz" class="content-section">
+            <div class="quiz-container">
+                <h2 class="section-title">Bài tập trắc nghiệm</h2>
+                
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                
+                <div id="quizQuestions"></div>
+                
+                <div class="quiz-controls">
+                    <button class="quiz-btn" id="prevBtn" onclick="previousQuestion()" disabled>Câu trước</button>
+                    <div class="score" id="scoreDisplay">Câu hỏi: 1/20</div>
+                    <button class="quiz-btn" id="nextBtn" onclick="nextQuestion()">Câu tiếp</button>
+                </div>
+                
+                <div id="finalScore" style="display: none; text-align: center; margin-top: 30px;">
+                    <h3>Kết quả bài thi</h3>
+                    <div class="score" style="font-size: 1.5em; margin: 20px 0;">
+                        Điểm số: <span id="finalScoreValue"></span>/20
+                    </div>
+                    <button class="quiz-btn" onclick="restartQuiz()">Làm lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "Thống kê mô tả có vai trò gì trong nghiên cứu tâm lý?",
+                options: ["Kiểm tra giả thuyết", "Tóm tắt đầy đủ về dữ liệu", "Suy luận về dân số", "Phát triển lý thuyết"],
+                correct: 1
+            },
+            {
+                question: "Điều kiện cần thiết để thống kê suy luận có giá trị là gì?",
+                options: ["Mẫu lớn", "Mẫu được thu thập ngẫu nhiên", "Dữ liệu phân phối chuẩn", "Có nhiều biến"],
+                correct: 1
+            },
+            {
+                question: "Độ lệch chuẩn SD = 2.5 trong nghiên cứu về điểm stress có nghĩa là gì?",
+                options: ["Tất cả người có stress = 2.5", "68% người có điểm stress trong khoảng M±2.5", "Chỉ có 2.5% người tham gia", "Nghiên cứu kéo dài 2.5 năm"],
+                correct: 1
+            },
+            {
+                question: "Khi SD lớn (>15), điều này cho thấy:",
+                options: ["Dữ liệu tập trung quanh mean", "Dữ liệu rất phân tán, có thể có outliers", "Nghiên cứu rất chính xác", "Kích thước mẫu quá nhỏ"],
+                correct: 1
+            },
+            {
+                question: "Thang đo nào cho phép thực hiện đầy đủ các phép toán +, -, ×, ÷?",
+                options: ["Thang đo định danh", "Thang đo thứ bậc", "Thang đo khoảng", "Thang đo tỉ lệ"],
+                correct: 3
+            },
+            {
+                question: "Trong chuỗi [1, 2, 2, 3, 4, 5], số trung vị (median) là bao nhiêu?",
+                options: ["2", "2.5", "2.83", "3"],
+                correct: 1
+            },
+            {
+                question: "Khi báo cáo Mean = 7.2, SD = 1.8, cách diễn giải đúng là:",
+                options: ["Tất cả giá trị đều bằng 7.2", "68% giá trị nằm trong khoảng 5.4-9.0", "Có 1.8% dữ liệu bị sai", "Mean chỉ chính xác với sai số 1.8"],
+                correct: 1
+            },
+            {
+                question: "Điểm trung bình của chuỗi [10, 10, 40, 30, 10] là:",
+                options: ["20", "18", "22", "15"],
+                correct: 0
+            },
+            {
+                question: "Correlation r = 0.8 có nghĩa là:",
+                options: ["Mối quan hệ yếu", "Mối quan hệ mạnh", "80% dữ liệu chính xác", "Có 0.8% sai số"],
+                correct: 1
+            },
+            {
+                question: "Phân phối chuẩn có đặc điểm gì?",
+                options: ["Mean > Median > Mode", "Mean = Median = Mode", "Mean < Median < Mode", "Không có quy luật"],
+                correct: 1
+            },
+            {
+                question: "Bước đầu tiên trong quy trình phân tích dữ liệu nghiên cứu là gì?",
+                options: ["Chạy kiểm định thống kê", "Làm sạch và mô tả dữ liệu", "Diễn giải kết quả", "Viết báo cáo"],
+                correct: 1
+            },
+            {
+                question: "P-value < 0.05 có nghĩa là:",
+                options: ["Kết quả có ý nghĩa thống kê", "5% dữ liệu bị sai", "Cần 5% mẫu thêm", "Độ tin cậy chỉ 5%"],
+                correct: 0
+            },
+            {
+                question: "Để kiểm tra phân phối chuẩn, ta thường dùng test nào?",
+                options: ["t-test", "ANOVA", "Shapiro-Wilk test", "Chi-square test"],
+                correct: 2
+            },
+            {
+                question: "Trong phân phối lệch dương, thứ tự từ trái sang phải của Mode, Median, Mean là:",
+                options: ["Mode < Median < Mean", "Mean < Median < Mode", "Mode = Median = Mean", "Median < Mode < Mean"],
+                correct: 0
+            },
+            {
+                question: "Sample size N = 25 được coi là:",
+                options: ["Mẫu lớn, rất tin cậy", "Mẫu nhỏ, cần cẩn thận với assumption", "Mẫu vừa phải", "Mẫu quá lớn"],
+                correct: 1
+            },
+            {
+                question: "Khi so sánh 2 nhóm độc lập với dữ liệu phân phối chuẩn, nên dùng:",
+                options: ["One-sample t-test", "Independent samples t-test", "Mann-Whitney U test", "Paired t-test"],
+                correct: 1
+            },
+            {
+                question: "Variance và Standard Deviation có mối quan hệ:",
+                options: ["Variance = SD²", "SD = Variance²", "Không liên quan", "SD = 2×Variance"],
+                correct: 0
+            },
+            {
+                question: "Khi dữ liệu không phân phối chuẩn và cần so sánh 2 nhóm độc lập:",
+                options: ["Independent t-test", "Mann-Whitney U test", "Paired t-test", "ANOVA"],
+                correct: 1
+            },
+            {
+                question: "Outlier thường được định nghĩa là giá trị có Z-score:",
+                options: ["< ±1.96", "> ±2.58", "> ±3.29", "< ±0.05"],
+                correct: 2
+            },
+            {
+                question: "Điều gì cần làm đầu tiên trước khi phân tích thống kê suy luận?",
+                options: ["Kiểm định giả thuyết", "Mô tả dữ liệu và kiểm tra assumption", "Tính tương quan", "Vẽ biểu đồ"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizCompleted = false;
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Initialize quiz if quiz section is selected
+            if (sectionId === 'quiz' && !quizCompleted) {
+                initializeQuiz();
+            }
+        }
+
+        function calculateStats() {
+            const input = document.getElementById('numbers').value;
+            const numbers = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+            
+            if (numbers.length === 0) {
+                alert('Vui lòng nhập các số hợp lệ');
+                return;
+            }
+            
+            // Calculate statistics
+            const sum = numbers.reduce((a, b) => a + b, 0);
+            const mean = sum / numbers.length;
+            
+            const sortedNumbers = [...numbers].sort((a, b) => a - b);
+            let median;
+            if (sortedNumbers.length % 2 === 0) {
+                median = (sortedNumbers[sortedNumbers.length/2 - 1] + sortedNumbers[sortedNumbers.length/2]) / 2;
+            } else {
+                median = sortedNumbers[Math.floor(sortedNumbers.length/2)];
+            }
+            
+            // Find mode
+            const frequency = {};
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+            });
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(key => frequency[key] === maxFreq);
+            const mode = modes.length === numbers.length ? 'Không có' : modes.join(', ');
+            
+            // Calculate standard deviation
+            const variance = numbers.reduce((acc, num) => acc + Math.pow(num - mean, 2), 0) / numbers.length;
+            const standardDeviation = Math.sqrt(variance);
+            
+            const result = `
+                <strong>Kết quả tính toán:</strong><br>
+                Dãy số: [${numbers.join(', ')}]<br>
+                Mean (Trung bình): ${mean.toFixed(2)}<br>
+                Median (Trung vị): ${median}<br>
+                Mode (Yếu vị): ${mode}<br>
+                Standard Deviation: ${standardDeviation.toFixed(2)}<br>
+                Variance (Phương sai): ${variance.toFixed(2)}
+            `;
+            
+            document.getElementById('statsResult').innerHTML = result;
+            document.getElementById('statsResult').style.display = 'block';
+        }
+
+        function clearCalculator() {
+            document.getElementById('numbers').value = '';
+            document.getElementById('statsResult').style.display = 'none';
+        }
+
+        function updateRecommendation() {
+            const purpose = document.getElementById('purpose').value;
+            const independent = document.getElementById('independent').value;
+            const dataType = document.getElementById('dataType').value;
+            const groups = document.getElementById('groups').value;
+            const normality = document.getElementById('normality').value;
+            
+            let recommendation = '';
+            let reasoning = '';
+            
+            if (purpose && dataType) {
+                if (purpose === 'compare') {
+                    if (dataType === 'continuous') {
+                        if (groups === '1') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>One-sample t-test</strong>';
+                                reasoning = 'So sánh 1 nhóm với giá trị chuẩn, dữ liệu phân phối chuẩn';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Wilcoxon signed-rank test</strong>';
+                                reasoning = 'So sánh 1 nhóm với giá trị chuẩn, dữ liệu không phân phối chuẩn';
+                            }
+                        } else if (groups === '2') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>Independent samples t-test</strong> hoặc <strong>Paired samples t-test</strong>';
+                                reasoning = 'Chọn Independent nếu 2 nhóm độc lập, Paired nếu cùng đối tượng đo 2 lần';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Mann-Whitney U test</strong> hoặc <strong>Wilcoxon signed-rank test</strong>';
+                                reasoning = 'Mann-Whitney cho nhóm độc lập, Wilcoxon cho nhóm phụ thuộc';
+                            }
+                        } else if (groups === 'multiple') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>One-way ANOVA</strong>';
+                                reasoning = 'So sánh nhiều nhóm, dữ liệu phân phối chuẩn';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Kruskal-Wallis test</strong>';
+                                reasoning = 'So sánh nhiều nhóm, dữ liệu không phân phối chuẩn';
+                            }
+                        }
+                    } else if (dataType === 'categorical') {
+                        recommendation = '<strong>Chi-square test</strong>';
+                        reasoning = 'So sánh tỷ lệ giữa các nhóm với dữ liệu phân loại';
+                    }
+                } else if (purpose === 'relationship') {
+                    if (dataType === 'continuous') {
+                        if (independent === '1') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>Pearson correlation</strong>';
+                                reasoning = 'Tương quan giữa 2 biến liên tục, phân phối chuẩn';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Spearman correlation</strong>';
+                                reasoning = 'Tương quan giữa 2 biến, dữ liệu không phân phối chuẩn';
+                            }
+                        } else if (independent === 'multiple') {
+                            recommendation = '<strong>Multiple correlation/Partial correlation</strong>';
+                            reasoning = 'Tương quan giữa nhiều biến';
+                        }
+                    } else if (dataType === 'ordinal') {
+                        recommendation = '<strong>Spearman correlation</strong>';
+                        reasoning = 'Tương quan với dữ liệu thứ bậc';
+                    }
+                } else if (purpose === 'predict') {
+                    if (dataType === 'continuous') {
+                        if (independent === '1') {
+                            recommendation = '<strong>Simple Linear Regression</strong>';
+                            reasoning = 'Dự báo biến liên tục từ 1 biến dự báo';
+                        } else if (independent === 'multiple') {
+                            recommendation = '<strong>Multiple Linear Regression</strong>';
+                            reasoning = 'Dự báo biến liên tục từ nhiều biến dự báo';
+                        }
+                    } else if (dataType === 'categorical') {
+                        recommendation = '<strong>Logistic Regression</strong>';
+                        reasoning = 'Dự báo biến phân loại (binary hoặc multinomial)';
+                    }
+                }
+                
+                if (recommendation) {
+                    document.getElementById('testRecommendation').innerHTML = `
+                        <h4>🎯 Kiểm định được đề xuất:</h4>
+                        <p style="font-size: 1.2em; color: #2d5a2d; margin: 10px 0;">${recommendation}</p>
+                        <p><strong>Lý do:</strong> ${reasoning}</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                            <strong>💡 Checklist trước khi chạy:</strong><br>
+                            ✓ Kiểm tra missing data<br>
+                            ✓ Loại bỏ outliers (nếu cần)<br>
+                            ✓ Kiểm tra assumption của test<br>
+                            ✓ Tính effect size
+                        </div>
+                    `;
+                    document.getElementById('testRecommendation').style.display = 'block';
+                } else {
+                    document.getElementById('testRecommendation').style.display = 'none';
+                }
+            } else {
+                document.getElementById('testRecommendation').style.display = 'none';
+            }
+        }
+
+        function interpretSD() {
+            const mean = parseFloat(document.getElementById('meanInput').value);
+            const sd = parseFloat(document.getElementById('sdInput').value);
+            
+            if (isNaN(mean) || isNaN(sd) || sd <= 0) {
+                alert('Vui lòng nhập giá trị hợp lệ');
+                return;
+            }
+            
+            // Calculate ranges
+            const oneSdLower = mean - sd;
+            const oneSdUpper = mean + sd;
+            const twoSdLower = mean - (2 * sd);
+            const twoSdUpper = mean + (2 * sd);
+            
+            // Determine SD interpretation
+            let sdLevel = '';
+            let sdColor = '';
+            let interpretation = '';
+            
+            if (sd <= 5) {
+                sdLevel = 'THẤP - Dữ liệu đồng đều';
+                sdColor = '#c6f6d5';
+                interpretation = 'Dữ liệu rất tập trung quanh giá trị trung bình. Nhóm nghiên cứu có đặc điểm tương đối đồng nhất.';
+            } else if (sd <= 15) {
+                sdLevel = 'TRUNG BÌNH - Dữ liệu cân bằng';
+                sdColor = '#bee3f8';
+                interpretation = 'Mức độ biến thiên bình thường. Dữ liệu có sự phân tán hợp lý và phù hợp cho hầu hết phân tích thống kê.';
+            } else {
+                sdLevel = 'CAO - Dữ liệu phân tán';
+                sdColor = '#fed7d7';
+                interpretation = 'Dữ liệu rất phân tán. Cần kiểm tra outliers và xem xét việc chia nhóm phụ hoặc sử dụng median thay vì mean.';
+            }
+            
+            const result = `
+                <div style="background: ${sdColor}; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <h4>📊 Phân tích độ lệch chuẩn: SD = ${sd}</h4>
+                    <p><strong>Mức độ:</strong> ${sdLevel}</p>
+                    <p><strong>Giải thích:</strong> ${interpretation}</p>
+                </div>
+                
+                <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <h4>📏 Phạm vi dự đoán:</h4>
+                    <p><strong>68% dữ liệu nằm trong:</strong> ${oneSdLower.toFixed(1)} - ${oneSdUpper.toFixed(1)}</p>
+                    <p><strong>95% dữ liệu nằm trong:</strong> ${twoSdLower.toFixed(1)} - ${twoSdUpper.toFixed(1)}</p>
+                </div>
+                
+                <div style="background: #e6fffa; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #38b2ac;">
+                    <h4>💡 Ý nghĩa thực tế:</h4>
+                    <p>Với Mean = ${mean} và SD = ${sd}:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Nếu bạn chọn ngẫu nhiên 1 người từ nhóm này, có 68% khả năng giá trị của họ nằm trong khoảng ${oneSdLower.toFixed(1)} - ${oneSdUpper.toFixed(1)}</li>
+                        <li>Giá trị ${(mean + sd).toFixed(1)} được coi là "cao hơn trung bình 1 độ lệch chuẩn"</li>
+                        <li>Giá trị ${(mean - sd).toFixed(1)} được coi là "thấp hơn trung bình 1 độ lệch chuẩn"</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff5cd; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ecc94b;">
+                    <h4>📝 Cách viết trong báo cáo:</h4>
+                    <p><em>"Kết quả cho thấy giá trị trung bình là ${mean} (SD = ${sd}), cho thấy ${interpretation.toLowerCase()} Dữ liệu được phân phối với 68% giá trị nằm trong khoảng ${oneSdLower.toFixed(1)} đến ${oneSdUpper.toFixed(1)}."</em></p>
+                </div>
+            `;
+            
+            document.getElementById('sdInterpretation').innerHTML = result;
+            document.getElementById('sdInterpretation').style.display = 'block';
+        }
+
+        function initializeQuiz() {
+            currentQuestion = 0;
+            userAnswers = [];
+            quizCompleted = false;
+            document.getElementById('finalScore').style.display = 'none';
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = quizData[currentQuestion];
+            const questionsContainer = document.getElementById('quizQuestions');
+            
+            questionsContainer.innerHTML = `
+                <div class="question">
+                    <h3>Câu ${currentQuestion + 1}: ${question.question}</h3>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(${index})">
+                                <input type="radio" name="q${currentQuestion}" value="${index}" id="option${index}">
+                                <label for="option${index}">${String.fromCharCode(65 + index)}. ${option}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Update progress
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('scoreDisplay').textContent = `Câu hỏi: ${currentQuestion + 1}/${quizData.length}`;
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === quizData.length - 1 ? 'Kết thúc' : 'Câu tiếp';
+            
+            // Restore previous answer if exists
+            if (userAnswers[currentQuestion] !== undefined) {
+                const radio = document.querySelector(`input[value="${userAnswers[currentQuestion]}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    radio.closest('.option').classList.add('selected');
+                }
+            }
+        }
+
+        function selectOption(optionIndex) {
+            // Clear previous selections
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select new option
+            const selectedOption = document.querySelector(`input[value="${optionIndex}"]`);
+            selectedOption.checked = true;
+            selectedOption.closest('.option').classList.add('selected');
+            
+            userAnswers[currentQuestion] = optionIndex;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            let score = 0;
+            for (let i = 0; i < quizData.length; i++) {
+                if (userAnswers[i] === quizData[i].correct) {
+                    score++;
+                }
+            }
+            
+            quizCompleted = true;
+            document.getElementById('quizQuestions').style.display = 'none';
+            document.querySelector('.quiz-controls').style.display = 'none';
+            document.getElementById('finalScore').style.display = 'block';
+            document.getElementById('finalScoreValue').textContent = score;
+            
+            // Show detailed results
+            let resultsHTML = '<div style="margin-top: 20px; text-align: left;"><h4>Chi tiết kết quả:</h4>';
+            for (let i = 0; i < quizData.length; i++) {
+                const isCorrect = userAnswers[i] === quizData[i].correct;
+                const userAnswer = userAnswers[i] !== undefined ? quizData[i].options[userAnswers[i]] : 'Không trả lời';
+                const correctAnswer = quizData[i].options[quizData[i].correct];
+                
+                resultsHTML += `
+                    <p style="margin: 10px 0; padding: 10px; background: ${isCorrect ? '#c6f6d5' : '#fed7d7'}; border-radius: 5px;">
+                        <strong>Câu ${i + 1}:</strong> ${isCorrect ? '✓' : '✗'}<br>
+                        <small>Đáp án của bạn: ${userAnswer}</small><br>
+                        ${!isCorrect ? `<small>Đáp án đúng: ${correctAnswer}</small>` : ''}
+                    </p>
+                `;
+            }
+            resultsHTML += '</div>';
+            
+            document.getElementById('finalScore').innerHTML += resultsHTML;
+        }
+
+        function restartQuiz() {
+            document.getElementById('finalScore').innerHTML = `
+                <h3>Kết quả bài thi</h3>
+                <div class="score" style="font-size: 1.5em; margin: 20px 0;">
+                    Điểm số: <span id="finalScoreValue"></span>/20
+                </div>
+                <button class="quiz-btn" onclick="restartQuiz()">Làm lại</button>
+            `;
+            document.getElementById('quizQuestions').style.display = 'block';
+            document.querySelector('.quiz-controls').style.display = 'flex';
+            initializeQuiz();
+        }
+
+        // Initialize the lesson
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any initialization code here
+        });
+    </script>
+</body>
+</html>
