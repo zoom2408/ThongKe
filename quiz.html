@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz trắc nghiệm</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="quiz-setup" id="quiz-setup">
+    <label for="numQuizQuestions" style="font-weight:600; font-size:1.06em;">Chọn số câu hỏi muốn làm:</label>
+    <select id="numQuizQuestions" style="margin: 0 10px;">
+      <option value="10">10 câu</option>
+      <option value="15">15 câu</option>
+      <option value="20" selected>20 câu</option>
+      <option value="30">30 câu</option>
+    </select>
+    <button class="quiz-action-btn" id="startQuizBtn" onclick="startQuiz()">Làm bài</button>
+  </div>
+  <div class="quiz-container" id="quiz-area" style="display:none"></div>
+  <div class="quiz-sticky-actions" id="quiz-actions" style="display:none;">
+    <div id="quiz-score"></div>
+    <button class="quiz-action-btn" id="submit-btn" onclick="submitQuiz()">Nộp bài</button>
+    <button class="quiz-action-btn" id="reset-btn" onclick="resetQuiz()">Làm lại</button>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="quiz.js"></script>
+</body>
+</html>
