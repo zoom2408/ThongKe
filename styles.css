@@ -5,10 +5,27 @@
       color: #222;
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 28px 12px;
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 220px;
+      padding: 20px;
+      background: #fff;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      overflow-y: auto;
+      box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+    }
+
+    .main {
+      margin-left: 220px;
+      padding: 28px 24px;
+      flex: 1;
     }
 
     .header {
@@ -29,15 +46,16 @@
     }
 
     .tabs {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-top: 20px;
     }
 
     .tab {
-      padding: 11px 24px;
+      padding: 10px 18px;
+      width: 100%;
+      text-align: left;
       background: #e3eafc;
       border: none;
       border-radius: 22px;

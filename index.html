@@ -9,7 +9,8 @@
 </head>
 
 <body>
-  <div class="container">
+  <div class="layout">
+  <div class="sidebar">
     <div class="header">
       <h1>📊 Thống kê Ứng dụng trong Tâm lý học</h1>
       <p>Tổng quan, lý thuyết, lưu đồ, thực nghiệm & luyện tập trắc nghiệm – Chuẩn bị cho kiểm tra!</p>
@@ -22,6 +23,8 @@
       <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn</button>
       <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
     </div>
+  </div>
+  <div class="main">
     <div class="content">
       <!-- Định nghĩa & Phân loại -->
       <div class="tab-content active" id="definitions">
@@ -369,6 +372,7 @@
       </div>
 
     </div>
+  </div>
   </div>
   <div id="overlay" class="overlay" onclick="closeOverlay()"></div>
   <script src="questions.js"></script>
