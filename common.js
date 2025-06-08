@@ -1,9 +1,19 @@
+let defaultMainHTML = '';
 if (typeof window !== 'undefined') {
+  const initContainer = document.querySelector('.content.main');
+  if (initContainer) defaultMainHTML = initContainer.innerHTML;
+
   function showTab(event, tabName) {
+    const container = document.querySelector('.content.main');
+    if (container && !document.getElementById(tabName)) {
+      container.innerHTML = defaultMainHTML;
+    }
+    document.querySelectorAll('.page-link').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(e => e.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(e => e.classList.remove('active'));
     if (event) event.target.classList.add('active');
-    document.getElementById(tabName).classList.add('active');
+    const target = document.getElementById(tabName);
+    if (target) target.classList.add('active');
     if (tabName === 'quiz') resetQuiz();
   }
 

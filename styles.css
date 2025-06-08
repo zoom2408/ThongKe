@@ -15,16 +15,13 @@
       padding: 20px;
       background: linear-gradient(180deg, #1d3557, #457b9d);
       color: #fff;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
+      height: 100vh;
       overflow-y: auto;
       box-shadow: 2px 0 6px rgba(0,0,0,0.1);
+      flex-shrink: 0;
     }
 
     .main {
-      margin-left: 240px;
       padding: 28px 24px;
       flex: 1;
     }
