@@ -29,6 +29,13 @@
       align-self: flex-start;
     }
 
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
     /* simple sidebar links for cognitive psychology page */
     .sidebar a {
       display: block;
