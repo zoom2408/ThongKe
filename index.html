@@ -29,7 +29,7 @@
   </div>
 
     <div class="content main">
-      <div class="tab-content active" id="cheatsheet">
+      <div class="tab-content" id="cheatsheet">
         <div class="stat-cheatsheet">
           <h2>Bảng tham chiếu nhanh khi đọc bảng số liệu & kết quả kiểm định</h2>
           <table>
@@ -244,6 +244,13 @@
   <script src="quiz.js"></script>
   <script src="panel.js"></script>
   <script src="common.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const introBtn = document.querySelector('.menu .page-link');
+      if (introBtn) introBtn.classList.add('active');
+      loadPage(null, '01_intro.html');
+    });
+  </script>
 </body>
 
 </html>
