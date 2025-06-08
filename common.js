@@ -15,18 +15,19 @@ if (typeof window !== 'undefined') {
   }
 
   function showOverlay() {
-    const ov = document.getElementById('overlay');
-    if (ov) ov.classList.add('active');
+    const ov = document.getElementById("overlay");
+    if (ov) ov.classList.add("active");
   }
 
   function hideOverlay() {
-    const ov = document.getElementById('overlay');
-    if (ov) ov.classList.remove('active');
+    const ov = document.getElementById("overlay");
+    if (ov) ov.classList.remove("active");
   }
 
   function closeOverlay() {
     hideOverlay();
-    if (typeof closeSEPanel === 'function') closeSEPanel();
-    if (typeof closeTestPanel === 'function') closeTestPanel();
+    if (typeof closeSEPanel === "function") closeSEPanel();
+    if (typeof closeTestPanel === "function") closeTestPanel();
   }
+
 }
