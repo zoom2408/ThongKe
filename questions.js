@@ -495,7 +495,7 @@ const allQuestions = [
     explain: "Để kiểm tra sự thay đổi trước và sau can thiệp, paired samples t-test là phù hợp nhất vì nó so sánh hai nhóm liên quan (trước và sau) và biểu đồ 'Difference' đạt phân phối chuẩn.",
   },
   {
-    q:"Tính điểm trung bình trong chuỗi dưới đây: 10, 10, 40, 30, 10",
+    q: "Tính điểm trung bình trong chuỗi dưới đây: 10, 10, 40, 30, 10",
     opts: [
       "10",
       "20",
@@ -506,7 +506,7 @@ const allQuestions = [
     explain: "Điểm trung bình được tính bằng tổng các giá trị chia cho số lượng giá trị. (10 + 10 + 40 + 30 + 10) / 5 = 20."
   },
   {
-    q:"Tính số trung vị trong chuỗi dưới đây: 13, 12, 11, 15, 22}",
+    q: "Tính số trung vị trong chuỗi dưới đây: 13, 12, 11, 15, 22}",
     opts: [
       "12",
       "13",
@@ -515,5 +515,115 @@ const allQuestions = [
     ],
     ans: 1,
     explain: "Sắp xếp chuỗi theo thứ tự tăng dần: 11, 12, 13, 15, 22. Số trung vị là giá trị ở giữa, tức là 13."
+  },
+  {
+    q: "Trong một nghiên cứu về ảnh hưởng của việc uống cà phê lên chất lượng giấc ngủ, đâu là biến độc lập?",
+    opts: [
+      "Số giờ ngủ mỗi đêm",
+      "Chất lượng giấc ngủ",
+      "Lượng cà phê uống mỗi ngày",
+      "Tâm trạng buổi sáng"
+    ],
+    ans: 2,
+    explain: "Biến độc lập là lượng cà phê uống mỗi ngày vì đây là yếu tố mà nhà nghiên cứu muốn kiểm soát hoặc thay đổi để xem ảnh hưởng lên các biến khác."
+  },
+  {
+    q: "Trong nghiên cứu xem việc luyện tập thể dục ảnh hưởng đến cân nặng như thế nào, biến phụ thuộc là gì?",
+    opts: [
+      "Thời gian luyện tập mỗi ngày",
+      "Cân nặng của người tham gia",
+      "Độ tuổi của người tham gia",
+      "Thói quen ăn uống"
+    ],
+    ans: 1,
+    explain: "Biến phụ thuộc là cân nặng vì nó thay đổi theo mức độ luyện tập, và là kết quả mà nhà nghiên cứu muốn đo."
+  },
+  {
+    q: "Nếu nghiên cứu xem tác động của âm nhạc đến điểm kiểm tra, biến độc lập là gì?",
+    opts: [
+      "Điểm kiểm tra sau khi nghe nhạc",
+      "Loại nhạc được nghe",
+      "Thời gian làm bài kiểm tra",
+      "Số lượng câu hỏi trong bài"
+    ],
+    ans: 1,
+    explain: "Loại nhạc được nghe là biến độc lập vì đây là yếu tố được thay đổi để xem ảnh hưởng đến điểm kiểm tra."
+  },
+  {
+    q: "Trong một thí nghiệm, nhà khoa học điều chỉnh ánh sáng trong phòng để xem ảnh hưởng đến tốc độ đọc, biến phụ thuộc là gì?",
+    opts: [
+      "Độ sáng của phòng",
+      "Tốc độ đọc của người tham gia",
+      "Số trang sách",
+      "Loại sách được đọc"
+    ],
+    ans: 1,
+    explain: "Tốc độ đọc là biến phụ thuộc vì nó là kết quả bị ảnh hưởng bởi mức độ sáng trong phòng."
+  },
+  {
+    q: "Một nghiên cứu xem xét ảnh hưởng của loại phân bón lên năng suất cây trồng. Biến độc lập là gì?",
+    opts: [
+      "Loại phân bón sử dụng",
+      "Năng suất cây trồng",
+      "Diện tích ruộng",
+      "Lượng nước tưới"
+    ],
+    ans: 0,
+    explain: "Loại phân bón là biến độc lập vì đây là yếu tố mà nhà nghiên cứu chủ động thay đổi."
+  },
+  {
+    q: "Trong nghiên cứu kiểm tra mối quan hệ giữa số giờ học và điểm thi, đâu là biến phụ thuộc?",
+    opts: [
+      "Số giờ học mỗi tuần",
+      "Điểm thi cuối kỳ",
+      "Tên môn học",
+      "Tuổi học sinh"
+    ],
+    ans: 1,
+    explain: "Điểm thi cuối kỳ là biến phụ thuộc vì nó thay đổi tùy theo số giờ học."
+  },
+  {
+    q: "Nếu muốn kiểm tra ảnh hưởng của chế độ ăn đến mức cholesterol, biến độc lập là?",
+    opts: [
+      "Mức cholesterol trong máu",
+      "Chế độ ăn áp dụng",
+      "Giới tính người tham gia",
+      "Tuổi người tham gia"
+    ],
+    ans: 1,
+    explain: "Chế độ ăn là biến độc lập vì đó là yếu tố được thay đổi để kiểm tra ảnh hưởng đến cholesterol."
+  },
+  {
+    q: "Trong thí nghiệm dùng hai loại thuốc khác nhau để giảm đau, biến phụ thuộc là?",
+    opts: [
+      "Loại thuốc sử dụng",
+      "Liều lượng thuốc",
+      "Mức độ giảm đau đo được",
+      "Thời gian dùng thuốc"
+    ],
+    ans: 2,
+    explain: "Mức độ giảm đau đo được là biến phụ thuộc, vì đó là kết quả nhà nghiên cứu muốn đo."
+  },
+  {
+    q: "Một nhà nghiên cứu thay đổi nhiệt độ phòng để xem ảnh hưởng đến mức độ tỉnh táo của sinh viên. Biến độc lập là?",
+    opts: [
+      "Nhiệt độ phòng",
+      "Mức độ tỉnh táo",
+      "Số lượng sinh viên",
+      "Giờ trong ngày"
+    ],
+    ans: 0,
+    explain: "Nhiệt độ phòng là biến độc lập vì được chủ động điều chỉnh để xem ảnh hưởng đến tỉnh táo."
+  },
+  {
+    q: "Khi nghiên cứu tác động của stress đến huyết áp, biến phụ thuộc là gì?",
+    opts: [
+      "Mức độ stress",
+      "Mức huyết áp đo được",
+      "Số lần đo huyết áp",
+      "Thời gian làm việc"
+    ],
+    ans: 1,
+    explain: "Mức huyết áp đo được là biến phụ thuộc vì nó thay đổi dựa trên mức độ stress."
   }
 ];
