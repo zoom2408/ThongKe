@@ -4,7 +4,404 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thống kê ứng dụng trong Tâm lý học - Buổi 1</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            color: #4a5568;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #718096;
+            font-size: 1.2em;
+        }
+
+        .lesson-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #4299e1;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .content-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #2d3748;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #4299e1;
+            padding-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .highlight-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .concept-card {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .concept-card:hover {
+            border-color: #4299e1;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(66, 153, 225, 0.2);
+        }
+
+        .concept-card h3 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .interactive-example {
+            background: #edf2f7;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .calculator {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border: 2px solid #4299e1;
+        }
+
+        .input-group {
+            margin: 10px 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .calc-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px 0 0;
+        }
+
+        .calc-btn:hover {
+            background: #3182ce;
+        }
+
+        .result {
+            background: #c6f6d5;
+            border: 1px solid #68d391;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .question {
+            background: #f7fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4299e1;
+        }
+
+        .question h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .option.selected {
+            border-color: #4299e1;
+            background: #bee3f8;
+        }
+
+        .option.correct {
+            border-color: #48bb78;
+            background: #c6f6d5;
+        }
+
+        .option.incorrect {
+            border-color: #f56565;
+            background: #fed7d7;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .quiz-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .quiz-btn {
+            background: #4299e1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+
+        .quiz-btn:hover {
+            background: #3182ce;
+        }
+
+        .quiz-btn:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .score {
+            background: #68d391;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .distribution-demo {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 2px solid #e9ecef;
+        }
+
+        .distribution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .distribution-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .distribution-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .chart-description {
+            font-size: 0.9em;
+            color: #718096;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
+
+        .animated-chart {
+            transition: all 0.3s ease;
+        }
+
+        .animated-chart:hover {
+            transform: scale(1.05);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4299e1, #68d391);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .concept-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quiz-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -829,6 +1226,481 @@
         </div>
     </div>
 
-    <script src="common.js"></script>
+    <script>
+        // Quiz data
+        const quizData = [
+            {
+                question: "Thống kê mô tả có vai trò gì trong nghiên cứu tâm lý?",
+                options: ["Kiểm tra giả thuyết", "Tóm tắt đầy đủ về dữ liệu", "Suy luận về dân số", "Phát triển lý thuyết"],
+                correct: 1
+            },
+            {
+                question: "Điều kiện cần thiết để thống kê suy luận có giá trị là gì?",
+                options: ["Mẫu lớn", "Mẫu được thu thập ngẫu nhiên", "Dữ liệu phân phối chuẩn", "Có nhiều biến"],
+                correct: 1
+            },
+            {
+                question: "Độ lệch chuẩn SD = 2.5 trong nghiên cứu về điểm stress có nghĩa là gì?",
+                options: ["Tất cả người có stress = 2.5", "68% người có điểm stress trong khoảng M±2.5", "Chỉ có 2.5% người tham gia", "Nghiên cứu kéo dài 2.5 năm"],
+                correct: 1
+            },
+            {
+                question: "Khi SD lớn (>15), điều này cho thấy:",
+                options: ["Dữ liệu tập trung quanh mean", "Dữ liệu rất phân tán, có thể có outliers", "Nghiên cứu rất chính xác", "Kích thước mẫu quá nhỏ"],
+                correct: 1
+            },
+            {
+                question: "Thang đo nào cho phép thực hiện đầy đủ các phép toán +, -, ×, ÷?",
+                options: ["Thang đo định danh", "Thang đo thứ bậc", "Thang đo khoảng", "Thang đo tỉ lệ"],
+                correct: 3
+            },
+            {
+                question: "Trong chuỗi [1, 2, 2, 3, 4, 5], số trung vị (median) là bao nhiêu?",
+                options: ["2", "2.5", "2.83", "3"],
+                correct: 1
+            },
+            {
+                question: "Khi báo cáo Mean = 7.2, SD = 1.8, cách diễn giải đúng là:",
+                options: ["Tất cả giá trị đều bằng 7.2", "68% giá trị nằm trong khoảng 5.4-9.0", "Có 1.8% dữ liệu bị sai", "Mean chỉ chính xác với sai số 1.8"],
+                correct: 1
+            },
+            {
+                question: "Điểm trung bình của chuỗi [10, 10, 40, 30, 10] là:",
+                options: ["20", "18", "22", "15"],
+                correct: 0
+            },
+            {
+                question: "Correlation r = 0.8 có nghĩa là:",
+                options: ["Mối quan hệ yếu", "Mối quan hệ mạnh", "80% dữ liệu chính xác", "Có 0.8% sai số"],
+                correct: 1
+            },
+            {
+                question: "Phân phối chuẩn có đặc điểm gì?",
+                options: ["Mean > Median > Mode", "Mean = Median = Mode", "Mean < Median < Mode", "Không có quy luật"],
+                correct: 1
+            },
+            {
+                question: "Bước đầu tiên trong quy trình phân tích dữ liệu nghiên cứu là gì?",
+                options: ["Chạy kiểm định thống kê", "Làm sạch và mô tả dữ liệu", "Diễn giải kết quả", "Viết báo cáo"],
+                correct: 1
+            },
+            {
+                question: "P-value < 0.05 có nghĩa là:",
+                options: ["Kết quả có ý nghĩa thống kê", "5% dữ liệu bị sai", "Cần 5% mẫu thêm", "Độ tin cậy chỉ 5%"],
+                correct: 0
+            },
+            {
+                question: "Để kiểm tra phân phối chuẩn, ta thường dùng test nào?",
+                options: ["t-test", "ANOVA", "Shapiro-Wilk test", "Chi-square test"],
+                correct: 2
+            },
+            {
+                question: "Trong phân phối lệch dương, thứ tự từ trái sang phải của Mode, Median, Mean là:",
+                options: ["Mode < Median < Mean", "Mean < Median < Mode", "Mode = Median = Mean", "Median < Mode < Mean"],
+                correct: 0
+            },
+            {
+                question: "Sample size N = 25 được coi là:",
+                options: ["Mẫu lớn, rất tin cậy", "Mẫu nhỏ, cần cẩn thận với assumption", "Mẫu vừa phải", "Mẫu quá lớn"],
+                correct: 1
+            },
+            {
+                question: "Khi so sánh 2 nhóm độc lập với dữ liệu phân phối chuẩn, nên dùng:",
+                options: ["One-sample t-test", "Independent samples t-test", "Mann-Whitney U test", "Paired t-test"],
+                correct: 1
+            },
+            {
+                question: "Variance và Standard Deviation có mối quan hệ:",
+                options: ["Variance = SD²", "SD = Variance²", "Không liên quan", "SD = 2×Variance"],
+                correct: 0
+            },
+            {
+                question: "Khi dữ liệu không phân phối chuẩn và cần so sánh 2 nhóm độc lập:",
+                options: ["Independent t-test", "Mann-Whitney U test", "Paired t-test", "ANOVA"],
+                correct: 1
+            },
+            {
+                question: "Outlier thường được định nghĩa là giá trị có Z-score:",
+                options: ["< ±1.96", "> ±2.58", "> ±3.29", "< ±0.05"],
+                correct: 2
+            },
+            {
+                question: "Điều gì cần làm đầu tiên trước khi phân tích thống kê suy luận?",
+                options: ["Kiểm định giả thuyết", "Mô tả dữ liệu và kiểm tra assumption", "Tính tương quan", "Vẽ biểu đồ"],
+                correct: 1
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let quizCompleted = false;
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+            
+            // Initialize quiz if quiz section is selected
+            if (sectionId === 'quiz' && !quizCompleted) {
+                initializeQuiz();
+            }
+        }
+
+        function calculateStats() {
+            const input = document.getElementById('numbers').value;
+            const numbers = input.split(',').map(n => parseFloat(n.trim())).filter(n => !isNaN(n));
+            
+            if (numbers.length === 0) {
+                alert('Vui lòng nhập các số hợp lệ');
+                return;
+            }
+            
+            // Calculate statistics
+            const sum = numbers.reduce((a, b) => a + b, 0);
+            const mean = sum / numbers.length;
+            
+            const sortedNumbers = [...numbers].sort((a, b) => a - b);
+            let median;
+            if (sortedNumbers.length % 2 === 0) {
+                median = (sortedNumbers[sortedNumbers.length/2 - 1] + sortedNumbers[sortedNumbers.length/2]) / 2;
+            } else {
+                median = sortedNumbers[Math.floor(sortedNumbers.length/2)];
+            }
+            
+            // Find mode
+            const frequency = {};
+            numbers.forEach(num => {
+                frequency[num] = (frequency[num] || 0) + 1;
+            });
+            const maxFreq = Math.max(...Object.values(frequency));
+            const modes = Object.keys(frequency).filter(key => frequency[key] === maxFreq);
+            const mode = modes.length === numbers.length ? 'Không có' : modes.join(', ');
+            
+            // Calculate standard deviation
+            const variance = numbers.reduce((acc, num) => acc + Math.pow(num - mean, 2), 0) / numbers.length;
+            const standardDeviation = Math.sqrt(variance);
+            
+            const result = `
+                <strong>Kết quả tính toán:</strong><br>
+                Dãy số: [${numbers.join(', ')}]<br>
+                Mean (Trung bình): ${mean.toFixed(2)}<br>
+                Median (Trung vị): ${median}<br>
+                Mode (Yếu vị): ${mode}<br>
+                Standard Deviation: ${standardDeviation.toFixed(2)}<br>
+                Variance (Phương sai): ${variance.toFixed(2)}
+            `;
+            
+            document.getElementById('statsResult').innerHTML = result;
+            document.getElementById('statsResult').style.display = 'block';
+        }
+
+        function clearCalculator() {
+            document.getElementById('numbers').value = '';
+            document.getElementById('statsResult').style.display = 'none';
+        }
+
+        function updateRecommendation() {
+            const purpose = document.getElementById('purpose').value;
+            const independent = document.getElementById('independent').value;
+            const dataType = document.getElementById('dataType').value;
+            const groups = document.getElementById('groups').value;
+            const normality = document.getElementById('normality').value;
+            
+            let recommendation = '';
+            let reasoning = '';
+            
+            if (purpose && dataType) {
+                if (purpose === 'compare') {
+                    if (dataType === 'continuous') {
+                        if (groups === '1') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>One-sample t-test</strong>';
+                                reasoning = 'So sánh 1 nhóm với giá trị chuẩn, dữ liệu phân phối chuẩn';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Wilcoxon signed-rank test</strong>';
+                                reasoning = 'So sánh 1 nhóm với giá trị chuẩn, dữ liệu không phân phối chuẩn';
+                            }
+                        } else if (groups === '2') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>Independent samples t-test</strong> hoặc <strong>Paired samples t-test</strong>';
+                                reasoning = 'Chọn Independent nếu 2 nhóm độc lập, Paired nếu cùng đối tượng đo 2 lần';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Mann-Whitney U test</strong> hoặc <strong>Wilcoxon signed-rank test</strong>';
+                                reasoning = 'Mann-Whitney cho nhóm độc lập, Wilcoxon cho nhóm phụ thuộc';
+                            }
+                        } else if (groups === 'multiple') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>One-way ANOVA</strong>';
+                                reasoning = 'So sánh nhiều nhóm, dữ liệu phân phối chuẩn';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Kruskal-Wallis test</strong>';
+                                reasoning = 'So sánh nhiều nhóm, dữ liệu không phân phối chuẩn';
+                            }
+                        }
+                    } else if (dataType === 'categorical') {
+                        recommendation = '<strong>Chi-square test</strong>';
+                        reasoning = 'So sánh tỷ lệ giữa các nhóm với dữ liệu phân loại';
+                    }
+                } else if (purpose === 'relationship') {
+                    if (dataType === 'continuous') {
+                        if (independent === '1') {
+                            if (normality === 'yes') {
+                                recommendation = '<strong>Pearson correlation</strong>';
+                                reasoning = 'Tương quan giữa 2 biến liên tục, phân phối chuẩn';
+                            } else if (normality === 'no') {
+                                recommendation = '<strong>Spearman correlation</strong>';
+                                reasoning = 'Tương quan giữa 2 biến, dữ liệu không phân phối chuẩn';
+                            }
+                        } else if (independent === 'multiple') {
+                            recommendation = '<strong>Multiple correlation/Partial correlation</strong>';
+                            reasoning = 'Tương quan giữa nhiều biến';
+                        }
+                    } else if (dataType === 'ordinal') {
+                        recommendation = '<strong>Spearman correlation</strong>';
+                        reasoning = 'Tương quan với dữ liệu thứ bậc';
+                    }
+                } else if (purpose === 'predict') {
+                    if (dataType === 'continuous') {
+                        if (independent === '1') {
+                            recommendation = '<strong>Simple Linear Regression</strong>';
+                            reasoning = 'Dự báo biến liên tục từ 1 biến dự báo';
+                        } else if (independent === 'multiple') {
+                            recommendation = '<strong>Multiple Linear Regression</strong>';
+                            reasoning = 'Dự báo biến liên tục từ nhiều biến dự báo';
+                        }
+                    } else if (dataType === 'categorical') {
+                        recommendation = '<strong>Logistic Regression</strong>';
+                        reasoning = 'Dự báo biến phân loại (binary hoặc multinomial)';
+                    }
+                }
+                
+                if (recommendation) {
+                    document.getElementById('testRecommendation').innerHTML = `
+                        <h4>🎯 Kiểm định được đề xuất:</h4>
+                        <p style="font-size: 1.2em; color: #2d5a2d; margin: 10px 0;">${recommendation}</p>
+                        <p><strong>Lý do:</strong> ${reasoning}</p>
+                        <div style="margin-top: 15px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                            <strong>💡 Checklist trước khi chạy:</strong><br>
+                            ✓ Kiểm tra missing data<br>
+                            ✓ Loại bỏ outliers (nếu cần)<br>
+                            ✓ Kiểm tra assumption của test<br>
+                            ✓ Tính effect size
+                        </div>
+                    `;
+                    document.getElementById('testRecommendation').style.display = 'block';
+                } else {
+                    document.getElementById('testRecommendation').style.display = 'none';
+                }
+            } else {
+                document.getElementById('testRecommendation').style.display = 'none';
+            }
+        }
+
+        function interpretSD() {
+            const mean = parseFloat(document.getElementById('meanInput').value);
+            const sd = parseFloat(document.getElementById('sdInput').value);
+            
+            if (isNaN(mean) || isNaN(sd) || sd <= 0) {
+                alert('Vui lòng nhập giá trị hợp lệ');
+                return;
+            }
+            
+            // Calculate ranges
+            const oneSdLower = mean - sd;
+            const oneSdUpper = mean + sd;
+            const twoSdLower = mean - (2 * sd);
+            const twoSdUpper = mean + (2 * sd);
+            
+            // Determine SD interpretation
+            let sdLevel = '';
+            let sdColor = '';
+            let interpretation = '';
+            
+            if (sd <= 5) {
+                sdLevel = 'THẤP - Dữ liệu đồng đều';
+                sdColor = '#c6f6d5';
+                interpretation = 'Dữ liệu rất tập trung quanh giá trị trung bình. Nhóm nghiên cứu có đặc điểm tương đối đồng nhất.';
+            } else if (sd <= 15) {
+                sdLevel = 'TRUNG BÌNH - Dữ liệu cân bằng';
+                sdColor = '#bee3f8';
+                interpretation = 'Mức độ biến thiên bình thường. Dữ liệu có sự phân tán hợp lý và phù hợp cho hầu hết phân tích thống kê.';
+            } else {
+                sdLevel = 'CAO - Dữ liệu phân tán';
+                sdColor = '#fed7d7';
+                interpretation = 'Dữ liệu rất phân tán. Cần kiểm tra outliers và xem xét việc chia nhóm phụ hoặc sử dụng median thay vì mean.';
+            }
+            
+            const result = `
+                <div style="background: ${sdColor}; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <h4>📊 Phân tích độ lệch chuẩn: SD = ${sd}</h4>
+                    <p><strong>Mức độ:</strong> ${sdLevel}</p>
+                    <p><strong>Giải thích:</strong> ${interpretation}</p>
+                </div>
+                
+                <div style="background: #f7fafc; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <h4>📏 Phạm vi dự đoán:</h4>
+                    <p><strong>68% dữ liệu nằm trong:</strong> ${oneSdLower.toFixed(1)} - ${oneSdUpper.toFixed(1)}</p>
+                    <p><strong>95% dữ liệu nằm trong:</strong> ${twoSdLower.toFixed(1)} - ${twoSdUpper.toFixed(1)}</p>
+                </div>
+                
+                <div style="background: #e6fffa; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #38b2ac;">
+                    <h4>💡 Ý nghĩa thực tế:</h4>
+                    <p>Với Mean = ${mean} và SD = ${sd}:</p>
+                    <ul style="margin-left: 20px;">
+                        <li>Nếu bạn chọn ngẫu nhiên 1 người từ nhóm này, có 68% khả năng giá trị của họ nằm trong khoảng ${oneSdLower.toFixed(1)} - ${oneSdUpper.toFixed(1)}</li>
+                        <li>Giá trị ${(mean + sd).toFixed(1)} được coi là "cao hơn trung bình 1 độ lệch chuẩn"</li>
+                        <li>Giá trị ${(mean - sd).toFixed(1)} được coi là "thấp hơn trung bình 1 độ lệch chuẩn"</li>
+                    </ul>
+                </div>
+                
+                <div style="background: #fff5cd; padding: 15px; border-radius: 8px; margin: 10px 0; border-left: 4px solid #ecc94b;">
+                    <h4>📝 Cách viết trong báo cáo:</h4>
+                    <p><em>"Kết quả cho thấy giá trị trung bình là ${mean} (SD = ${sd}), cho thấy ${interpretation.toLowerCase()} Dữ liệu được phân phối với 68% giá trị nằm trong khoảng ${oneSdLower.toFixed(1)} đến ${oneSdUpper.toFixed(1)}."</em></p>
+                </div>
+            `;
+            
+            document.getElementById('sdInterpretation').innerHTML = result;
+            document.getElementById('sdInterpretation').style.display = 'block';
+        }
+
+        function initializeQuiz() {
+            currentQuestion = 0;
+            userAnswers = [];
+            quizCompleted = false;
+            document.getElementById('finalScore').style.display = 'none';
+            displayQuestion();
+        }
+
+        function displayQuestion() {
+            const question = quizData[currentQuestion];
+            const questionsContainer = document.getElementById('quizQuestions');
+            
+            questionsContainer.innerHTML = `
+                <div class="question">
+                    <h3>Câu ${currentQuestion + 1}: ${question.question}</h3>
+                    <div class="options">
+                        ${question.options.map((option, index) => `
+                            <div class="option" onclick="selectOption(${index})">
+                                <input type="radio" name="q${currentQuestion}" value="${index}" id="option${index}">
+                                <label for="option${index}">${String.fromCharCode(65 + index)}. ${option}</label>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            
+            // Update progress
+            const progress = ((currentQuestion + 1) / quizData.length) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+            document.getElementById('scoreDisplay').textContent = `Câu hỏi: ${currentQuestion + 1}/${quizData.length}`;
+            
+            // Update buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === quizData.length - 1 ? 'Kết thúc' : 'Câu tiếp';
+            
+            // Restore previous answer if exists
+            if (userAnswers[currentQuestion] !== undefined) {
+                const radio = document.querySelector(`input[value="${userAnswers[currentQuestion]}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    radio.closest('.option').classList.add('selected');
+                }
+            }
+        }
+
+        function selectOption(optionIndex) {
+            // Clear previous selections
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Select new option
+            const selectedOption = document.querySelector(`input[value="${optionIndex}"]`);
+            selectedOption.checked = true;
+            selectedOption.closest('.option').classList.add('selected');
+            
+            userAnswers[currentQuestion] = optionIndex;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < quizData.length - 1) {
+                currentQuestion++;
+                displayQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                displayQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            let score = 0;
+            for (let i = 0; i < quizData.length; i++) {
+                if (userAnswers[i] === quizData[i].correct) {
+                    score++;
+                }
+            }
+            
+            quizCompleted = true;
+            document.getElementById('quizQuestions').style.display = 'none';
+            document.querySelector('.quiz-controls').style.display = 'none';
+            document.getElementById('finalScore').style.display = 'block';
+            document.getElementById('finalScoreValue').textContent = score;
+            
+            // Show detailed results
+            let resultsHTML = '<div style="margin-top: 20px; text-align: left;"><h4>Chi tiết kết quả:</h4>';
+            for (let i = 0; i < quizData.length; i++) {
+                const isCorrect = userAnswers[i] === quizData[i].correct;
+                const userAnswer = userAnswers[i] !== undefined ? quizData[i].options[userAnswers[i]] : 'Không trả lời';
+                const correctAnswer = quizData[i].options[quizData[i].correct];
+                
+                resultsHTML += `
+                    <p style="margin: 10px 0; padding: 10px; background: ${isCorrect ? '#c6f6d5' : '#fed7d7'}; border-radius: 5px;">
+                        <strong>Câu ${i + 1}:</strong> ${isCorrect ? '✓' : '✗'}<br>
+                        <small>Đáp án của bạn: ${userAnswer}</small><br>
+                        ${!isCorrect ? `<small>Đáp án đúng: ${correctAnswer}</small>` : ''}
+                    </p>
+                `;
+            }
+            resultsHTML += '</div>';
+            
+            document.getElementById('finalScore').innerHTML += resultsHTML;
+        }
+
+        function restartQuiz() {
+            document.getElementById('finalScore').innerHTML = `
+                <h3>Kết quả bài thi</h3>
+                <div class="score" style="font-size: 1.5em; margin: 20px 0;">
+                    Điểm số: <span id="finalScoreValue"></span>/20
+                </div>
+                <button class="quiz-btn" onclick="restartQuiz()">Làm lại</button>
+            `;
+            document.getElementById('quizQuestions').style.display = 'block';
+            document.querySelector('.quiz-controls').style.display = 'flex';
+            initializeQuiz();
+        }
+
+        // Initialize the lesson
+        document.addEventListener('DOMContentLoaded', function() {
+            // Any initialization code here
+        });
+    </script>
 </body>
 </html>

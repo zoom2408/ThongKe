@@ -3,863 +3,1507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hướng Dẫn Đọc và Diễn Giải Kết Quả Thống Kê</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Chi-square & t-test - Học tập Interactive</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #C8B5E8 0%, #E8D5F2 100%);
+            min-height: 100vh;
+            color: #2D3E50;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><circle cx="100" cy="100" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="200" cy="150" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="300" cy="80" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="400" cy="120" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="500" cy="90" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="600" cy="130" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="700" cy="110" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="800" cy="140" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="900" cy="85" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="1000" cy="125" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="1100" cy="95" r="3" fill="%23F6A5B7" opacity="0.6"/></svg>') repeat;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '📏';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 2em;
+            transform: rotate(-15deg);
+        }
+        
+        .header::after {
+            content: '✏️';
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 1.8em;
+            transform: rotate(25deg);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.3em;
+            color: #34495E;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .tab-button {
+            padding: 18px 35px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #F6A5B7;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2C3E50;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(246, 165, 183, 0.2);
+            position: relative;
+        }
+
+        .tab-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(246, 165, 183, 0.3);
+            background: #F6A5B7;
+            color: white;
+        }
+
+        .tab-button.active {
+            background: #F6A5B7;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(246, 165, 183, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #2C3E50;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 60px;
+            height: 60px;
+            background: #F6A5B7;
+            border-radius: 50%;
+            display: inline-block;
+            border: 4px solid #2C3E50;
+            box-shadow: 0 5px 15px rgba(246, 165, 183, 0.3);
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #F6A5B7, #C8B5E8);
+            border-radius: 2px;
+        }
+
+        .section h3 {
+            color: #2C3E50;
+            font-size: 1.6em;
+            margin: 30px 0 20px 0;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, #F6A5B7, #FFB6C1);
+            border-radius: 15px;
+            border-left: 6px solid #2C3E50;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 5px 15px rgba(246, 165, 183, 0.3);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border-left: 6px solid #F6A5B7;
+            box-shadow: 0 8px 25px rgba(246, 165, 183, 0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(246, 165, 183, 0.25);
+        }
+
+        .card::before {
+            content: '📐';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+            opacity: 0.6;
+            transform: rotate(15deg);
+        }
+        
+        .formula-box::before {
+            content: '🧮';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.8em;
+        }
+        
+        .interactive-demo::before {
+            content: '🎯';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 25px 0;
+            font-size: 1.4em;
+            box-shadow: 0 12px 35px rgba(44, 62, 80, 0.3);
+            border: 4px solid #F6A5B7;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border-left: 6px solid #F6A5B7;
+            border: 2px solid #F6A5B7;
+            box-shadow: 0 8px 25px rgba(246, 165, 183, 0.2);
+        }
+
+        .requirement-list {
+            background: #f0fff4;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #48bb78;
+            margin: 15px 0;
+        }
+
+        .requirement-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirement-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .requirement-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .interactive-demo {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .demo-controls {
+            margin: 20px 0;
+        }
+
+        .demo-controls input, .demo-controls select {
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #4299e1;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .demo-button {
+            background: #4299e1;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .result-box {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #4299e1;
+            min-height: 50px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th {
+            background: #4299e1;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: #e2e8f0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4299e1;
+        }
+
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            background: #4299e1;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>🔢 Hướng Dẫn Đọc Kết Quả Thống Kê</h1>
-            <p>Học cách diễn giải số liệu thống kê một cách chính xác và hiệu quả</p>
+            <h1>📊 CHI-SQUARE & T-TEST</h1>
+            <p>Học tập tương tác - Lý thuyết và Thực hành</p>
+            <p><em>ThS. Lê Nguyễn Sơn Tùng</em></p>
         </div>
 
-        <div class="tabs">
-            <button class="tab active" onclick="showSection('descriptive')">
-                📊 Thống Kê Mô Tả
-            </button>
-            <button class="tab" onclick="showSection('inferential')">
-                🔬 Thống Kê Suy Luận
-            </button>
-            <button class="tab" onclick="showSection('tests')">
-                🧪 Các Loại Test
-            </button>
-            <button class="tab" onclick="showSection('errors')">
-                ⚠️ Lỗi Thống Kê
-            </button>
-            <button class="tab" onclick="showSection('apa')">
-                📝 Báo Cáo APA
-            </button>
-            <button class="tab" onclick="showSection('practice')">
-                💪 Thực Hành
-            </button>
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="openTab(event, 'overview')">📋 Tổng quan</button>
+            <button class="tab-button" onclick="openTab(event, 'chi-square')">🔍 Chi-square</button>
+            <button class="tab-button" onclick="openTab(event, 't-test')">📈 t-test</button>
+            <button class="tab-button" onclick="openTab(event, 'practice')">🎯 Thực hành</button>
+            <button class="tab-button" onclick="openTab(event, 'quiz')">❓ Kiểm tra</button>
         </div>
 
-        <div class="content">
-            <!-- Thống kê mô tả -->
-            <div id="descriptive" class="section active">
-                <h2>📈 Cách Đọc Bảng Thống Kê Mô Tả</h2>
-                
-                <div class="example-box">
-                    <div class="example-title">Ví dụ: Điểm thi Toán lớp 5A (N=30)</div>
-                    <p>Dưới đây là kết quả thống kê mô tả từ phần mềm JAMOVI. Click vào từng chỉ số để xem cách diễn giải:</p>
-                </div>
-
-                <div class="stats-table">
-                    <div class="interactive-row" onclick="toggleInterpretation('n-interp')">
-                        <span class="stat-name">N (Cỡ mẫu) <span class="info-icon tooltip" data-tooltip="Số lượng quan sát trong mẫu">i</span></span>
-                        <span class="stat-value">30</span>
-                    </div>
-                    <div id="n-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> Có 30 học sinh tham gia khảo sát. Đây là cỡ mẫu vừa phải, đủ để áp dụng định lý giới hạn trung tâm (n ≥ 30).
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('mean-interp')">
-                        <span class="stat-name">Mean (Trung bình) <span class="info-icon tooltip" data-tooltip="Giá trị trung bình cộng">i</span></span>
-                        <span class="stat-value">7.27</span>
-                    </div>
-                    <div id="mean-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> Điểm trung bình của lớp là 7.27/10. Đây là điểm khá tốt, cho thấy học sinh có năng lực ở mức trung bình khá.
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('median-interp')">
-                        <span class="stat-name">Median (Trung vị) <span class="info-icon tooltip" data-tooltip="Giá trị ở giữa khi sắp xếp tăng dần">i</span></span>
-                        <span class="stat-value">8.00</span>
-                    </div>
-                    <div id="median-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> 50% học sinh có điểm ≤ 8.0 và 50% có điểm ≥ 8.0. Median > Mean cho thấy có thể có một số điểm thấp kéo trung bình xuống.
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('mode-interp')">
-                        <span class="stat-name">Mode (Yếu vị) <span class="info-icon tooltip" data-tooltip="Giá trị xuất hiện nhiều nhất">i</span></span>
-                        <span class="stat-value">8.00</span>
-                    </div>
-                    <div id="mode-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> Điểm 8.0 là điểm xuất hiện nhiều nhất trong lớp. Điều này có thể cho thấy đây là mức điểm "phổ biến" của lớp.
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('sd-interp')">
-                        <span class="stat-name">Standard Deviation <span class="info-icon tooltip" data-tooltip="Độ lệch chuẩn - đo mức độ phân tán">i</span></span>
-                        <span class="stat-value">2.27</span>
-                    </div>
-                    <div id="sd-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> Độ lệch chuẩn là 2.27 điểm. Điều này có nghĩa là:
-                        <ul style="margin: 10px 0; padding-left: 20px;">
-                            <li>Khoảng 68% học sinh có điểm trong khoảng 5.0 - 9.54 (Mean ± 1SD)</li>
-                            <li>Khoảng 95% học sinh có điểm trong khoảng 2.73 - 11.81 (Mean ± 2SD)</li>
-                            <li>Độ lệch khá cao, cho thấy điểm số khá phân tán</li>
-                        </ul>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('skew-interp')">
-                        <span class="stat-name">Skewness (Độ lệch) <span class="info-icon tooltip" data-tooltip="Đo mức độ bất đối xứng của phân phối">i</span></span>
-                        <span class="stat-value">-0.920</span>
-                    </div>
-                    <div id="skew-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> Skewness = -0.920 (lệch âm mạnh):
-                        <div class="distribution-viz">
-                            <div class="normal-curve skewed-left"></div>
-                            <div style="margin-left: 20px;">
-                                <strong>Phân phối lệch trái</strong><br>
-                                • Đuôi dài về phía trái<br>
-                                • Nhiều học sinh đạt điểm cao<br>
-                                • Một số ít có điểm thấp
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('kurt-interp')">
-                        <span class="stat-name">Kurtosis (Độ nhọn) <span class="info-icon tooltip" data-tooltip="Đo độ nhọn của phân phối">i</span></span>
-                        <span class="stat-value">0.614</span>
-                    </div>
-                    <div id="kurt-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> Kurtosis = 0.614 < 3 (platykurtic - phân phối bẹt):
-                        <ul style="margin: 10px 0; padding-left: 20px;">
-                            <li>Phân phối bẹt hơn so với phân phối chuẩn</li>
-                            <li>Ít giá trị cực đoan (outliers)</li>
-                            <li>Dữ liệu phân bố tương đối đồng đều</li>
-                        </ul>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('shapiro-interp')">
-                        <span class="stat-name">Shapiro-Wilk p-value <span class="info-icon tooltip" data-tooltip="Kiểm định tính chuẩn của phân phối">i</span></span>
-                        <span class="stat-value">0.023</span>
-                    </div>
-                    <div id="shapiro-interp" class="interpretation">
-                        <strong>Diễn giải:</strong> p = 0.023 < 0.05:
-                        <div class="warning-box">
-                            <strong>⚠️ Kết luận:</strong> Bác bỏ H₀, dữ liệu KHÔNG có phân phối chuẩn.<br>
-                            <strong>Hậu quả:</strong> Nên cân nhắc sử dụng:
-                            <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>Kiểm định phi tham số thay vì tham số</li>
-                                <li>Biến đổi dữ liệu (log, căn bậc 2, v.v.)</li>
-                                <li>Báo cáo median thay vì mean</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">Kết luận tổng thể cho bài toán</div>
-                    <p><strong>Báo cáo theo APA:</strong></p>
-                    <p style="font-style: italic; background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        "Kiểm tra thống kê mô tả đối với kết quả thi môn Toán của lớp 5A cho thấy dữ liệu có M=7.27, SD=2.27. 
-                        Dữ liệu có Min=1 và Max=10. Phân phối dữ liệu bị lệch âm với Skewness=-0.92. 
-                        Tập dữ liệu có 1 điểm dị biệt và Shapiro-Wilk p=0.023 cho thấy dữ liệu không tuân theo phân phối chuẩn."
-                    </p>
-                </div>
-            </div>
-
-            <!-- Thống kê suy luận -->
-            <div id="inferential" class="section">
-                <h2>🔬 Cách Đọc Kết Quả Kiểm Định Giả Thuyết</h2>
-
-                <div class="hypothesis-card">
-                    <h3>📋 Các Bước Diễn Giải Kết Quả</h3>
-                    <div style="text-align: left; margin-top: 20px;">
-                        <div style="margin: 10px 0;">✅ <strong>Bước 1:</strong> Xác định giả thuyết H₀ và H₁</div>
-                        <div style="margin: 10px 0;">✅ <strong>Bước 2:</strong> Kiểm tra p-value so với α (thường α = 0.05)</div>
-                        <div style="margin: 10px 0;">✅ <strong>Bước 3:</strong> Đưa ra kết luận thống kê</div>
-                        <div style="margin: 10px 0;">✅ <strong>Bước 4:</strong> Tính toán và diễn giải Effect Size</div>
-                        <div style="margin: 10px 0;">✅ <strong>Bước 5:</strong> Đưa ra kết luận thực tiễn</div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">Ví dụ: So sánh hiệu quả của 2 chế độ ăn cho chuột</div>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>Câu hỏi nghiên cứu:</strong> Chế độ ăn A và B có khác nhau về tuổi thọ của chuột không?<br>
-                        <strong>Kiểm định:</strong> Independent t-test<br>
-                        <strong>Kết quả:</strong> t(80) = -12.75; p < 0.01; Cohen's d = 2.84
-                    </div>
-                </div>
-
-                <div class="stats-table">
-                    <h4>🔍 Phân Tích Từng Thành Phần</h4>
-                    
-                    <div class="interactive-row" onclick="toggleInterpretation('hyp-interp')">
-                        <span class="stat-name">Giả thuyết <span class="info-icon tooltip" data-tooltip="H₀ và H₁">i</span></span>
-                        <span class="stat-value">H₀: μ₁ = μ₂</span>
-                    </div>
-                    <div id="hyp-interp" class="interpretation">
-                        <strong>Giả thuyết:</strong>
-                        <ul style="margin: 10px 0; padding-left: 20px;">
-                            <li><strong>H₀:</strong> Không có sự khác biệt về tuổi thọ trung bình giữa 2 chế độ ăn (μ₁ = μ₂)</li>
-                            <li><strong>H₁:</strong> Có sự khác biệt về tuổi thọ trung bình giữa 2 chế độ ăn (μ₁ ≠ μ₂)</li>
-                        </ul>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('test-stat-interp')">
-                        <span class="stat-name">Test Statistic <span class="info-icon tooltip" data-tooltip="Giá trị thống kê kiểm định">i</span></span>
-                        <span class="stat-value">t(80) = -12.75</span>
-                    </div>
-                    <div id="test-stat-interp" class="interpretation">
-                        <strong>Diễn giải:</strong>
-                        <ul style="margin: 10px 0; padding-left: 20px;">
-                            <li><strong>t = -12.75:</strong> Giá trị t rất lớn (theo giá trị tuyệt đối), cho thấy sự khác biệt rõ rệt</li>
-                            <li><strong>df = 80:</strong> Bậc tự do = n₁ + n₂ - 2</li>
-                            <li><strong>Dấu âm:</strong> Nhóm 1 (chế độ A) có giá trị thấp hơn nhóm 2 (chế độ B)</li>
-                        </ul>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('pvalue-interp')">
-                        <span class="stat-name">P-value <span class="info-icon tooltip" data-tooltip="Xác suất quan sát kết quả này nếu H₀ đúng">i</span></span>
-                        <span class="stat-value">p < 0.01</span>
-                    </div>
-                    <div id="pvalue-interp" class="interpretation">
-                        <strong>Diễn giải p-value:</strong>
-                        <div class="p-value-indicator significant">
-                            p < 0.01 < α = 0.05 ➜ CÓ Ý NGHĨA THỐNG KÊ
-                        </div>
-                        <div class="result-display">
-                            <strong>🎯 Kết luận thống kê:</strong> Bác bỏ H₀. Có bằng chứng thống kê mạnh cho thấy 
-                            có sự khác biệt có ý nghĩa về tuổi thọ trung bình giữa 2 chế độ ăn.
-                        </div>
-                        <p><strong>Ý nghĩa:</strong> Chỉ có <1% khả năng quan sát được sự khác biệt này một cách ngẫu nhiên nếu thực tế không có sự khác biệt.</p>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('effect-interp')">
-                        <span class="stat-name">Effect Size (Cohen's d) <span class="info-icon tooltip" data-tooltip="Đo mức độ khác biệt thực tế">i</span></span>
-                        <span class="stat-value">2.84</span>
-                    </div>
-                    <div id="effect-interp" class="interpretation">
-                        <strong>Diễn giải Effect Size:</strong>
-                        <div class="effect-size-meter">
-                            <div class="effect-bar" style="width: 100%;"></div>
-                        </div>
-                        <div class="effect-labels">
-                            <span>Nhỏ (0.2)</span>
-                            <span>Trung bình (0.5)</span>
-                            <span>Lớn (0.8+)</span>
-                        </div>
-                        <div class="result-display">
-                            <strong>🔥 Cohen's d = 2.84 ➜ EFFECT SIZE RẤT LỚN</strong><br>
-                            Sự khác biệt giữa 2 nhóm là 2.84 lần độ lệch chuẩn - một sự khác biệt rất lớn về mặt thực tiễn.
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">Báo cáo kết quả hoàn chỉnh theo APA</div>
-                    <p style="font-style: italic; background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        "Trong quá trình so sánh chế độ ăn A và chế độ ăn B của chuột, chúng tôi thấy rằng tuổi thọ của 
-                        chế độ ăn A (M = 2.1 năm; SD = 0.12) ngắn hơn đáng kể so với tuổi thọ của chế độ ăn B 
-                        (M = 2.6 năm; SD = 0.1), với sự khác biệt trung bình là 6 tháng (t(80) = -12.75; p < 0.01; 
-                        Cohen's d = 2.84). Kết quả cho thấy chế độ ăn B có tác động tích cực rất lớn đến tuổi thọ của chuột."
-                    </p>
-                </div>
-
-                <div class="warning-box">
-                    <strong>⚠️ Lưu ý quan trọng:</strong>
-                    <ul style="margin: 10px 0; padding-left: 20px;">
-                        <li><strong>Ý nghĩa thống kê ≠ Ý nghĩa thực tiễn:</strong> Luôn cần xem xét Effect Size</li>
-                        <li><strong>Tương quan ≠ Nhân quả:</strong> Kết quả có ý nghĩa không có nghĩa là có mối quan hệ nhân quả</li>
-                        <li><strong>Cỡ mẫu lớn:</strong> Với cỡ mẫu rất lớn, ngay cả sự khác biệt nhỏ cũng có thể có ý nghĩa thống kê</li>
+        <!-- Tổng quan -->
+        <div id="overview" class="tab-content active">
+            <div class="section">
+                <h2>🎯 Mục tiêu học tập</h2>
+                <div class="card">
+                    <h3>Sau khi hoàn thành bài học này, sinh viên sẽ có thể:</h3>
+                    <ul style="list-style-type: none; padding-left: 0;">
+                        <li>✅ Hiểu được khái niệm và ứng dụng của Chi-square test</li>
+                        <li>✅ Phân biệt các loại t-test và cách sử dụng</li>
+                        <li>✅ Thực hiện các bước kiểm định giả thuyết</li>
+                        <li>✅ Áp dụng vào các tình huống thực tế</li>
+                        <li>✅ Sử dụng phần mềm thống kê (Jamovi)</li>
                     </ul>
                 </div>
             </div>
 
-            <!-- Các loại test -->
-            <div id="tests" class="section">
-                <h2>🧪 Test Tham Số vs Phi Tham Số</h2>
+            <div class="section">
+                <h2>📚 So sánh Chi-square và t-test</h2>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>Chi-square</th>
+                            <th>t-test</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Loại dữ liệu</strong></td>
+                            <td>Dữ liệu phân loại (categorical)</td>
+                            <td>Dữ liệu định lượng (quantitative)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Mục đích</strong></td>
+                            <td>Kiểm tra mối quan hệ/phân phối tần suất</td>
+                            <td>So sánh giá trị trung bình</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Phân phối</strong></td>
+                            <td>Phân phối Chi-square</td>
+                            <td>Phân phối t</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Tham số</strong></td>
+                            <td>Bậc tự do (df)</td>
+                            <td>Bậc tự do (df)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="section">
+                <h2>🎯 Cách lựa chọn test phù hợp</h2>
                 
-                <div class="stats-table">
-                    <h4>🎯 Khi nào dùng test nào?</h4>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin: 20px 0;">
-                        <div style="background: #e3f2fd; padding: 20px; border-radius: 15px;">
-                            <h5 style="color: #1976d2; margin-bottom: 15px;">✅ TEST THAM SỐ</h5>
-                            <div style="margin-bottom: 10px;"><strong>Điều kiện:</strong></div>
-                            <ul style="padding-left: 20px; margin-bottom: 15px;">
-                                <li>Dữ liệu có phân phối chuẩn</li>
-                                <li>Phương sai đồng nhất</li>
-                                <li>Cỡ mẫu đủ lớn (n ≥ 30)</li>
-                                <li>Biến liên tục</li>
-                            </ul>
-                            <div style="margin-bottom: 10px;"><strong>Ưu điểm:</strong></div>
-                            <ul style="padding-left: 20px;">
-                                <li>Sức mạnh thống kê cao</li>
-                                <li>Chính xác hơn</li>
-                                <li>Dễ diễn giải</li>
+                <div class="card">
+                    <h3>🤔 Chi-square hay t-test? - Dựa vào loại dữ liệu!</h3>
+                    <div class="highlight">
+                        <p><strong>Quy tắc vàng:</strong> Loại dữ liệu quyết định loại test!</p>
+                        <ul style="list-style-type: none; padding-left: 0; margin-top: 15px;">
+                            <li>📊 <strong>Dữ liệu phân loại (categorical)</strong> → Chi-square</li>
+                            <li>📈 <strong>Dữ liệu định lượng (quantitative)</strong> → t-test</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🧭 Decision Tree - Chọn test nào?</h3>
+                    <div style="text-align: left; max-width: 800px; margin: 0 auto;">
+                        <div style="background: white; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                            <strong>Bước 1: Xác định loại biến phụ thuộc</strong>
+                            <ul>
+                                <li>📝 <strong>Biến phân loại:</strong> Giới tính, màu sắc, nghề nghiệp, có/không...</li>
+                                <li>🔢 <strong>Biến định lượng:</strong> Tuổi, điểm số, thu nhập, chiều cao...</li>
                             </ul>
                         </div>
                         
-                        <div style="background: #fff3e0; padding: 20px; border-radius: 15px;">
-                            <h5 style="color: #f57c00; margin-bottom: 15px;">🔄 TEST PHI THAM SỐ</h5>
-                            <div style="margin-bottom: 10px;"><strong>Khi nào dùng:</strong></div>
-                            <ul style="padding-left: 20px; margin-bottom: 15px;">
-                                <li>Dữ liệu không có phân phối chuẩn</li>
-                                <li>Cỡ mẫu nhỏ (n < 30)</li>
-                                <li>Dữ liệu thứ bậc (ordinal)</li>
-                                <li>Có outliers nhiều</li>
-                            </ul>
-                            <div style="margin-bottom: 10px;"><strong>Ưu điểm:</strong></div>
-                            <ul style="padding-left: 20px;">
-                                <li>Không yêu cầu giả định nghiêm ngặt</li>
-                                <li>Robust với outliers</li>
-                                <li>Linh hoạt hơn</li>
-                            </ul>
+                        <div style="background: white; padding: 20px; border-radius: 15px; margin: 15px 0;">
+                            <strong>Bước 2: Áp dụng quy tắc</strong>
+                            <div style="display: flex; justify-content: space-between; margin-top: 15px; gap: 15px;">
+                                <div style="flex: 1; background: #FFE4E1; padding: 15px; border-radius: 10px; border: 2px solid #F6A5B7;">
+                                    <strong>CHI-SQUARE</strong><br>
+                                    ✅ Biến phân loại<br>
+                                    ✅ Tần suất/tỷ lệ<br>
+                                    ✅ Mối quan hệ giữa 2 biến phân loại
+                                </div>
+                                <div style="flex: 1; background: #F0FFF4; padding: 15px; border-radius: 10px; border: 2px solid #F6A5B7;">
+                                    <strong>T-TEST</strong><br>
+                                    ✅ Biến định lượng<br>
+                                    ✅ So sánh trung bình<br>
+                                    ✅ Phân phối chuẩn
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="example-box">
-                    <div class="example-title">🔍 Bảng Chọn Test Phù Hợp</div>
-                    <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
-                        <thead>
-                            <tr style="background: #2193b0; color: white;">
-                                <th style="padding: 12px; border: 1px solid #ddd;">Mục đích</th>
-                                <th style="padding: 12px; border: 1px solid #ddd;">Biến độc lập</th>
-                                <th style="padding: 12px; border: 1px solid #ddd;">Biến phụ thuộc</th>
-                                <th style="padding: 12px; border: 1px solid #ddd;">Test Tham Số</th>
-                                <th style="padding: 12px; border: 1px solid #ddd;">Test Phi Tham Số</th>
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Tình huống</th>
+                            <th>Loại dữ liệu</th>
+                            <th>Test phù hợp</th>
+                            <th>Ví dụ</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>So sánh tỷ lệ nam/nữ trong các ngành nghề</td>
+                            <td>Phân loại + Phân loại</td>
+                            <td><strong>Chi-square independence</strong></td>
+                            <td>Giới tính vs Ngành nghề</td>
+                        </tr>
+                        <tr>
+                            <td>Kiểm tra phân phối màu sắc yêu thích</td>
+                            <td>Phân loại (1 biến)</td>
+                            <td><strong>Chi-square goodness of fit</strong></td>
+                            <td>Đỏ, Xanh, Vàng với tỷ lệ mong đợi</td>
+                        </tr>
+                        <tr>
+                            <td>So sánh điểm trung bình nam vs nữ</td>
+                            <td>Phân loại + Định lượng</td>
+                            <td><strong>Independent t-test</strong></td>
+                            <td>Giới tính vs Điểm số</td>
+                        </tr>
+                        <tr>
+                            <td>So sánh điểm before-after</td>
+                            <td>Định lượng (cùng đối tượng)</td>
+                            <td><strong>Paired t-test</strong></td>
+                            <td>Điểm trước vs Điểm sau</td>
+                        </tr>
+                        <tr>
+                            <td>So sánh điểm TB với chuẩn quốc gia</td>
+                            <td>Định lượng vs Giá trị cố định</td>
+                            <td><strong>One sample t-test</strong></td>
+                            <td>Điểm mẫu vs 70 điểm</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="card">
+                    <h3>⚠️ Lưu ý quan trọng</h3>
+                    <div class="requirement-list">
+                        <ul>
+                            <li><strong>Chi-square:</strong> Nếu có biến định lượng thì chuyển sang các dạng thống kê khác</li>
+                            <li><strong>t-test:</strong> Biến độc lập là dữ liệu chữ, biến phụ thuộc phải là dữ liệu số</li>
+                            <li><strong>Thang đo:</strong> Nominal/Ordinal → Chi-square, Interval/Ratio → t-test</li>
+                            <li><strong>Kích thước mẫu:</strong> Chi-square cần tần suất kỳ vọng ≥ 5 mỗi ô</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🎯 Test thử kiến thức</h3>
+                    <div class="demo-controls">
+                        <p><strong>Tình huống:</strong> "Nghiên cứu mối quan hệ giữa việc hút thuốc (có/không) và bệnh ung thư phổi (có/không)"</p>
+                        <select id="situationTest" style="margin: 10px; font-size: 1.1em;">
+                            <option value="">-- Chọn test phù hợp --</option>
+                            <option value="chi">Chi-square test of independence</option>
+                            <option value="t1">One sample t-test</option>
+                            <option value="t2">Independent t-test</option>
+                            <option value="t3">Paired t-test</option>
+                        </select>
+                        <br>
+                        <button class="demo-button" onclick="checkSituation()">Kiểm tra đáp án</button>
+                    </div>
+                    <div class="result-box" id="situationResult">Hãy chọn test phù hợp...</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>🔄 Quy trình chung kiểm định giả thuyết</h2>
+                <div class="step-container">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <strong>Thiết lập giả thuyết:</strong> H₀ (giả thuyết không) và H₁ (giả thuyết thay thế)
+                    </div>
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <strong>Chọn mức ý nghĩa:</strong> α (thường là 0.05)
+                    </div>
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <strong>Tính toán thống kê kiểm định:</strong> χ² hoặc t
+                    </div>
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <strong>Xác định giá trị tới hạn:</strong> Dựa vào bảng phân phối
+                    </div>
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <strong>Đưa ra kết luận:</strong> Bác bỏ hay không bác bỏ H₀
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chi-square -->
+        <div id="chi-square" class="tab-content">
+            <div class="section">
+                <h2>🔍 Kiểm định Chi-square</h2>
+                
+                <div class="card">
+                    <h3>Định nghĩa</h3>
+                    <p>Kiểm định Chi-square của Pearson là một kiểm định thống kê dành cho dữ liệu phân loại. Nó được sử dụng để xác định liệu dữ liệu của bạn có khác biệt một cách có ý nghĩa so với những gì bạn đã kỳ vọng hay không.</p>
+                </div>
+
+                <h3>📋 Hai loại kiểm định Chi-square chính</h3>
+                
+                <div class="card">
+                    <h4>1. Chi-square test of goodness of fit (Kiểm định sự phù hợp)</h4>
+                    <p><strong>Mục đích:</strong> Kiểm tra xem phân phối tần suất của một biến phân loại có khác biệt so với kỳ vọng hay không.</p>
+                    
+                    <div class="example-box">
+                        <h4>📖 Ví dụ thực tế</h4>
+                        <p><strong>Tình huống:</strong> Tần suất các loài chim đến thăm máng ăn trong 24 giờ</p>
+                        <p><strong>H₀:</strong> Các loài chim đến thăm máng ăn với tỷ lệ bằng nhau</p>
+                        <p><strong>H₁:</strong> Các loài chim đến thăm máng ăn với tỷ lệ khác nhau</p>
+                        
+                        <table style="width: 100%; margin: 15px 0; border-collapse: collapse;">
+                            <tr style="background: #4299e1; color: white;">
+                                <th style="padding: 10px; border: 1px solid #ccc;">Loài chim</th>
+                                <th style="padding: 10px; border: 1px solid #ccc;">Tần suất quan sát</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>So sánh 2 nhóm độc lập</strong></td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Phân loại (2 nhóm)</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Liên tục</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #e3f2fd;">Independent t-test</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #fff3e0;">Wilcoxon Rank-Sum</td>
-                            </tr>
-                            <tr style="background: #f8f9fa;">
-                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>So sánh 2 nhóm phụ thuộc</strong></td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Phân loại (2 thời điểm)</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Liên tục</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #e3f2fd;">Paired t-test</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #fff3e0;">Wilcoxon Signed-rank</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>So sánh 3+ nhóm</strong></td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Phân loại (3+ nhóm)</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Liên tục</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #e3f2fd;">ANOVA</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #fff3e0;">Kruskal-Wallis H</td>
-                            </tr>
-                            <tr style="background: #f8f9fa;">
-                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Tương quan</strong></td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Liên tục</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Liên tục</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #e3f2fd;">Pearson's r</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #fff3e0;">Spearman's r</td>
-                            </tr>
-                            <tr>
-                                <td style="padding: 10px; border: 1px solid #ddd;"><strong>Mối quan hệ phân loại</strong></td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Phân loại</td>
-                                <td style="padding: 10px; border: 1px solid #ddd;">Phân loại</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #f8d7da;">Không có</td>
-                                <td style="padding: 10px; border: 1px solid #ddd; background: #fff3e0;">Chi-square test</td>
-                            </tr>
-                        </tbody>
+                            <tr><td style="padding: 8px; border: 1px solid #ccc;">House sparrow</td><td style="padding: 8px; border: 1px solid #ccc;">15</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #ccc;">House finch</td><td style="padding: 8px; border: 1px solid #ccc;">12</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #ccc;">Black-capped chickadee</td><td style="padding: 8px; border: 1px solid #ccc;">9</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #ccc;">Common grackle</td><td style="padding: 8px; border: 1px solid #ccc;">8</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #ccc;">European starling</td><td style="padding: 8px; border: 1px solid #ccc;">8</td></tr>
+                            <tr><td style="padding: 8px; border: 1px solid #ccc;">Mourning dove</td><td style="padding: 8px; border: 1px solid #ccc;">6</td></tr>
+                        </table>
+                        
+                        <p><strong>Kết quả:</strong></p>
+                        <ul>
+                            <li>Tần suất kỳ vọng (E): 58/6 = 9.67</li>
+                            <li>χ² = 5.52, df = 6 - 1 = 5</li>
+                            <li>χ² tới hạn (α = 0.05, df = 5) = 11.07</li>
+                            <li><strong>Kết luận:</strong> χ² < χ² tới hạn → Không bác bỏ H₀</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>2. Chi-square test of independence (Kiểm định tính độc lập)</h4>
+                    <p><strong>Mục đích:</strong> Kiểm tra liệu hai biến phân loại có liên quan đến nhau hay không.</p>
+                </div>
+
+                <div class="formula-box">
+                    <h3>🧮 Công thức Chi-square</h3>
+                    <p style="font-size: 1.5em; margin: 20px 0;">
+                        χ² = Σ [(O - E)² / E]
+                    </p>
+                    <p>Trong đó:</p>
+                    <ul style="list-style: none; text-align: left; max-width: 300px; margin: 0 auto;">
+                        <li>• O = Tần suất quan sát (Observed)</li>
+                        <li>• E = Tần suất kỳ vọng (Expected)</li>
+                        <li>• Σ = Tổng của tất cả các ô</li>
+                    </ul>
+                </div>
+
+                <div class="requirement-list">
+                    <h3>✅ Yêu cầu sử dụng Chi-square</h3>
+                    <ul>
+                        <li>Mẫu được chọn ngẫu nhiên từ tổng thể</li>
+                        <li>Dữ liệu là biến phân loại (categorical variables)</li>
+                        <li>Tần suất kỳ vọng của mỗi ô ≥ 5</li>
+                        <li>Các quan sát độc lập với nhau</li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h3>📏 Phân loại thang đo dữ liệu cho Chi-square</h3>
+                    
+                    <table style="width: 100%; margin: 15px 0; border-collapse: collapse;">
+                        <tr style="background: #F6A5B7; color: white;">
+                            <th style="padding: 12px; border: 1px solid #ccc;">Thang đo</th>
+                            <th style="padding: 12px; border: 1px solid #ccc;">Ví dụ</th>
+                            <th style="padding: 12px; border: 1px solid #ccc;">Phù hợp với Chi-square?</th>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>Nominal (Định danh)</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Giới tính, màu mắt, nghề nghiệp</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #48bb78;">✅ <strong>Rất phù hợp</strong></td>
+                        </tr>
+                        <tr style="background: #F8F0FF;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>Ordinal (Thứ bậc)</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Học lực (Kém-TB-Khá-Giỏi)</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #48bb78;">✅ <strong>Có thể sử dụng</strong></td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>Interval (Khoảng)</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Nhiệt độ (°C), IQ</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #e53e3e;">❌ <strong>Không phù hợp</strong></td>
+                        </tr>
+                        <tr style="background: #F8F0FF;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>Ratio (Tỉ lệ)</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Tuổi, thu nhập, cân nặng</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #e53e3e;">❌ <strong>Không phù hợp</strong></td>
+                        </tr>
+                    </table>
+                    
+                    <div class="highlight">
+                        <p><strong>💡 Ghi nhớ:</strong> Chi-square chỉ dành cho dữ liệu <strong>Nominal</strong> và <strong>Ordinal</strong>. Nếu có dữ liệu Interval/Ratio, hãy chuyển sang t-test hoặc các test khác!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- t-test -->
+        <div id="t-test" class="tab-content">
+            <div class="section">
+                <h2>📈 Kiểm định t-test</h2>
+                
+                <div class="card">
+                    <h3>Định nghĩa</h3>
+                    <p>t-test là một kiểm định thống kê dùng để so sánh giá trị trung bình. Nó phù hợp với dữ liệu định lượng và dựa trên phân phối t.</p>
+                </div>
+
+                <h3>📊 Ba loại t-test chính</h3>
+                
+                <div class="card">
+                    <h4>1. One sample t-test (t-test một mẫu)</h4>
+                    <p><strong>Mục đích:</strong> So sánh giá trị trung bình của mẫu với một giá trị cụ thể (μ₀)</p>
+                    
+                    <div class="formula-box">
+                        <h4>Công thức:</h4>
+                        <p style="font-size: 1.3em;">t = (x̄ - μ) / (s/√n)</p>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>📖 Ví dụ</h4>
+                        <p>Một nhà nghiên cứu muốn kiểm tra xem mức độ tự tin của sinh viên tại một trường đại học có khác biệt so với mức độ tự tin trung bình của sinh viên trên toàn quốc (giả sử là 70 trên thang điểm 100).</p>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>2. Independent samples t-test (t-test hai mẫu độc lập)</h4>
+                    <p><strong>Mục đích:</strong> So sánh hai giá trị trung bình của hai tổng thể độc lập</p>
+                    
+                    <div class="formula-box">
+                        <h4>Công thức:</h4>
+                        <p style="font-size: 1.3em;">t = (x̄₁ - x̄₂) / √(s₁²/n₁ + s₂²/n₂)</p>
+                    </div>
+                    
+                    <div class="example-box">
+                        <h4>📖 Ví dụ</h4>
+                        <p>So sánh sự khác biệt trong mức độ hạnh phúc giữa hai nhóm sinh viên đến từ hai thành phố khác nhau.</p>
+                    </div>
+
+                    <div class="requirement-list">
+                        <h4>✅ Yêu cầu</h4>
+                        <ul>
+                            <li>Mẫu được lấy ngẫu nhiên từ dân số</li>
+                            <li>Biến phụ thuộc: thang đo khoảng hoặc tỉ lệ</li>
+                            <li>Biến độc lập: thang đo định danh có phân nhóm độc lập</li>
+                            <li>Biến phụ thuộc phân phối bình thường theo từng level</li>
+                            <li>Không có điểm dị biệt trong từng level</li>
+                            <li>Dữ liệu hai level có phương sai tương đồng</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>3. Paired samples t-test (t-test hai mẫu phụ thuộc)</h4>
+                    <p><strong>Mục đích:</strong> So sánh giá trị trung bình của hai tổng thể có những phần tử tương đồng theo cặp</p>
+                    
+                    <div class="example-box">
+                        <h4>📖 Ví dụ</h4>
+                        <p>Xem xét ảnh hưởng của một chương trình can thiệp tâm lý lên mức độ lo âu của các sinh viên. Đo mức độ lo âu của cùng một nhóm sinh viên trước và sau khi tham gia chương trình.</p>
+                    </div>
+
+                    <div class="requirement-list">
+                        <h4>✅ Yêu cầu</h4>
+                        <ul>
+                            <li>Mẫu được lấy ngẫu nhiên từ dân số</li>
+                            <li>Biến phụ thuộc: thang đo khoảng hoặc tỉ lệ</li>
+                            <li>Dữ liệu qua hai lần đo phải liên quan với nhau</li>
+                            <li>Phân phối bình thường trong điểm chênh lệch giữa 2 lần đo</li>
+                            <li>Không có điểm dị biệt trong điểm chênh lệch</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📏 Phân loại thang đo dữ liệu cho t-test</h3>
+                    
+                    <div class="highlight">
+                        <p><strong>Quy tắc t-test:</strong></p>
+                        <ul style="list-style: none; padding-left: 0;">
+                            <li>📝 <strong>Biến độc lập:</strong> Dữ liệu chữ (Nominal/Ordinal)</li>
+                            <li>🔢 <strong>Biến phụ thuộc:</strong> Dữ liệu số (Interval/Ratio)</li>
+                        </ul>
+                    </div>
+                    
+                    <table style="width: 100%; margin: 15px 0; border-collapse: collapse;">
+                        <tr style="background: #F6A5B7; color: white;">
+                            <th style="padding: 12px; border: 1px solid #ccc;">Loại dữ liệu</th>
+                            <th style="padding: 12px; border: 1px solid #ccc;">Ví dụ biến độc lập</th>
+                            <th style="padding: 12px; border: 1px solid #ccc;">Ví dụ biến phụ thuộc</th>
+                            <th style="padding: 12px; border: 1px solid #ccc;">Loại t-test</th>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>2 nhóm độc lập</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Giới tính (Nam/Nữ)</td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Điểm số (50-100)</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #F6A5B7;"><strong>Independent t-test</strong></td>
+                        </tr>
+                        <tr style="background: #F8F0FF;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>Cùng nhóm 2 lần đo</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Thời điểm (Trước/Sau)</td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Cân nặng (kg)</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #F6A5B7;"><strong>Paired t-test</strong></td>
+                        </tr>
+                        <tr style="background: white;">
+                            <td style="padding: 10px; border: 1px solid #ccc;"><strong>1 nhóm vs chuẩn</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Không có (chỉ 1 mẫu)</td>
+                            <td style="padding: 10px; border: 1px solid #ccc;">Chiều cao vs 170cm</td>
+                            <td style="padding: 10px; border: 1px solid #ccc; color: #F6A5B7;"><strong>One sample t-test</strong></td>
+                        </tr>
                     </table>
                 </div>
 
-                <div class="interactive-row" onclick="toggleInterpretation('test-decision')">
-                    <span class="stat-name">🤔 Quy trình chọn test <span class="info-icon tooltip" data-tooltip="Click để xem flowchart">i</span></span>
-                    <span class="stat-value">Decision Tree ▼</span>
-                </div>
-                <div id="test-decision" class="interpretation">
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px;">
-                        <h5>🌳 Flowchart Chọn Test:</h5>
-                        <div style="font-family: monospace; line-height: 1.8;">
-                            <div>1. Dữ liệu có phân phối chuẩn không? (Shapiro-Wilk)</div>
-                            <div style="margin-left: 20px;">├─ CÓ → Kiểm tra phương sai đồng nhất</div>
-                            <div style="margin-left: 40px;">├─ CÓ → Dùng test tham số</div>
-                            <div style="margin-left: 40px;">└─ KHÔNG → Dùng test phi tham số</div>
-                            <div style="margin-left: 20px;">└─ KHÔNG → Dùng test phi tham số</div>
-                            <br>
-                            <div>2. Cỡ mẫu n ≥ 30?</div>
-                            <div style="margin-left: 20px;">├─ CÓ → Có thể dùng test tham số (CLT)</div>
-                            <div style="margin-left: 20px;">└─ KHÔNG → Nên dùng test phi tham số</div>
-                            <br>
-                            <div>3. Có outliers nhiều?</div>
-                            <div style="margin-left: 20px;">├─ CÓ → Nên dùng test phi tham số</div>
-                            <div style="margin-left: 20px;">└─ KHÔNG → Có thể dùng test tham số</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Lỗi thống kê -->
-            <div id="errors" class="section">
-                <h2>⚠️ Hiểu Về Lỗi Thống Kê</h2>
-                
-                <div class="hypothesis-card">
-                    <h3>🎯 Ma Trận Quyết Định Thống Kê</h3>
-                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background: white; color: #333;">
-                        <thead>
-                            <tr>
-                                <th style="border: 2px solid #fff; padding: 15px; background: #495057; color: white;"></th>
-                                <th style="border: 2px solid #fff; padding: 15px; background: #28a745; color: white;" colspan="2">Trạng Thái Thực Tế</th>
-                            </tr>
-                            <tr>
-                                <th style="border: 2px solid #fff; padding: 15px; background: #495057; color: white;">Quyết Định</th>
-                                <th style="border: 2px solid #fff; padding: 15px; background: #28a745; color: white;">H₀ Đúng</th>
-                                <th style="border: 2px solid #fff; padding: 15px; background: #28a745; color: white;">H₀ Sai</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td style="border: 2px solid #fff; padding: 15px; background: #17a2b8; color: white; font-weight: bold;">Bác bỏ H₀</td>
-                                <td style="border: 2px solid #fff; padding: 15px; background: #dc3545; color: white; text-align: center;">
-                                    <strong>LỖI LOẠI I</strong><br>
-                                    α = 5%<br>
-                                    <small>False Positive</small>
-                                </td>
-                                <td style="border: 2px solid #fff; padding: 15px; background: #28a745; color: white; text-align: center;">
-                                    <strong>ĐÚNG</strong><br>
-                                    Power = 1-β<br>
-                                    <small>True Positive</small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="border: 2px solid #fff; padding: 15px; background: #17a2b8; color: white; font-weight: bold;">Không bác bỏ H₀</td>
-                                <td style="border: 2px solid #fff; padding: 15px; background: #28a745; color: white; text-align: center;">
-                                    <strong>ĐÚNG</strong><br>
-                                    1-α = 95%<br>
-                                    <small>True Negative</small>
-                                </td>
-                                <td style="border: 2px solid #fff; padding: 15px; background: #ffc107; color: #333; text-align: center;">
-                                    <strong>LỖI LOẠI II</strong><br>
-                                    β<br>
-                                    <small>False Negative</small>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="stats-table">
-                    <div class="interactive-row" onclick="toggleInterpretation('type1-error')">
-                        <span class="stat-name">🚨 Lỗi Loại I (Type I Error) <span class="info-icon tooltip" data-tooltip="Bác bỏ H₀ khi H₀ đúng">i</span></span>
-                        <span class="stat-value">α = 0.05</span>
-                    </div>
-                    <div id="type1-error" class="interpretation">
-                        <div style="background: #f8d7da; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545;">
-                            <h5 style="color: #721c24;">🚨 Lỗi Loại I - False Positive</h5>
-                            <p><strong>Định nghĩa:</strong> Kết luận có tác động khi thực tế không có tác động</p>
-                            <p><strong>Xác suất:</strong> α (alpha) - thường đặt = 0.05 (5%)</p>
-                            <p><strong>Ví dụ y học:</strong> Chẩn đoán bệnh nhân có bệnh khi thực tế không có bệnh</p>
-                            <p><strong>Hậu quả:</strong></p>
-                            <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>Lãng phí tài nguyên cho can thiệp không cần thiết</li>
-                                <li>Tạo ra kỳ vọng sai lệch</li>
-                                <li>Có thể gây tác hại nếu áp dụng can thiệp không hiệu quả</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('type2-error')">
-                        <span class="stat-name">😴 Lỗi Loại II (Type II Error) <span class="info-icon tooltip" data-tooltip="Không bác bỏ H₀ khi H₀ sai">i</span></span>
-                        <span class="stat-value">β (beta)</span>
-                    </div>
-                    <div id="type2-error" class="interpretation">
-                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; border-left: 4px solid #ffc107;">
-                            <h5 style="color: #856404;">😴 Lỗi Loại II - False Negative</h5>
-                            <p><strong>Định nghĩa:</strong> Kết luận không có tác động khi thực tế có tác động</p>
-                            <p><strong>Xác suất:</strong> β (beta) - phụ thuộc vào power của test</p>
-                            <p><strong>Ví dụ y học:</strong> Không phát hiện bệnh khi bệnh nhân thực sự có bệnh</p>
-                            <p><strong>Hậu quả:</strong></p>
-                            <ul style="margin: 10px 0; padding-left: 20px;">
-                                <li>Bỏ lỡ can thiệp có hiệu quả</li>
-                                <li>Không phát hiện tác động có ích</li>
-                                <li>Có thể nguy hiểm nếu không điều trị kịp thời</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('power-analysis')">
-                        <span class="stat-name">💪 Sức Mạnh Thống Kê (Power) <span class="info-icon tooltip" data-tooltip="Khả năng phát hiện tác động thực sự">i</span></span>
-                        <span class="stat-value">1 - β</span>
-                    </div>
-                    <div id="power-analysis" class="interpretation">
-                        <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745;">
-                            <h5 style="color: #155724;">💪 Sức Mạnh Thống Kê</h5>
-                            <p><strong>Định nghĩa:</strong> Xác suất phát hiện đúng một tác động khi tác động thực sự tồn tại</p>
-                            <p><strong>Công thức:</strong> Power = 1 - β</p>
-                            <p><strong>Tiêu chuẩn:</strong> Power ≥ 80% được coi là chấp nhận được</p>
-                            
-                            <h6 style="margin-top: 15px;">🔧 Cách tăng Power:</h6>
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 10px 0;">
-                                <div>
-                                    <strong>Tăng cỗ mẫu (n)</strong>
-                                    <ul style="padding-left: 15px; margin: 5px 0;">
-                                        <li>Cách hiệu quả nhất</li>
-                                        <li>Giảm standard error</li>
-                                        <li>Tăng độ chính xác</li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <strong>Tăng effect size</strong>
-                                    <ul style="padding-left: 15px; margin: 5px 0;">
-                                        <li>Can thiệp mạnh hơn</li>
-                                        <li>Đo lường chính xác hơn</li>
-                                        <li>Giảm noise</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            
-                            <div class="warning-box" style="margin-top: 10px;">
-                                <strong>⚖️ Trade-off:</strong> Tăng α (ví dụ 0.05 → 0.10) sẽ tăng power nhưng cũng tăng nguy cơ lỗi loại I
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">🎭 Ví Dụ Thực Tế: Test COVID-19</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0;">
-                        <div style="background: #f8d7da; padding: 15px; border-radius: 8px;">
-                            <h6 style="color: #721c24;">🚨 Lỗi Loại I (5%)</h6>
-                            <p><strong>Tình huống:</strong> Test dương tính, người không có COVID</p>
-                            <p><strong>Hậu quả:</strong></p>
-                            <ul style="padding-left: 15px;">
-                                <li>Cách ly không cần thiết</li>
-                                <li>Stress tâm lý</li>
-                                <li>Chi phí y tế tăng</li>
-                            </ul>
-                        </div>
-                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px;">
-                            <h6 style="color: #856404;">😴 Lỗi Loại II (20%)</h6>
-                            <p><strong>Tình huống:</strong> Test âm tính, người có COVID</p>
-                            <p><strong>Hậu quả:</strong></p>
-                            <ul style="padding-left: 15px;">
-                                <li>Lây lan dịch bệnh</li>
-                                <li>Không điều trị kịp thời</li>
-                                <li>Nguy hiểm cho cộng đồng</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;">
-                        <strong>💡 Insight:</strong> Trong y tế, thường chấp nhận Lỗi Loại I cao hơn để tránh Lỗi Loại II nguy hiểm
-                    </div>
-                </div>
-            </div>
-
-            <!-- Báo cáo APA -->
-            <div id="apa" class="section">
-                <h2>📝 Hướng Dẫn Báo Cáo Theo Chuẩn APA</h2>
-                
-                <div class="example-box">
-                    <div class="example-title">✅ Template Báo Cáo Hoàn Chỉnh</div>
-                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; font-family: 'Times New Roman', serif; line-height: 1.6;">
-                        <p style="margin-bottom: 15px;"><strong>Mẫu báo cáo chuẩn APA:</strong></p>
-                        <div style="background: white; padding: 15px; border-left: 4px solid #2193b0; font-style: italic;">
-                            "<span style="background: #ffffcc; padding: 2px;">Trong quá trình so sánh chế độ ăn A và chế độ ăn B của chuột</span>, 
-                            chúng tôi thấy rằng <span style="background: #e1f5fe; padding: 2px;">tuổi thọ của chế độ ăn A (M = 2.1 năm; SD = 0.12) 
-                            ngắn hơn đáng kể so với tuổi thọ của chế độ ăn B (M = 2.6 năm; SD = 0.1)</span>, 
-                            với <span style="background: #f3e5f5; padding: 2px;">sự khác biệt trung bình là 6 tháng</span> 
-                            <span style="background: #ffecb3; padding: 2px;">(t(80) = -12.75; p < 0.01)</span>."
-                        </div>
-                    </div>
-                </div>
-
-                <div class="stats-table">
-                    <h4>🎨 Phân Tích Từng Thành Phần Báo Cáo</h4>
-                    
-                    <div class="interactive-row" onclick="toggleInterpretation('context-apa')">
-                        <span class="stat-name">📖 Ngữ cảnh nghiên cứu <span class="info-icon tooltip" data-tooltip="Mô tả ngắn gọn về nghiên cứu">i</span></span>
-                        <span class="stat-value" style="background: #ffffcc;">"Trong quá trình so sánh..."</span>
-                    </div>
-                    <div id="context-apa" class="interpretation">
-                        <h5>📖 Thiết lập ngữ cảnh</h5>
-                        <ul style="padding-left: 20px;">
-                            <li><strong>Mục đích:</strong> Giúp người đọc hiểu bối cảnh nghiên cứu</li>
-                            <li><strong>Nội dung:</strong> Mô tả ngắn gọn đối tượng và mục tiêu so sánh</li>
-                            <li><strong>Lưu ý:</strong> Không quá dài, chỉ cần thiết để hiểu kết quả</li>
-                        </ul>
-                        <div class="example-box" style="margin-top: 10px;">
-                            <strong>Ví dụ khác:</strong>
-                            <ul style="padding-left: 20px; margin: 5px 0;">
-                                <li>"Để đánh giá hiệu quả của chương trình can thiệp..."</li>
-                                <li>"Phân tích mối quan hệ giữa stress và năng suất làm việc..."</li>
-                                <li>"So sánh điểm số học tập trước và sau khóa đào tạo..."</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('descriptive-apa')">
-                        <span class="stat-name">📊 Thống kê mô tả <span class="info-icon tooltip" data-tooltip="M, SD cho từng nhóm">i</span></span>
-                        <span class="stat-value" style="background: #e1f5fe;">(M = 2.1; SD = 0.12) vs (M = 2.6; SD = 0.1)</span>
-                    </div>
-                    <div id="descriptive-apa" class="interpretation">
-                        <h5>📊 Quy tắc báo cáo thống kê mô tả</h5>
-                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px;">
-                            <h6>✅ BẮT BUỘC bao gồm:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li><strong>Mean (M):</strong> Làm tròn 1-2 chữ số thập phân</li>
-                                <li><strong>Standard Deviation (SD):</strong> Cùng độ chính xác với M</li>
-                                <li><strong>Sample size (n):</strong> Nếu khác nhau giữa các nhóm</li>
-                            </ul>
-                        </div>
-                        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-top: 10px;">
-                            <h6>📝 Định dạng chuẩn:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li><strong>1 nhóm:</strong> (M = 7.27, SD = 2.27, n = 30)</li>
-                                <li><strong>2 nhóm:</strong> nhóm A (M = 2.1, SD = 0.12) và nhóm B (M = 2.6, SD = 0.1)</li>
-                                <li><strong>Median:</strong> Khi dữ liệu không chuẩn: (Mdn = 8.0, IQR = 2.5)</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('difference-apa')">
-                        <span class="stat-name">📏 Mức độ khác biệt <span class="info-icon tooltip" data-tooltip="Khác biệt tuyệt đối hoặc tương đối">i</span></span>
-                        <span class="stat-value" style="background: #f3e5f5;">"sự khác biệt trung bình là 6 tháng"</span>
-                    </div>
-                    <div id="difference-apa" class="interpretation">
-                        <h5>📏 Báo cáo mức độ khác biệt</h5>
-                        <div style="background: #f3e5f5; padding: 15px; border-radius: 8px;">
-                            <h6>🎯 Mục đích:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li>Giúp người đọc hiểu mức độ khác biệt thực tế</li>
-                                <li>Dễ hiểu hơn con số trừu tượng</li>
-                                <li>Có ý nghĩa thực tiễn</li>
-                            </ul>
-                        </div>
-                        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-top: 10px;">
-                            <h6>📝 Cách viết:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li><strong>Khác biệt tuyệt đối:</strong> "khác biệt 0.5 điểm"</li>
-                                <li><strong>Khác biệt tương đối:</strong> "cao hơn 23%"</li>
-                                <li><strong>Confidence interval:</strong> "95% CI [0.3, 0.7]"</li>
-                                <li><strong>Đơn vị thực tế:</strong> "6 tháng", "2.5 điểm", "15%"</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="interactive-row" onclick="toggleInterpretation('statistics-apa')">
-                        <span class="stat-name">🔢 Kết quả thống kê <span class="info-icon tooltip" data-tooltip="Test statistic, df, p-value">i</span></span>
-                        <span class="stat-value" style="background: #ffecb3;">(t(80) = -12.75; p < 0.01)</span>
-                    </div>
-                    <div id="statistics-apa" class="interpretation">
-                        <h5>🔢 Định dạng kết quả thống kê</h5>
-                        <div style="background: #ffecb3; padding: 15px; border-radius: 8px;">
-                            <h6>📋 Quy tắc chung:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li><strong>Test statistic:</strong> Italic, 2 chữ số thập phân</li>
-                                <li><strong>Degrees of freedom:</strong> Trong ngoặc</li>
-                                <li><strong>P-value:</strong> p = .032 hoặc p < .001</li>
-                                <li><strong>Effect size:</strong> Cohen's d = 0.65</li>
-                            </ul>
-                        </div>
-                        <div style="background: #e1f5fe; padding: 15px; border-radius: 8px; margin-top: 10px;">
-                            <h6>🔤 Ví dụ cho các test khác:</h6>
-                            <ul style="padding-left: 20px; font-family: 'Courier New', monospace;">
-                                <li><strong>t-test:</strong> t(28) = 3.45, p = .002, d = 0.89</li>
-                                <li><strong>ANOVA:</strong> F(2, 87) = 12.34, p < .001, η² = .22</li>
-                                <li><strong>Chi-square:</strong> χ²(1, N = 90) = 8.12, p = .004, φ = .30</li>
-                                <li><strong>Correlation:</strong> r(48) = .67, p < .001</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="warning-box">
-                    <strong>❌ Những lỗi thường gặp khi báo cáo:</strong>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 10px;">
-                        <div>
-                            <h6>🚫 Tránh:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li>"p = 0.000" → Viết "p < .001"</li>
-                                <li>"significant" → Viết cụ thể p-value</li>
-                                <li>Thiếu effect size</li>
-                                <li>Không báo cáo confidence interval</li>
-                                <li>Làm tròn quá nhiều hoặc quá ít</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h6>✅ Nên:</h6>
-                            <ul style="padding-left: 20px;">
-                                <li>Báo cáo đầy đủ thống kê</li>
-                                <li>Sử dụng italic cho ký hiệu thống kê</li>
-                                <li>Bao gồm effect size</li>
-                                <li>Diễn giải ý nghĩa thực tiễn</li>
-                                <li>Nhất quán về số chữ số thập phân</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">📚 Thư Viện Mẫu Báo Cáo APA</div>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
-                        <h6>📊 Thống kê mô tả:</h6>
-                        <p style="font-style: italic; margin: 5px 0;">"Kiểm tra thống kê mô tả cho thấy điểm trung bình (M = 7.27, SD = 2.27). Dữ liệu bị lệch âm (skewness = -0.92) và không tuân theo phân phối chuẩn (Shapiro-Wilk W = 0.917, p = .023)."</p>
-                        
-                        <h6>🔬 Independent t-test:</h6>
-                        <p style="font-style: italic; margin: 5px 0;">"Nhóm thử nghiệm (M = 8.5, SD = 1.2) có điểm cao hơn có ý nghĩa so với nhóm kiểm soát (M = 6.8, SD = 1.5), t(58) = 4.78, p < .001, Cohen's d = 1.26, 95% CI [0.9, 2.4]."</p>
-                        
-                        <h6>📈 Correlation:</h6>
-                        <p style="font-style: italic; margin: 5px 0;">"Có mối tương quan dương mạnh giữa thời gian học và điểm thi (r = .72, n = 45, p < .001, 95% CI [.54, .84])."</p>
-                        
-                        <h6>📊 ANOVA:</h6>
-                        <p style="font-style: italic; margin: 5px 0;">"Có sự khác biệt có ý nghĩa giữa các nhóm, F(2, 87) = 12.34, p < .001, η² = .22. Post-hoc test cho thấy nhóm A (M = 85.2) > nhóm B (M = 78.1) > nhóm C (M = 71.5), tất cả p < .01."</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Thực hành -->
-                <h2>💪 Thực Hành Diễn Giải</h2>
-                
-                <div class="example-box">
-                    <div class="example-title">🎯 Bài tập 1: Phân tích kết quả hoàn chỉnh</div>
-                    <p>Cho kết quả sau, hãy viết báo cáo APA đầy đủ:</p>
-                    <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
-                        <strong>Dữ liệu:</strong><br>
-                        - Nhóm A: M = 12.5, SD = 2.3, n = 25<br>
-                        - Nhóm B: M = 15.8, SD = 2.1, n = 28<br>
-                        - Independent t-test: t(51) = -5.67, p < .001<br>
-                        - Cohen's d = 1.52<br>
-                        - 95% CI [-4.5, -2.1]
-                    </div>
-                </div>
-
-                <div class="interactive-input">
-                    <h4>🔍 Trình Diễn Giải P-value và Effect Size</h4>
-                    <p>Thay đổi các giá trị để xem cách diễn giải:</p>
-                    
-                    <div class="input-group">
-                        <label>P-value:</label>
-                        <input type="number" id="pval-practice" step="0.001" min="0" max="1" value="0.032" onchange="updatePracticeInterpretation()">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Alpha (α):</label>
-                        <input type="number" id="alpha-practice" step="0.01" min="0" max="1" value="0.05" onchange="updatePracticeInterpretation()">
-                    </div>
-                    
-                    <div class="input-group">
-                        <label>Cohen's d:</label>
-                        <input type="number" id="cohend-practice" step="0.1" value="0.65" onchange="updatePracticeInterpretation()">
-                    </div>
-
-                    <div class="input-group">
-                        <label>Sample size (n):</label>
-                        <input type="number" id="samplesize-practice" min="5" max="1000" value="30" onchange="updatePracticeInterpretation()">
-                    </div>
-                    
-                    <div id="practice-result" class="result-display">
-                        <!-- Kết quả sẽ được cập nhật bởi JavaScript -->
-                    </div>
-                </div>
-
-                <div class="stats-table">
-                    <h4>📚 Bảng Tra Cứu Nhanh - Mở Rộng</h4>
-                    
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div>
-                            <h5>🎯 P-value Interpretation</h5>
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr style="background: #2193b0; color: white;">
-                                        <th style="padding: 8px; border: 1px solid #ddd;">P-value</th>
-                                        <th style="padding: 8px; border: 1px solid #ddd;">Ý nghĩa</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">p < .001</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Rất có ý nghĩa ⭐⭐⭐</td>
-                                    </tr>
-                                    <tr style="background: #f8f9fa;">
-                                        <td style="padding: 8px; border: 1px solid #ddd;">p < .01</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Có ý nghĩa cao ⭐⭐</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">p < .05</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Có ý nghĩa ⭐</td>
-                                    </tr>
-                                    <tr style="background: #f8f9fa;">
-                                        <td style="padding: 8px; border: 1px solid #ddd;">p ≥ .05</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Không có ý nghĩa ❌</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div>
-                            <h5>📏 Effect Size Guidelines</h5>
-                            <table style="width: 100%; border-collapse: collapse;">
-                                <thead>
-                                    <tr style="background: #28a745; color: white;">
-                                        <th style="padding: 8px; border: 1px solid #ddd;">Cohen's d</th>
-                                        <th style="padding: 8px; border: 1px solid #ddd;">Mức độ</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">d ≥ 0.8</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Lớn 🔥</td>
-                                    </tr>
-                                    <tr style="background: #f8f9fa;">
-                                        <td style="padding: 8px; border: 1px solid #ddd;">0.5 ≤ d < 0.8</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Trung bình 📊</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">0.2 ≤ d < 0.5</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Nhỏ 📉</td>
-                                    </tr>
-                                    <tr style="background: #f8f9fa;">
-                                        <td style="padding: 8px; border: 1px solid #ddd;">d < 0.2</td>
-                                        <td style="padding: 8px; border: 1px solid #ddd;">Rất nhỏ 🔍</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="example-box">
-                    <div class="example-title">✅ Checklist Hoàn Chỉnh Cho Báo Cáo Thống Kê</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-top: 15px;">
-                        <div>
-                            <h6>📊 Thống Kê Mô Tả:</h6>
-                            <ul style="padding-left: 20px; font-size: 0.9rem;">
-                                <li>✅ N, Mean, SD đầy đủ</li>
-                                <li>✅ Kiểm tra normality</li>
-                                <li>✅ Báo cáo outliers</li>
-                                <li>✅ Mô tả phân phối</li>
-                                <li>✅ Missing data</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h6>🔬 Thống Kê Suy Luận:</h6>
-                            <ul style="padding-left: 20px; font-size: 0.9rem;">
-                                <li>✅ Giả thuyết H₀, H₁</li>
-                                <li>✅ Test statistic & df</li>
-                                <li>✅ P-value chính xác</li>
-                                <li>✅ Effect size</li>
-                                <li>✅ Confidence interval</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h6>📝 Báo Cáo APA:</h6>
-                            <ul style="padding-left: 20px; font-size: 0.9rem;">
-                                <li>✅ Ngữ cảnh rõ ràng</li>
-                                <li>✅ Thống kê italic</li>
-                                <li>✅ Định dạng đúng</li>
-                                <li>✅ Diễn giải thực tiễn</li>
-                                <li>✅ Kết luận cân bằng</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="warning-box">
-                    <strong>🎓 Mẹo Pro cho Nghiên Cứu Sinh:</strong>
-                    <div style="margin-top: 10px;">
-                        <ul style="padding-left: 20px;">
-                            <li><strong>Power Analysis:</strong> Tính toán cỡ mẫu trước khi thu thập dữ liệu</li>
-                            <li><strong>Pre-registration:</strong> Đăng ký phương pháp phân tích trước khi có dữ liệu</li>
-                            <li><strong>Multiple Comparisons:</strong> Hiệu chỉnh p-value khi test nhiều giả thuyết</li>
-                            <li><strong>Effect Size:</strong> Luôn báo cáo kèm confidence interval</li>
-                            <li><strong>Replication:</strong> Cân nhắc tái lập kết quả với mẫu mới</li>
+                <div class="card">
+                    <h3>⚠️ Các giả định của t-test (Test tham số)</h3>
+                    <div class="requirement-list">
+                        <ul>
+                            <li><strong>Phân phối chuẩn:</strong> Biến phụ thuộc phân phối bình thường trong từng nhóm (Shapiro-Wilk test)</li>
+                            <li><strong>Không có outliers:</strong> Loại bỏ các điểm dị biệt</li>
+                            <li><strong>Đồng nhất phương sai:</strong> Phương sai giữa các nhóm tương đồng (Levene test)</li>
+                            <li><strong>Mẫu ngẫu nhiên:</strong> Dữ liệu được thu thập ngẫu nhiên từ tổng thể</li>
+                            <li><strong>Độc lập:</strong> Các quan sát độc lập với nhau</li>
                         </ul>
                     </div>
+                    
+                    <div class="highlight">
+                        <p><strong>💡 Lưu ý:</strong> Nếu vi phạm các giả định trên, hãy sử dụng <strong>test phi tham số</strong>:</p>
+                        <ul style="margin-top: 10px;">
+                            <li>• Thay One sample t-test → <strong>Sign test</strong></li>
+                            <li>• Thay Independent t-test → <strong>Mann-Whitney U test</strong></li>
+                            <li>• Thay Paired t-test → <strong>Wilcoxon signed-rank test</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thực hành -->
+        <div id="practice" class="tab-content">
+            <div class="section">
+                <h2>🎯 Thực hành với Jamovi</h2>
+                
+                <div class="card">
+                    <h3>📊 Hướng dẫn sử dụng Jamovi</h3>
+                    
+                    <div class="step-container">
+                        <div class="step">
+                            <span class="step-number">1</span>
+                            <strong>Chi-square test:</strong> Analyses → Frequencies → Independent Samples
+                        </div>
+                        <div class="step">
+                            <span class="step-number">2</span>
+                            <strong>One sample t-test:</strong> Analyses → t-tests → One Sample t-test
+                        </div>
+                        <div class="step">
+                            <span class="step-number">3</span>
+                            <strong>Independent samples t-test:</strong> Analyses → t-tests → Independent Samples t-test
+                        </div>
+                        <div class="step">
+                            <span class="step-number">4</span>
+                            <strong>Paired samples t-test:</strong> Analyses → t-tests → Paired Samples t-test
+                        </div>
+                    </div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🧮 Máy tính Chi-square</h3>
+                    <div class="demo-controls">
+                        <label>Tần suất quan sát (cách nhau bởi dấu phẩy):</label><br>
+                        <input type="text" id="observed" placeholder="15,12,9,8,8,6" style="width: 300px;">
+                        <br><br>
+                        <label>Tần suất kỳ vọng (để trống nếu bằng nhau):</label><br>
+                        <input type="text" id="expected" placeholder="9.67,9.67,9.67,9.67,9.67,9.67" style="width: 300px;">
+                        <br><br>
+                        <button class="demo-button" onclick="calculateChiSquare()">Tính Chi-square</button>
+                    </div>
+                    <div class="result-box" id="chiResult">Kết quả sẽ hiện ở đây...</div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>📈 Máy tính t-test</h3>
+                    <div class="demo-controls">
+                        <select id="testType">
+                            <option value="one">One sample t-test</option>
+                            <option value="independent">Independent samples t-test</option>
+                        </select>
+                        <br><br>
+                        <div id="oneTestInputs">
+                            <label>Trung bình mẫu (x̄):</label>
+                            <input type="number" id="sampleMean" placeholder="75">
+                            <label>Trung bình tổng thể (μ):</label>
+                            <input type="number" id="popMean" placeholder="70">
+                            <label>Độ lệch chuẩn (s):</label>
+                            <input type="number" id="stdDev" placeholder="10">
+                            <label>Kích thước mẫu (n):</label>
+                            <input type="number" id="sampleSize" placeholder="30">
+                        </div>
+                        <br>
+                        <button class="demo-button" onclick="calculateTTest()">Tính t-test</button>
+                    </div>
+                    <div class="result-box" id="tResult">Kết quả sẽ hiện ở đây...</div>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🎲 Bài tập thực hành: Chọn test phù hợp</h3>
+                    <div style="text-align: left; max-width: 700px; margin: 0 auto;">
+                        <div id="practiceScenarios">
+                            <!-- Scenarios sẽ được generate bằng JavaScript -->
+                        </div>
+                        <button class="demo-button" onclick="generateScenario()">Tạo tình huống mới</button>
+                        <button class="demo-button" onclick="showAnswer()">Hiện đáp án</button>
+                        <div class="result-box" id="practiceResult">Nhấn "Tạo tình huống mới" để bắt đầu...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quiz -->
+        <div id="quiz" class="tab-content">
+            <div class="section">
+                <h2>❓ Kiểm tra kiến thức (15 câu)</h2>
+                
+                <div class="card">
+                    <h3>Câu 1: Khi nào sử dụng Chi-square test?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q1" value="a"> a) Khi có biến định lượng</label><br>
+                        <label><input type="radio" name="q1" value="b"> b) Khi có biến phân loại</label><br>
+                        <label><input type="radio" name="q1" value="c"> c) Khi so sánh trung bình</label><br>
+                        <label><input type="radio" name="q1" value="d"> d) Khi tính correlation</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 2: Loại t-test nào phù hợp cho nghiên cứu "before-after"?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q2" value="a"> a) One sample t-test</label><br>
+                        <label><input type="radio" name="q2" value="b"> b) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q2" value="c"> c) Paired samples t-test</label><br>
+                        <label><input type="radio" name="q2" value="d"> d) Tất cả đều được</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 3: Trong công thức Chi-square, E là gì?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q3" value="a"> a) Tần suất quan sát</label><br>
+                        <label><input type="radio" name="q3" value="b"> b) Tần suất kỳ vọng</label><br>
+                        <label><input type="radio" name="q3" value="c"> c) Sai số chuẩn</label><br>
+                        <label><input type="radio" name="q3" value="d"> d) Giá trị trung bình</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 4: Nghiên cứu ảnh hưởng của giới tính (nam/nữ) đến mức độ lo âu (thang điểm 1-10). Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q4" value="a"> a) Chi-square test of independence</label><br>
+                        <label><input type="radio" name="q4" value="b"> b) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q4" value="c"> c) One sample t-test</label><br>
+                        <label><input type="radio" name="q4" value="d"> d) Chi-square goodness of fit</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 5: Kiểm tra mối quan hệ giữa tình trạng hôn nhân (độc thân/có gia đình) và mức độ hạnh phúc (không hạnh phúc/hạnh phúc). Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q5" value="a"> a) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q5" value="b"> b) Chi-square test of independence</label><br>
+                        <label><input type="radio" name="q5" value="c"> c) Paired samples t-test</label><br>
+                        <label><input type="radio" name="q5" value="d"> d) One sample t-test</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 6: Yêu cầu nào KHÔNG cần thiết cho Chi-square test?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q6" value="a"> a) Tần suất kỳ vọng ≥ 5</label><br>
+                        <label><input type="radio" name="q6" value="b"> b) Phân phối chuẩn</label><br>
+                        <label><input type="radio" name="q6" value="c"> c) Mẫu ngẫu nhiên</label><br>
+                        <label><input type="radio" name="q6" value="d"> d) Dữ liệu phân loại</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 7: Đo điểm IQ của 50 học sinh và so sánh với điểm IQ trung bình dân số (100 điểm). Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q7" value="a"> a) Chi-square goodness of fit</label><br>
+                        <label><input type="radio" name="q7" value="b"> b) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q7" value="c"> c) One sample t-test</label><br>
+                        <label><input type="radio" name="q7" value="d"> d) Chi-square test of independence</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 8: Nghiên cứu hiệu quả của liệu pháp tâm lý bằng cách đo mức độ trầm cảm trước và sau điều trị ở cùng 30 bệnh nhân. Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q8" value="a"> a) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q8" value="b"> b) Paired samples t-test</label><br>
+                        <label><input type="radio" name="q8" value="c"> c) One sample t-test</label><br>
+                        <label><input type="radio" name="q8" value="d"> d) Chi-square test</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 9: Bậc tự do (df) trong Chi-square goodness of fit với 6 nhóm là:</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q9" value="a"> a) 6</label><br>
+                        <label><input type="radio" name="q9" value="b"> b) 5</label><br>
+                        <label><input type="radio" name="q9" value="c"> c) 7</label><br>
+                        <label><input type="radio" name="q9" value="d"> d) 4</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 10: Kiểm tra phân phối loại tính cách (hướng nội/hướng ngoại/lưỡng hướng) có đều nhau không. Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q10" value="a"> a) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q10" value="b"> b) Chi-square test of independence</label><br>
+                        <label><input type="radio" name="q10" value="c"> c) Chi-square goodness of fit</label><br>
+                        <label><input type="radio" name="q10" value="d"> d) One sample t-test</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 11: Nghiên cứu so sánh điểm stress giữa sinh viên y khoa và sinh viên kinh tế. Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q11" value="a"> a) Paired samples t-test</label><br>
+                        <label><input type="radio" name="q11" value="b"> b) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q11" value="c"> c) Chi-square test</label><br>
+                        <label><input type="radio" name="q11" value="d"> d) One sample t-test</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 12: Công thức t-test cho one sample là:</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q12" value="a"> a) t = (x̄₁ - x̄₂) / √(s₁²/n₁ + s₂²/n₂)</label><br>
+                        <label><input type="radio" name="q12" value="b"> b) t = (x̄ - μ) / (s/√n)</label><br>
+                        <label><input type="radio" name="q12" value="c"> c) χ² = Σ[(O-E)²/E]</label><br>
+                        <label><input type="radio" name="q12" value="d"> d) t = x̄ / s</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 13: Nghiên cứu mối quan hệ giữa việc sử dụng mạng xã hội (có/không) và tình trạng trầm cảm (có/không). Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q13" value="a"> a) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q13" value="b"> b) Chi-square goodness of fit</label><br>
+                        <label><input type="radio" name="q13" value="c"> c) Chi-square test of independence</label><br>
+                        <label><input type="radio" name="q13" value="d"> d) Paired samples t-test</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 14: Khi nào sử dụng test phi tham số thay cho t-test?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q14" value="a"> a) Khi dữ liệu không phân phối chuẩn</label><br>
+                        <label><input type="radio" name="q14" value="b"> b) Khi có quá nhiều outliers</label><br>
+                        <label><input type="radio" name="q14" value="c"> c) Khi vi phạm giả định đồng nhất phương sai</label><br>
+                        <label><input type="radio" name="q14" value="d"> d) Tất cả các trường hợp trên</label>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Câu 15: Nghiên cứu đo mức độ tự tin của cùng 40 sinh viên trước kỳ thi (T1) và sau khi nhận kết quả (T2). Test nào phù hợp?</h3>
+                    <div style="margin: 15px 0;">
+                        <label><input type="radio" name="q15" value="a"> a) Independent samples t-test</label><br>
+                        <label><input type="radio" name="q15" value="b"> b) Paired samples t-test</label><br>
+                        <label><input type="radio" name="q15" value="c"> c) One sample t-test</label><br>
+                        <label><input type="radio" name="q15" value="d"> d) Chi-square test</label>
+                    </div>
+                </div>
+
+                <button class="demo-button" onclick="checkAnswers()">Kiểm tra đáp án</button>
+                <div class="result-box" id="quizResult">Kết quả sẽ hiện ở đây...</div>
+
+                <div class="card">
+                    <h3>🏆 Thang điểm đánh giá</h3>
+                    <ul style="list-style: none; padding-left: 0;">
+                        <li>🥇 <strong>13-15 câu đúng:</strong> Xuất sắc! Bạn đã thành thạo Chi-square & t-test</li>
+                        <li>🥈 <strong>10-12 câu đúng:</strong> Tốt! Cần ôn lại một số kiến thức</li>
+                        <li>🥉 <strong>7-9 câu đúng:</strong> Khá! Hãy đọc lại lý thuyết và thực hành thêm</li>
+                        <li>📚 <strong>Dưới 7 câu:</strong> Cần cố gắng hơn! Hãy học lại từ đầu</li>
+                    </ul>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="common.js"></script>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function calculateChiSquare() {
+            const observedInput = document.getElementById('observed').value;
+            const expectedInput = document.getElementById('expected').value;
+            
+            if (!observedInput) {
+                document.getElementById('chiResult').innerHTML = '<span style="color: red;">Vui lòng nhập tần suất quan sát!</span>';
+                return;
+            }
+            
+            const observed = observedInput.split(',').map(Number);
+            let expected;
+            
+            if (expectedInput) {
+                expected = expectedInput.split(',').map(Number);
+            } else {
+                const total = observed.reduce((a, b) => a + b, 0);
+                const expectedValue = total / observed.length;
+                expected = new Array(observed.length).fill(expectedValue);
+            }
+            
+            if (observed.length !== expected.length) {
+                document.getElementById('chiResult').innerHTML = '<span style="color: red;">Số lượng tần suất quan sát và kỳ vọng phải bằng nhau!</span>';
+                return;
+            }
+            
+            let chiSquare = 0;
+            for (let i = 0; i < observed.length; i++) {
+                chiSquare += Math.pow(observed[i] - expected[i], 2) / expected[i];
+            }
+            
+            const df = observed.length - 1;
+            
+            document.getElementById('chiResult').innerHTML = `
+                <strong>Kết quả tính toán:</strong><br>
+                χ² = ${chiSquare.toFixed(3)}<br>
+                Bậc tự do (df) = ${df}<br>
+                <em>Tham khảo bảng phân phối Chi-square để so sánh với giá trị tới hạn</em>
+            `;
+        }
+
+        function calculateTTest() {
+            const testType = document.getElementById('testType').value;
+            
+            if (testType === 'one') {
+                const sampleMean = parseFloat(document.getElementById('sampleMean').value);
+                const popMean = parseFloat(document.getElementById('popMean').value);
+                const stdDev = parseFloat(document.getElementById('stdDev').value);
+                const sampleSize = parseFloat(document.getElementById('sampleSize').value);
+                
+                if (isNaN(sampleMean) || isNaN(popMean) || isNaN(stdDev) || isNaN(sampleSize)) {
+                    document.getElementById('tResult').innerHTML = '<span style="color: red;">Vui lòng nhập đầy đủ thông tin!</span>';
+                    return;
+                }
+                
+                const t = (sampleMean - popMean) / (stdDev / Math.sqrt(sampleSize));
+                const df = sampleSize - 1;
+                
+                document.getElementById('tResult').innerHTML = `
+                    <strong>Kết quả One sample t-test:</strong><br>
+                    t = ${t.toFixed(3)}<br>
+                    Bậc tự do (df) = ${df}<br>
+                    <em>Tham khảo bảng phân phối t để so sánh với giá trị tới hạn</em>
+                `;
+            }
+        }
+
+        let currentScenario = null;
+        const scenarios = [
+            {
+                situation: "Nghiên cứu ảnh hưởng của phương pháp giảng dạy (Truyền thống vs Tương tác) đến điểm thi toán của học sinh",
+                variables: "Biến độc lập: Phương pháp (Phân loại), Biến phụ thuộc: Điểm thi (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm độc lập (Truyền thống vs Tương tác) so sánh điểm số (định lượng)"
+            },
+            {
+                situation: "Kiểm tra xem tỷ lệ các loại rối loạn tâm lý (Lo âu, Trầm cảm, Stress, Bình thường) trong dân số có bằng nhau không",
+                variables: "Biến: Loại rối loạn (Phân loại), Mục tiêu: Kiểm tra phân phối tần suất",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại, kiểm tra phân phối tần suất với kỳ vọng bằng nhau"
+            },
+            {
+                situation: "Đo mức độ tự tin của 40 sinh viên trước và sau khi tham gia khóa training kỹ năng giao tiếp",
+                variables: "Biến độc lập: Thời điểm (Trước/Sau), Biến phụ thuộc: Mức độ tự tin (Định lượng)",
+                correctAnswer: "Paired samples t-test",
+                explanation: "Cùng nhóm đối tượng được đo 2 lần, so sánh điểm trung bình before-after"
+            },
+            {
+                situation: "Nghiên cứu mối quan hệ giữa giới tính (Nam/Nữ) và loại stress chính (Học tập/Gia đình/Tài chính)",
+                variables: "Biến 1: Giới tính (Phân loại), Biến 2: Loại stress (Phân loại)",
+                correctAnswer: "Chi-square test of independence", 
+                explanation: "2 biến phân loại, kiểm tra mối quan hệ/độc lập giữa chúng"
+            },
+            {
+                situation: "So sánh điểm EQ (trí tuệ cảm xúc) trung bình của học sinh Việt Nam với chuẩn quốc tế (85 điểm)",
+                variables: "Biến: Điểm EQ học sinh (Định lượng), Giá trị so sánh: 85 điểm (Hằng số)",
+                correctAnswer: "One sample t-test",
+                explanation: "1 mẫu so sánh với giá trị chuẩn, dữ liệu định lượng"
+            },
+            {
+                situation: "So sánh mức độ burnout (kiệt sức) giữa 3 nhóm: Y tá ICU, Y tá ngoại trú, Y tá nhi khoa",
+                variables: "Biến độc lập: Khoa làm việc (3 nhóm), Biến phụ thuộc: Mức độ burnout (Định lượng)",
+                correctAnswer: "ANOVA (không phải t-test)",
+                explanation: "3 nhóm trở lên cần dùng ANOVA, không dùng t-test"
+            },
+            {
+                situation: "Nghiên cứu hiệu quả của thuốc antidepressant: So sánh điểm trầm cảm của 60 bệnh nhân trước và sau 8 tuần điều trị",
+                variables: "Biến độc lập: Thời điểm (Trước/Sau điều trị), Biến phụ thuộc: Điểm trầm cảm (Định lượng)",
+                correctAnswer: "Paired samples t-test",
+                explanation: "Cùng nhóm bệnh nhân đo 2 lần, thiết kế within-subjects"
+            },
+            {
+                situation: "Kiểm tra mối quan hệ giữa tình trạng hút thuốc (Có/Không) và mức độ lo âu (Thấp/Trung bình/Cao)",
+                variables: "Biến 1: Hút thuốc (Phân loại), Biến 2: Mức độ lo âu (Phân loại thứ bậc)",
+                correctAnswer: "Chi-square test of independence",
+                explanation: "2 biến phân loại (có thể coi ordinal như categorical), kiểm tra mối quan hệ"
+            },
+            {
+                situation: "So sánh điểm IQ trung bình giữa trẻ được nuôi dưỡng bởi ông bà và trẻ được nuôi bởi bố mẹ",
+                variables: "Biến độc lập: Người nuôi dưỡng (Phân loại), Biến phụ thuộc: Điểm IQ (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm độc lập so sánh trung bình của biến định lượng"
+            },
+            {
+                situation: "Nghiên cứu phân bố tỷ lệ các style học tập (Visual/Auditory/Kinesthetic/Reading) ở sinh viên tâm lý",
+                variables: "Biến: Style học tập (Phân loại), Mục tiêu: Mô tả phân phối",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại, kiểm tra phân phối có khác với kỳ vọng không"
+            },
+            {
+                situation: "Đánh giá hiệu quả liệu pháp CBT: Đo anxiety score của 30 bệnh nhân trước điều trị, sau 4 tuần và sau 8 tuần",
+                variables: "Biến độc lập: Thời điểm (3 lần đo), Biến phụ thuộc: Anxiety score (Định lượng)",
+                correctAnswer: "ANOVA (Repeated measures)",
+                explanation: "3 lần đo trở lên cần dùng Repeated measures ANOVA"
+            },
+            {
+                situation: "So sánh hiệu quả của 2 loại therapy: Group therapy vs Individual therapy trong điều trị trầm cảm",
+                variables: "Biến độc lập: Loại therapy (Phân loại), Biến phụ thuộc: Điểm trầm cảm (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm độc lập được can thiệp khác nhau, so sánh outcome"
+            },
+            {
+                situation: "Nghiên cứu mối quan hệ giữa tình trạng hôn nhân (Độc thân/Hẹn hò/Kết hôn) và mức độ hạnh phúc (Không hạnh phúc/Hạnh phúc)",
+                variables: "Biến 1: Tình trạng hôn nhân (Phân loại), Biến 2: Mức độ hạnh phúc (Phân loại)",
+                correctAnswer: "Chi-square test of independence",
+                explanation: "2 biến phân loại, kiểm tra có mối quan hệ không"
+            },
+            {
+                situation: "Kiểm tra xem điểm stress trung bình của sinh viên y khoa có khác với mức stress trung bình dân số (50 điểm) không",
+                variables: "Biến: Điểm stress sinh viên Y (Định lượng), Giá trị so sánh: 50 điểm (Chuẩn dân số)",
+                correctAnswer: "One sample t-test",
+                explanation: "So sánh trung bình 1 mẫu với giá trị tham chiếu của dân số"
+            },
+            {
+                situation: "Nghiên cứu hiệu quả của mindfulness meditation: Đo cortisol level trước và sau 6 tuần tập luyện ở 50 người tham gia",
+                variables: "Biến độc lập: Thời điểm (Trước/Sau), Biến phụ thuộc: Cortisol level (Định lượng)",
+                correctAnswer: "Paired samples t-test",
+                explanation: "Cùng nhóm người đo 2 lần, thiết kế before-after"
+            },
+            {
+                situation: "Kiểm tra tỷ lệ các cơ chế defense (Denial/Projection/Sublimation/Rationalization) có xuất hiện đều nhau không",
+                variables: "Biến: Loại defense mechanism (Phân loại), Mục tiêu: Kiểm tra phân phối đồng đều",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại với nhiều categories, test phân phối đồng đều"
+            },
+            {
+                situation: "So sánh điểm empathy giữa sinh viên ngành tâm lý lâm sàng và sinh viên ngành tâm lý tổ chức",
+                variables: "Biến độc lập: Chuyên ngành (Phân loại), Biến phụ thuộc: Điểm empathy (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm sinh viên độc lập, so sánh điểm số trung bình"
+            },
+            {
+                situation: "Nghiên cứu mối quan hệ giữa personality type (Introvert/Extrovert) và preferred therapy style (CBT/Psychodynamic/Humanistic)",
+                variables: "Biến 1: Personality type (Phân loại), Biến 2: Therapy preference (Phân loại)",
+                correctAnswer: "Chi-square test of independence",
+                explanation: "2 biến phân loại, kiểm tra có association không"
+            },
+            {
+                situation: "Đánh giá tác động của sleep deprivation: Đo reaction time của 25 người sau 0h, 24h, và 48h không ngủ",
+                variables: "Biến độc lập: Thời gian không ngủ (3 levels), Biến phụ thuộc: Reaction time (Định lượng)",
+                correctAnswer: "ANOVA (Repeated measures)",
+                explanation: "3 lần đo trở lên trên cùng đối tượng cần Repeated measures ANOVA"
+            },
+            {
+                situation: "Kiểm tra phân phối các loại phobia phổ biến (Arachnophobia/Claustrophobia/Agoraphobia/Social phobia) có theo tỷ lệ 2:1:1:3 không",
+                variables: "Biến: Loại phobia (Phân loại), Tỷ lệ kỳ vọng: 2:1:1:3",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại, test phân phối theo tỷ lệ kỳ vọng cụ thể"
+            }
+        ];
+
+        function generateScenario() {
+            currentScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            
+            document.getElementById('practiceScenarios').innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #F6A5B7; margin: 15px 0;">
+                    <h4 style="color: #2C3E50; margin-bottom: 15px;">📋 Tình huống:</h4>
+                    <p style="font-size: 1.1em; margin-bottom: 15px;">${currentScenario.situation}</p>
+                    <p style="color: #666; font-style: italic;">${currentScenario.variables}</p>
+                    
+                    <div style="margin-top: 20px;">
+                        <strong>Chọn test phù hợp:</strong><br>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="chi-goodness"> Chi-square goodness of fit</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="chi-independence"> Chi-square test of independence</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="one-sample"> One sample t-test</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="independent"> Independent samples t-test</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="paired"> Paired samples t-test</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="anova"> ANOVA</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="anova-rm"> ANOVA (Repeated measures)</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('practiceResult').innerHTML = 'Hãy chọn test phù hợp và nhấn "Hiện đáp án" để kiểm tra...';
+        }
+
+        function showAnswer() {
+            if (!currentScenario) {
+                document.getElementById('practiceResult').innerHTML = '<span style="color: #F6A5B7;">Vui lòng tạo tình huống trước!</span>';
+                return;
+            }
+            
+            const selected = document.querySelector('input[name="scenarioAnswer"]:checked');
+            const userAnswer = selected ? selected.nextSibling.textContent.trim() : '';
+            
+            const isCorrect = userAnswer === currentScenario.correctAnswer;
+            
+            document.getElementById('practiceResult').innerHTML = `
+                <div style="padding: 15px;">
+                    <strong>${isCorrect ? '✅ Chính xác!' : '❌ Chưa đúng'}</strong><br><br>
+                    ${selected ? `<strong>Bạn chọn:</strong> ${userAnswer}<br>` : '<strong>Bạn chưa chọn đáp án</strong><br>'}
+                    <strong>Đáp án đúng:</strong> ${currentScenario.correctAnswer}<br><br>
+                    <strong>Giải thích:</strong> ${currentScenario.explanation}
+                </div>
+            `;
+        }
+
+        function checkSituation() {
+            const selected = document.getElementById('situationTest').value;
+            const resultDiv = document.getElementById('situationResult');
+            
+            if (!selected) {
+                resultDiv.innerHTML = '<span style="color: #F6A5B7;">Vui lòng chọn một test!</span>';
+                return;
+            }
+            
+            if (selected === 'chi') {
+                resultDiv.innerHTML = `
+                    <strong style="color: #48bb78;">✅ Chính xác!</strong><br>
+                    <strong>Giải thích:</strong> Cả hai biến đều là phân loại (có/không), vì vậy sử dụng Chi-square test of independence để kiểm tra mối quan hệ giữa chúng.<br>
+                    <em>Biến 1: Hút thuốc (có/không) - Phân loại</em><br>
+                    <em>Biến 2: Ung thư phổi (có/không) - Phân loại</em>
+                `;
+            } else {
+                let testName = '';
+                switch(selected) {
+                    case 't1': testName = 'One sample t-test'; break;
+                    case 't2': testName = 'Independent t-test'; break;
+                    case 't3': testName = 'Paired t-test'; break;
+                }
+                resultDiv.innerHTML = `
+                    <strong style="color: #e53e3e;">❌ Không đúng</strong><br>
+                    <strong>Bạn chọn:</strong> ${testName}<br>
+                    <strong>Đáp án đúng:</strong> Chi-square test of independence<br>
+                    <strong>Lý do:</strong> t-test dành cho biến định lượng, nhưng ở đây cả hai biến đều là phân loại (có/không).
+                `;
+            }
+        }
+
+        function checkAnswers() {
+            const answers = {
+                q1: 'b',   // Chi-square dành cho biến phân loại
+                q2: 'c',   // Paired t-test cho before-after
+                q3: 'b',   // E là tần suất kỳ vọng
+                q4: 'b',   // Giới tính (phân loại) vs mức độ lo âu (định lượng) → Independent t-test
+                q5: 'b',   // Hai biến phân loại → Chi-square independence
+                q6: 'b',   // Chi-square không cần phân phối chuẩn
+                q7: 'c',   // So sánh với giá trị chuẩn → One sample t-test
+                q8: 'b',   // Before-after cùng nhóm → Paired t-test
+                q9: 'b',   // df = n-1 = 6-1 = 5
+                q10: 'c',  // Kiểm tra phân phối của 1 biến phân loại → goodness of fit
+                q11: 'b',  // So sánh 2 nhóm độc lập → Independent t-test
+                q12: 'b',  // Công thức one sample t-test
+                q13: 'c',  // Hai biến phân loại → Chi-square independence
+                q14: 'd',  // Tất cả các trường hợp vi phạm giả định
+                q15: 'b'   // Cùng nhóm đo 2 lần → Paired t-test
+            };
+            
+            let score = 0;
+            let total = Object.keys(answers).length;
+            let feedback = '<strong>📊 KẾT QUẢ KIỂM TRA:</strong><br><br>';
+            
+            const explanations = {
+                q1: 'Chi-square test dành cho dữ liệu phân loại (categorical variables)',
+                q2: 'Paired samples t-test dành cho thiết kế before-after (cùng nhóm đối tượng)',
+                q3: 'E trong công thức χ²=Σ[(O-E)²/E] là Expected frequency (tần suất kỳ vọng)',
+                q4: 'Giới tính (phân loại) → biến độc lập, mức độ lo âu (định lượng) → biến phụ thuộc. Dùng Independent t-test',
+                q5: 'Cả hai biến đều phân loại (có/không) → Chi-square test of independence',
+                q6: 'Chi-square không yêu cầu phân phối chuẩn. Đây là test phi tham số',
+                q7: 'So sánh trung bình mẫu với giá trị chuẩn dân số → One sample t-test',
+                q8: 'Cùng 30 bệnh nhân đo trước và sau → Paired samples t-test',
+                q9: 'Bậc tự do df = số nhóm - 1 = 6 - 1 = 5',
+                q10: 'Kiểm tra phân phối tần suất của 1 biến phân loại → Chi-square goodness of fit',
+                q11: 'So sánh điểm stress giữa 2 nhóm sinh viên độc lập → Independent t-test',
+                q12: 'One sample t-test: t = (x̄ - μ) / (s/√n)',
+                q13: 'Cả hai biến đều phân loại (có/không) → Chi-square test of independence',
+                q14: 'Khi vi phạm bất kỳ giả định nào của t-test thì chuyển sang test phi tham số',
+                q15: 'Cùng 40 sinh viên đo 2 lần → Paired samples t-test'
+            };
+            
+            for (let question in answers) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === answers[question]) {
+                    score++;
+                    feedback += `✅ <strong>${question.toUpperCase()}:</strong> Đúng<br>`;
+                } else {
+                    feedback += `❌ <strong>${question.toUpperCase()}:</strong> Sai<br>`;
+                    feedback += `&nbsp;&nbsp;&nbsp;<em>→ ${explanations[question]}</em><br>`;
+                }
+                feedback += '<br>';
+            }
+            
+            const percentage = Math.round(score/total*100);
+            feedback += `<div style="background: #F8F0FF; padding: 15px; border-radius: 10px; margin: 20px 0; border: 2px solid #F6A5B7;">`;
+            feedback += `<strong>🎯 ĐIỂM SỐ: ${score}/${total} (${percentage}%)</strong><br><br>`;
+            
+            if (score >= 13) {
+                feedback += '🥇 <strong style="color: #FFD700;">XUẤT SẮC!</strong> Bạn đã thành thạo Chi-square & t-test!<br>';
+                feedback += '💡 Bạn có thể tự tin áp dụng vào nghiên cứu thực tế.';
+            } else if (score >= 10) {
+                feedback += '🥈 <strong style="color: #C0C0C0;">TỐT!</strong> Kiến thức khá vững vàng.<br>';
+                feedback += '📚 Hãy ôn lại những phần còn thiếu để đạt điểm tối đa.';
+            } else if (score >= 7) {
+                feedback += '🥉 <strong style="color: #CD7F32;">KHÁ!</strong> Cần củng cố thêm.<br>';
+                feedback += '📖 Đọc lại lý thuyết và thực hành thêm các ví dụ.';
+            } else {
+                feedback += '📚 <strong style="color: #e53e3e;">CẦN CỐ GẮNG THÊM!</strong><br>';
+                feedback += '🔄 Hãy học lại từ đầu và thực hành nhiều hơn.';
+            }
+            
+            feedback += '</div>';
+            
+            // Thêm gợi ý học tập
+            feedback += `<div style="background: white; padding: 15px; border-radius: 10px; margin: 10px 0; border-left: 5px solid #F6A5B7;">`;
+            feedback += `<strong>📋 GỢI Ý HỌC TẬP:</strong><br>`;
+            if (score < 13) {
+                feedback += `• Ôn lại tab "Tổng quan" để hiểu quy tắc chọn test<br>`;
+                feedback += `• Thực hành thêm ở tab "Thực hành" với các tình huống mới<br>`;
+                feedback += `• Xem lại các ví dụ cụ thể trong tab "Chi-square" và "t-test"`;
+            } else {
+                feedback += `• Thử thách bản thân với các nghiên cứu phức tạp hơn<br>`;
+                feedback += `• Học thêm về ANOVA và các test khác<br>`;
+                feedback += `• Áp dụng vào dự án nghiên cứu thực tế`;
+            }
+            feedback += '</div>';
+            
+            document.getElementById('quizResult').innerHTML = feedback;
+        }
+
+        // Hiệu ứng loading khi chuyển tab
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Trang học tập Chi-square & t-test đã sẵn sàng!');
+        });
+    </script>
 </body>
 </html>
