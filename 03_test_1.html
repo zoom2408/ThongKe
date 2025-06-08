@@ -4,7 +4,416 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chi-square & t-test - Học tập Interactive</title>
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #C8B5E8 0%, #E8D5F2 100%);
+            min-height: 100vh;
+            color: #2D3E50;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800"><circle cx="100" cy="100" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="200" cy="150" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="300" cy="80" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="400" cy="120" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="500" cy="90" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="600" cy="130" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="700" cy="110" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="800" cy="140" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="900" cy="85" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="1000" cy="125" r="3" fill="%23F6A5B7" opacity="0.6"/><circle cx="1100" cy="95" r="3" fill="%23F6A5B7" opacity="0.6"/></svg>') repeat;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '📏';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 2em;
+            transform: rotate(-15deg);
+        }
+        
+        .header::after {
+            content: '✏️';
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 1.8em;
+            transform: rotate(25deg);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            color: #2C3E50;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            font-size: 1.3em;
+            color: #34495E;
+            font-weight: 600;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 10px;
+        }
+
+        .tab-button {
+            padding: 18px 35px;
+            background: rgba(255, 255, 255, 0.95);
+            border: 3px solid #F6A5B7;
+            border-radius: 30px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2C3E50;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 20px rgba(246, 165, 183, 0.2);
+            position: relative;
+        }
+
+        .tab-button:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(246, 165, 183, 0.3);
+            background: #F6A5B7;
+            color: white;
+        }
+
+        .tab-button.active {
+            background: #F6A5B7;
+            color: white;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(246, 165, 183, 0.4);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #2C3E50;
+            font-size: 2.5em;
+            margin-bottom: 25px;
+            text-align: center;
+            position: relative;
+            font-weight: 900;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .section h2::before {
+            content: '';
+            width: 60px;
+            height: 60px;
+            background: #F6A5B7;
+            border-radius: 50%;
+            display: inline-block;
+            border: 4px solid #2C3E50;
+            box-shadow: 0 5px 15px rgba(246, 165, 183, 0.3);
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 4px;
+            background: linear-gradient(90deg, #F6A5B7, #C8B5E8);
+            border-radius: 2px;
+        }
+
+        .section h3 {
+            color: #2C3E50;
+            font-size: 1.6em;
+            margin: 30px 0 20px 0;
+            padding: 15px 20px;
+            background: linear-gradient(90deg, #F6A5B7, #FFB6C1);
+            border-radius: 15px;
+            border-left: 6px solid #2C3E50;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 5px 15px rgba(246, 165, 183, 0.3);
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border-left: 6px solid #F6A5B7;
+            box-shadow: 0 8px 25px rgba(246, 165, 183, 0.2);
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 35px rgba(246, 165, 183, 0.25);
+        }
+
+        .card::before {
+            content: '📐';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+            opacity: 0.6;
+            transform: rotate(15deg);
+        }
+        
+        .formula-box::before {
+            content: '🧮';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 1.8em;
+        }
+        
+        .interactive-demo::before {
+            content: '🎯';
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 1.5em;
+        }
+
+        .formula-box {
+            background: linear-gradient(135deg, #2C3E50 0%, #34495E 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            margin: 25px 0;
+            font-size: 1.4em;
+            box-shadow: 0 12px 35px rgba(44, 62, 80, 0.3);
+            border: 4px solid #F6A5B7;
+        }
+
+        .example-box {
+            background: linear-gradient(135deg, #FFE4E1 0%, #FFF0F5 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border-left: 6px solid #F6A5B7;
+            border: 2px solid #F6A5B7;
+            box-shadow: 0 8px 25px rgba(246, 165, 183, 0.2);
+        }
+
+        .requirement-list {
+            background: #f0fff4;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #48bb78;
+            margin: 15px 0;
+        }
+
+        .requirement-list ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirement-list li {
+            padding: 8px 0;
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .requirement-list li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #48bb78;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .interactive-demo {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .demo-controls {
+            margin: 20px 0;
+        }
+
+        .demo-controls input, .demo-controls select {
+            padding: 10px;
+            margin: 5px;
+            border: 2px solid #4299e1;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        .demo-button {
+            background: #4299e1;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .demo-button:hover {
+            background: #3182ce;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 153, 225, 0.4);
+        }
+
+        .result-box {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border: 2px solid #4299e1;
+            min-height: 50px;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .comparison-table th {
+            background: #4299e1;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .comparison-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .comparison-table tr:hover {
+            background: #e2e8f0;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            border-left: 4px solid #4299e1;
+        }
+
+        .step-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .step {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            background: #4299e1;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .nav-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .tab-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 10px;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -718,6 +1127,383 @@
         </div>
     </div>
 
-    <script src="common.js"></script>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+            tabcontent = document.getElementsByClassName("tab-content");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].classList.remove("active");
+            }
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        function calculateChiSquare() {
+            const observedInput = document.getElementById('observed').value;
+            const expectedInput = document.getElementById('expected').value;
+            
+            if (!observedInput) {
+                document.getElementById('chiResult').innerHTML = '<span style="color: red;">Vui lòng nhập tần suất quan sát!</span>';
+                return;
+            }
+            
+            const observed = observedInput.split(',').map(Number);
+            let expected;
+            
+            if (expectedInput) {
+                expected = expectedInput.split(',').map(Number);
+            } else {
+                const total = observed.reduce((a, b) => a + b, 0);
+                const expectedValue = total / observed.length;
+                expected = new Array(observed.length).fill(expectedValue);
+            }
+            
+            if (observed.length !== expected.length) {
+                document.getElementById('chiResult').innerHTML = '<span style="color: red;">Số lượng tần suất quan sát và kỳ vọng phải bằng nhau!</span>';
+                return;
+            }
+            
+            let chiSquare = 0;
+            for (let i = 0; i < observed.length; i++) {
+                chiSquare += Math.pow(observed[i] - expected[i], 2) / expected[i];
+            }
+            
+            const df = observed.length - 1;
+            
+            document.getElementById('chiResult').innerHTML = `
+                <strong>Kết quả tính toán:</strong><br>
+                χ² = ${chiSquare.toFixed(3)}<br>
+                Bậc tự do (df) = ${df}<br>
+                <em>Tham khảo bảng phân phối Chi-square để so sánh với giá trị tới hạn</em>
+            `;
+        }
+
+        function calculateTTest() {
+            const testType = document.getElementById('testType').value;
+            
+            if (testType === 'one') {
+                const sampleMean = parseFloat(document.getElementById('sampleMean').value);
+                const popMean = parseFloat(document.getElementById('popMean').value);
+                const stdDev = parseFloat(document.getElementById('stdDev').value);
+                const sampleSize = parseFloat(document.getElementById('sampleSize').value);
+                
+                if (isNaN(sampleMean) || isNaN(popMean) || isNaN(stdDev) || isNaN(sampleSize)) {
+                    document.getElementById('tResult').innerHTML = '<span style="color: red;">Vui lòng nhập đầy đủ thông tin!</span>';
+                    return;
+                }
+                
+                const t = (sampleMean - popMean) / (stdDev / Math.sqrt(sampleSize));
+                const df = sampleSize - 1;
+                
+                document.getElementById('tResult').innerHTML = `
+                    <strong>Kết quả One sample t-test:</strong><br>
+                    t = ${t.toFixed(3)}<br>
+                    Bậc tự do (df) = ${df}<br>
+                    <em>Tham khảo bảng phân phối t để so sánh với giá trị tới hạn</em>
+                `;
+            }
+        }
+
+        let currentScenario = null;
+        const scenarios = [
+            {
+                situation: "Nghiên cứu ảnh hưởng của phương pháp giảng dạy (Truyền thống vs Tương tác) đến điểm thi toán của học sinh",
+                variables: "Biến độc lập: Phương pháp (Phân loại), Biến phụ thuộc: Điểm thi (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm độc lập (Truyền thống vs Tương tác) so sánh điểm số (định lượng)"
+            },
+            {
+                situation: "Kiểm tra xem tỷ lệ các loại rối loạn tâm lý (Lo âu, Trầm cảm, Stress, Bình thường) trong dân số có bằng nhau không",
+                variables: "Biến: Loại rối loạn (Phân loại), Mục tiêu: Kiểm tra phân phối tần suất",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại, kiểm tra phân phối tần suất với kỳ vọng bằng nhau"
+            },
+            {
+                situation: "Đo mức độ tự tin của 40 sinh viên trước và sau khi tham gia khóa training kỹ năng giao tiếp",
+                variables: "Biến độc lập: Thời điểm (Trước/Sau), Biến phụ thuộc: Mức độ tự tin (Định lượng)",
+                correctAnswer: "Paired samples t-test",
+                explanation: "Cùng nhóm đối tượng được đo 2 lần, so sánh điểm trung bình before-after"
+            },
+            {
+                situation: "Nghiên cứu mối quan hệ giữa giới tính (Nam/Nữ) và loại stress chính (Học tập/Gia đình/Tài chính)",
+                variables: "Biến 1: Giới tính (Phân loại), Biến 2: Loại stress (Phân loại)",
+                correctAnswer: "Chi-square test of independence", 
+                explanation: "2 biến phân loại, kiểm tra mối quan hệ/độc lập giữa chúng"
+            },
+            {
+                situation: "So sánh điểm EQ (trí tuệ cảm xúc) trung bình của học sinh Việt Nam với chuẩn quốc tế (85 điểm)",
+                variables: "Biến: Điểm EQ học sinh (Định lượng), Giá trị so sánh: 85 điểm (Hằng số)",
+                correctAnswer: "One sample t-test",
+                explanation: "1 mẫu so sánh với giá trị chuẩn, dữ liệu định lượng"
+            },
+            {
+                situation: "So sánh mức độ burnout (kiệt sức) giữa 3 nhóm: Y tá ICU, Y tá ngoại trú, Y tá nhi khoa",
+                variables: "Biến độc lập: Khoa làm việc (3 nhóm), Biến phụ thuộc: Mức độ burnout (Định lượng)",
+                correctAnswer: "ANOVA (không phải t-test)",
+                explanation: "3 nhóm trở lên cần dùng ANOVA, không dùng t-test"
+            },
+            {
+                situation: "Nghiên cứu hiệu quả của thuốc antidepressant: So sánh điểm trầm cảm của 60 bệnh nhân trước và sau 8 tuần điều trị",
+                variables: "Biến độc lập: Thời điểm (Trước/Sau điều trị), Biến phụ thuộc: Điểm trầm cảm (Định lượng)",
+                correctAnswer: "Paired samples t-test",
+                explanation: "Cùng nhóm bệnh nhân đo 2 lần, thiết kế within-subjects"
+            },
+            {
+                situation: "Kiểm tra mối quan hệ giữa tình trạng hút thuốc (Có/Không) và mức độ lo âu (Thấp/Trung bình/Cao)",
+                variables: "Biến 1: Hút thuốc (Phân loại), Biến 2: Mức độ lo âu (Phân loại thứ bậc)",
+                correctAnswer: "Chi-square test of independence",
+                explanation: "2 biến phân loại (có thể coi ordinal như categorical), kiểm tra mối quan hệ"
+            },
+            {
+                situation: "So sánh điểm IQ trung bình giữa trẻ được nuôi dưỡng bởi ông bà và trẻ được nuôi bởi bố mẹ",
+                variables: "Biến độc lập: Người nuôi dưỡng (Phân loại), Biến phụ thuộc: Điểm IQ (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm độc lập so sánh trung bình của biến định lượng"
+            },
+            {
+                situation: "Nghiên cứu phân bố tỷ lệ các style học tập (Visual/Auditory/Kinesthetic/Reading) ở sinh viên tâm lý",
+                variables: "Biến: Style học tập (Phân loại), Mục tiêu: Mô tả phân phối",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại, kiểm tra phân phối có khác với kỳ vọng không"
+            },
+            {
+                situation: "Đánh giá hiệu quả liệu pháp CBT: Đo anxiety score của 30 bệnh nhân trước điều trị, sau 4 tuần và sau 8 tuần",
+                variables: "Biến độc lập: Thời điểm (3 lần đo), Biến phụ thuộc: Anxiety score (Định lượng)",
+                correctAnswer: "ANOVA (Repeated measures)",
+                explanation: "3 lần đo trở lên cần dùng Repeated measures ANOVA"
+            },
+            {
+                situation: "So sánh hiệu quả của 2 loại therapy: Group therapy vs Individual therapy trong điều trị trầm cảm",
+                variables: "Biến độc lập: Loại therapy (Phân loại), Biến phụ thuộc: Điểm trầm cảm (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm độc lập được can thiệp khác nhau, so sánh outcome"
+            },
+            {
+                situation: "Nghiên cứu mối quan hệ giữa tình trạng hôn nhân (Độc thân/Hẹn hò/Kết hôn) và mức độ hạnh phúc (Không hạnh phúc/Hạnh phúc)",
+                variables: "Biến 1: Tình trạng hôn nhân (Phân loại), Biến 2: Mức độ hạnh phúc (Phân loại)",
+                correctAnswer: "Chi-square test of independence",
+                explanation: "2 biến phân loại, kiểm tra có mối quan hệ không"
+            },
+            {
+                situation: "Kiểm tra xem điểm stress trung bình của sinh viên y khoa có khác với mức stress trung bình dân số (50 điểm) không",
+                variables: "Biến: Điểm stress sinh viên Y (Định lượng), Giá trị so sánh: 50 điểm (Chuẩn dân số)",
+                correctAnswer: "One sample t-test",
+                explanation: "So sánh trung bình 1 mẫu với giá trị tham chiếu của dân số"
+            },
+            {
+                situation: "Nghiên cứu hiệu quả của mindfulness meditation: Đo cortisol level trước và sau 6 tuần tập luyện ở 50 người tham gia",
+                variables: "Biến độc lập: Thời điểm (Trước/Sau), Biến phụ thuộc: Cortisol level (Định lượng)",
+                correctAnswer: "Paired samples t-test",
+                explanation: "Cùng nhóm người đo 2 lần, thiết kế before-after"
+            },
+            {
+                situation: "Kiểm tra tỷ lệ các cơ chế defense (Denial/Projection/Sublimation/Rationalization) có xuất hiện đều nhau không",
+                variables: "Biến: Loại defense mechanism (Phân loại), Mục tiêu: Kiểm tra phân phối đồng đều",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại với nhiều categories, test phân phối đồng đều"
+            },
+            {
+                situation: "So sánh điểm empathy giữa sinh viên ngành tâm lý lâm sàng và sinh viên ngành tâm lý tổ chức",
+                variables: "Biến độc lập: Chuyên ngành (Phân loại), Biến phụ thuộc: Điểm empathy (Định lượng)",
+                correctAnswer: "Independent samples t-test",
+                explanation: "2 nhóm sinh viên độc lập, so sánh điểm số trung bình"
+            },
+            {
+                situation: "Nghiên cứu mối quan hệ giữa personality type (Introvert/Extrovert) và preferred therapy style (CBT/Psychodynamic/Humanistic)",
+                variables: "Biến 1: Personality type (Phân loại), Biến 2: Therapy preference (Phân loại)",
+                correctAnswer: "Chi-square test of independence",
+                explanation: "2 biến phân loại, kiểm tra có association không"
+            },
+            {
+                situation: "Đánh giá tác động của sleep deprivation: Đo reaction time của 25 người sau 0h, 24h, và 48h không ngủ",
+                variables: "Biến độc lập: Thời gian không ngủ (3 levels), Biến phụ thuộc: Reaction time (Định lượng)",
+                correctAnswer: "ANOVA (Repeated measures)",
+                explanation: "3 lần đo trở lên trên cùng đối tượng cần Repeated measures ANOVA"
+            },
+            {
+                situation: "Kiểm tra phân phối các loại phobia phổ biến (Arachnophobia/Claustrophobia/Agoraphobia/Social phobia) có theo tỷ lệ 2:1:1:3 không",
+                variables: "Biến: Loại phobia (Phân loại), Tỷ lệ kỳ vọng: 2:1:1:3",
+                correctAnswer: "Chi-square goodness of fit",
+                explanation: "1 biến phân loại, test phân phối theo tỷ lệ kỳ vọng cụ thể"
+            }
+        ];
+
+        function generateScenario() {
+            currentScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            
+            document.getElementById('practiceScenarios').innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 15px; border: 2px solid #F6A5B7; margin: 15px 0;">
+                    <h4 style="color: #2C3E50; margin-bottom: 15px;">📋 Tình huống:</h4>
+                    <p style="font-size: 1.1em; margin-bottom: 15px;">${currentScenario.situation}</p>
+                    <p style="color: #666; font-style: italic;">${currentScenario.variables}</p>
+                    
+                    <div style="margin-top: 20px;">
+                        <strong>Chọn test phù hợp:</strong><br>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="chi-goodness"> Chi-square goodness of fit</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="chi-independence"> Chi-square test of independence</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="one-sample"> One sample t-test</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="independent"> Independent samples t-test</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="paired"> Paired samples t-test</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="anova"> ANOVA</label>
+                        <label style="display: block; margin: 8px 0;"><input type="radio" name="scenarioAnswer" value="anova-rm"> ANOVA (Repeated measures)</label>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('practiceResult').innerHTML = 'Hãy chọn test phù hợp và nhấn "Hiện đáp án" để kiểm tra...';
+        }
+
+        function showAnswer() {
+            if (!currentScenario) {
+                document.getElementById('practiceResult').innerHTML = '<span style="color: #F6A5B7;">Vui lòng tạo tình huống trước!</span>';
+                return;
+            }
+            
+            const selected = document.querySelector('input[name="scenarioAnswer"]:checked');
+            const userAnswer = selected ? selected.nextSibling.textContent.trim() : '';
+            
+            const isCorrect = userAnswer === currentScenario.correctAnswer;
+            
+            document.getElementById('practiceResult').innerHTML = `
+                <div style="padding: 15px;">
+                    <strong>${isCorrect ? '✅ Chính xác!' : '❌ Chưa đúng'}</strong><br><br>
+                    ${selected ? `<strong>Bạn chọn:</strong> ${userAnswer}<br>` : '<strong>Bạn chưa chọn đáp án</strong><br>'}
+                    <strong>Đáp án đúng:</strong> ${currentScenario.correctAnswer}<br><br>
+                    <strong>Giải thích:</strong> ${currentScenario.explanation}
+                </div>
+            `;
+        }
+
+        function checkSituation() {
+            const selected = document.getElementById('situationTest').value;
+            const resultDiv = document.getElementById('situationResult');
+            
+            if (!selected) {
+                resultDiv.innerHTML = '<span style="color: #F6A5B7;">Vui lòng chọn một test!</span>';
+                return;
+            }
+            
+            if (selected === 'chi') {
+                resultDiv.innerHTML = `
+                    <strong style="color: #48bb78;">✅ Chính xác!</strong><br>
+                    <strong>Giải thích:</strong> Cả hai biến đều là phân loại (có/không), vì vậy sử dụng Chi-square test of independence để kiểm tra mối quan hệ giữa chúng.<br>
+                    <em>Biến 1: Hút thuốc (có/không) - Phân loại</em><br>
+                    <em>Biến 2: Ung thư phổi (có/không) - Phân loại</em>
+                `;
+            } else {
+                let testName = '';
+                switch(selected) {
+                    case 't1': testName = 'One sample t-test'; break;
+                    case 't2': testName = 'Independent t-test'; break;
+                    case 't3': testName = 'Paired t-test'; break;
+                }
+                resultDiv.innerHTML = `
+                    <strong style="color: #e53e3e;">❌ Không đúng</strong><br>
+                    <strong>Bạn chọn:</strong> ${testName}<br>
+                    <strong>Đáp án đúng:</strong> Chi-square test of independence<br>
+                    <strong>Lý do:</strong> t-test dành cho biến định lượng, nhưng ở đây cả hai biến đều là phân loại (có/không).
+                `;
+            }
+        }
+
+        function checkAnswers() {
+            const answers = {
+                q1: 'b',   // Chi-square dành cho biến phân loại
+                q2: 'c',   // Paired t-test cho before-after
+                q3: 'b',   // E là tần suất kỳ vọng
+                q4: 'b',   // Giới tính (phân loại) vs mức độ lo âu (định lượng) → Independent t-test
+                q5: 'b',   // Hai biến phân loại → Chi-square independence
+                q6: 'b',   // Chi-square không cần phân phối chuẩn
+                q7: 'c',   // So sánh với giá trị chuẩn → One sample t-test
+                q8: 'b',   // Before-after cùng nhóm → Paired t-test
+                q9: 'b',   // df = n-1 = 6-1 = 5
+                q10: 'c',  // Kiểm tra phân phối của 1 biến phân loại → goodness of fit
+                q11: 'b',  // So sánh 2 nhóm độc lập → Independent t-test
+                q12: 'b',  // Công thức one sample t-test
+                q13: 'c',  // Hai biến phân loại → Chi-square independence
+                q14: 'd',  // Tất cả các trường hợp vi phạm giả định
+                q15: 'b'   // Cùng nhóm đo 2 lần → Paired t-test
+            };
+            
+            let score = 0;
+            let total = Object.keys(answers).length;
+            let feedback = '<strong>📊 KẾT QUẢ KIỂM TRA:</strong><br><br>';
+            
+            const explanations = {
+                q1: 'Chi-square test dành cho dữ liệu phân loại (categorical variables)',
+                q2: 'Paired samples t-test dành cho thiết kế before-after (cùng nhóm đối tượng)',
+                q3: 'E trong công thức χ²=Σ[(O-E)²/E] là Expected frequency (tần suất kỳ vọng)',
+                q4: 'Giới tính (phân loại) → biến độc lập, mức độ lo âu (định lượng) → biến phụ thuộc. Dùng Independent t-test',
+                q5: 'Cả hai biến đều phân loại (có/không) → Chi-square test of independence',
+                q6: 'Chi-square không yêu cầu phân phối chuẩn. Đây là test phi tham số',
+                q7: 'So sánh trung bình mẫu với giá trị chuẩn dân số → One sample t-test',
+                q8: 'Cùng 30 bệnh nhân đo trước và sau → Paired samples t-test',
+                q9: 'Bậc tự do df = số nhóm - 1 = 6 - 1 = 5',
+                q10: 'Kiểm tra phân phối tần suất của 1 biến phân loại → Chi-square goodness of fit',
+                q11: 'So sánh điểm stress giữa 2 nhóm sinh viên độc lập → Independent t-test',
+                q12: 'One sample t-test: t = (x̄ - μ) / (s/√n)',
+                q13: 'Cả hai biến đều phân loại (có/không) → Chi-square test of independence',
+                q14: 'Khi vi phạm bất kỳ giả định nào của t-test thì chuyển sang test phi tham số',
+                q15: 'Cùng 40 sinh viên đo 2 lần → Paired samples t-test'
+            };
+            
+            for (let question in answers) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                if (selected && selected.value === answers[question]) {
+                    score++;
+                    feedback += `✅ <strong>${question.toUpperCase()}:</strong> Đúng<br>`;
+                } else {
+                    feedback += `❌ <strong>${question.toUpperCase()}:</strong> Sai<br>`;
+                    feedback += `&nbsp;&nbsp;&nbsp;<em>→ ${explanations[question]}</em><br>`;
+                }
+                feedback += '<br>';
+            }
+            
+            const percentage = Math.round(score/total*100);
+            feedback += `<div style="background: #F8F0FF; padding: 15px; border-radius: 10px; margin: 20px 0; border: 2px solid #F6A5B7;">`;
+            feedback += `<strong>🎯 ĐIỂM SỐ: ${score}/${total} (${percentage}%)</strong><br><br>`;
+            
+            if (score >= 13) {
+                feedback += '🥇 <strong style="color: #FFD700;">XUẤT SẮC!</strong> Bạn đã thành thạo Chi-square & t-test!<br>';
+                feedback += '💡 Bạn có thể tự tin áp dụng vào nghiên cứu thực tế.';
+            } else if (score >= 10) {
+                feedback += '🥈 <strong style="color: #C0C0C0;">TỐT!</strong> Kiến thức khá vững vàng.<br>';
+                feedback += '📚 Hãy ôn lại những phần còn thiếu để đạt điểm tối đa.';
+            } else if (score >= 7) {
+                feedback += '🥉 <strong style="color: #CD7F32;">KHÁ!</strong> Cần củng cố thêm.<br>';
+                feedback += '📖 Đọc lại lý thuyết và thực hành thêm các ví dụ.';
+            } else {
+                feedback += '📚 <strong style="color: #e53e3e;">CẦN CỐ GẮNG THÊM!</strong><br>';
+                feedback += '🔄 Hãy học lại từ đầu và thực hành nhiều hơn.';
+            }
+            
+            feedback += '</div>';
+            
+            // Thêm gợi ý học tập
+            feedback += `<div style="background: white; padding: 15px; border-radius: 10px; margin: 10px 0; border-left: 5px solid #F6A5B7;">`;
+            feedback += `<strong>📋 GỢI Ý HỌC TẬP:</strong><br>`;
+            if (score < 13) {
+                feedback += `• Ôn lại tab "Tổng quan" để hiểu quy tắc chọn test<br>`;
+                feedback += `• Thực hành thêm ở tab "Thực hành" với các tình huống mới<br>`;
+                feedback += `• Xem lại các ví dụ cụ thể trong tab "Chi-square" và "t-test"`;
+            } else {
+                feedback += `• Thử thách bản thân với các nghiên cứu phức tạp hơn<br>`;
+                feedback += `• Học thêm về ANOVA và các test khác<br>`;
+                feedback += `• Áp dụng vào dự án nghiên cứu thực tế`;
+            }
+            feedback += '</div>';
+            
+            document.getElementById('quizResult').innerHTML = feedback;
+        }
+
+        // Hiệu ứng loading khi chuyển tab
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Trang học tập Chi-square & t-test đã sẵn sàng!');
+        });
+    </script>
 </body>
 </html>
