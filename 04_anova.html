@@ -57,15 +57,15 @@
 
         .nav-tab {
             flex: 1;
-            padding: 15px 20px;
+            min-width: 120px;
+            padding: 15px 10px;
             background: transparent;
             border: none;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1em;
             font-weight: 600;
             transition: all 0.3s ease;
             position: relative;
-            min-width: 120px;
         }
 
         .nav-tab:hover {
@@ -127,14 +127,13 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
 
-        .warning-box {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+        .variance-box {
+            background: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
             color: #333;
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            border-left: 5px solid #e74c3c;
         }
 
         .quiz-container {
@@ -244,32 +243,6 @@
             background: #f8f9fa;
         }
 
-        .anova-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            font-family: 'Courier New', monospace;
-        }
-
-        .anova-table th {
-            background: linear-gradient(135deg, #2c3e50, #34495e);
-            color: white;
-            padding: 12px;
-            text-align: center;
-            font-size: 0.9em;
-        }
-
-        .anova-table td {
-            padding: 10px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-            font-size: 0.9em;
-        }
-
         .interactive-demo {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -315,13 +288,24 @@
             backdrop-filter: blur(5px);
         }
 
+        .result-interpretation {
+            background: linear-gradient(135deg, #81ecec 0%, #74b9ff 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
         .apa-example {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            background: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            color: #333;
             padding: 20px;
             border-radius: 10px;
             margin: 20px 0;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             font-family: 'Times New Roman', serif;
+            line-height: 1.6;
         }
 
         h2 {
@@ -344,207 +328,164 @@
             font-weight: bold;
         }
 
-        .variance-visual {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-
-        .variance-group {
-            background: rgba(255,255,255,0.9);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px;
-            text-align: center;
-            min-width: 200px;
-        }
-
-        .score-counter {
-            font-size: 1.2em;
+        .warning {
+            background: #ff7675;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
             font-weight: bold;
-            margin-top: 10px;
-            color: #667eea;
         }
 
-        .quiz-score {
+        .score-display {
             position: fixed;
             top: 20px;
             right: 20px;
             background: rgba(255,255,255,0.9);
-            padding: 10px 20px;
-            border-radius: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .interpretation-guide {
-            background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
-            margin: 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-        @media (max-width: 768px) {
-            .nav-tabs {
-                flex-direction: column;
-            }
-            
-            .nav-tab {
-                flex: none;
-            }
-            
-            .variance-visual {
-                flex-direction: column;
-            }
+            font-weight: bold;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
+    <div class="score-display" id="scoreDisplay">
+        Điểm quiz: <span id="currentScore">0</span>/10
+    </div>
+
     <div class="container">
-        <div class="quiz-score" id="quizScore">Điểm: 0/12</div>
-        
         <div class="header">
             <h1>🧮 ANOVA: Phân tích phương sai</h1>
-            <p>Học cách áp dụng ANOVA một chiều và hai chiều trong nghiên cứu với Jamovi</p>
+            <p>Học cách áp dụng ANOVA một chiều và hai chiều trong nghiên cứu</p>
         </div>
 
         <div class="nav-tabs">
-            <button class="nav-tab active" onclick="showSection('concepts')">Khái niệm phương sai</button>
-            <button class="nav-tab" onclick="showSection('oneway')">One-way ANOVA</button>
-            <button class="nav-tab" onclick="showSection('twoway')">Two-way ANOVA</button>
-            <button class="nav-tab" onclick="showSection('jamovi')">Thực hành Jamovi</button>
+            <button class="nav-tab active" onclick="showSection('intro')">Giới thiệu</button>
+            <button class="nav-tab" onclick="showSection('variance')">Phương sai</button>
+            <button class="nav-tab" onclick="showSection('oneway')">One-way</button>
+            <button class="nav-tab" onclick="showSection('twoway')">Two-way</button>
+            <button class="nav-tab" onclick="showSection('jamovi')">Jamovi</button>
+            <button class="nav-tab" onclick="showSection('interpretation')">Đọc kết quả</button>
             <button class="nav-tab" onclick="showSection('apa')">Báo cáo APA</button>
-            <button class="nav-tab" onclick="showSection('quiz')">Bài tập (12 câu)</button>
+            <button class="nav-tab" onclick="showSection('quiz')">Bài tập</button>
         </div>
 
-        <!-- Khái niệm phương sai -->
-        <div id="concepts" class="content-section active">
-            <h2>📊 Hiểu về Phương sai trong ANOVA</h2>
+        <!-- Giới thiệu -->
+        <div id="intro" class="content-section active">
+            <h2>🎯 ANOVA là gì?</h2>
             
             <div class="concept-box">
-                <h3>🎯 ANOVA là gì?</h3>
+                <h3>📖 Định nghĩa</h3>
                 <p><strong>ANOVA (Analysis of Variance)</strong> - Phân tích phương sai là phương pháp thống kê dùng để so sánh giá trị trung bình của hai nhóm trở lên để xem có sự khác biệt nào không. Được coi là phần mở rộng của t-test.</p>
             </div>
 
-            <h3>🔍 Logic cốt lõi của ANOVA</h3>
             <div class="formula-box">
-                <h4>Công thức F-statistic</h4>
+                <h3>🧮 Logic cơ bản của ANOVA</h3>
                 <div style="font-size: 1.5em; margin: 15px 0;">
                     F = <span style="text-decoration: overline;">Between group variance</span> / <span style="text-decoration: overline;">Within group variance</span>
                 </div>
-                <div style="font-size: 1.2em; margin: 15px 0;">
-                    F = MS<sub>treatment</sub> / MS<sub>error</sub> = (SS<sub>treatment</sub>/df<sub>treatment</sub>) / (SS<sub>error</sub>/df<sub>error</sub>)
-                </div>
+                <p style="font-size: 0.9em; margin-top: 10px;">
+                    <strong>Ý nghĩa của F:</strong><br>
+                    • Nếu F lớn → có khả năng bác bỏ H₀ → có sự khác biệt giữa các nhóm<br>
+                    • Khi H₀ đúng → F có giá trị xấp xỉ 1
+                </p>
             </div>
 
-            <h3>📈 Hai loại phương sai quan trọng</h3>
-            <div class="variance-visual">
-                <div class="variance-group">
-                    <h4>🔄 Within-group variance</h4>
-                    <p><strong>Phương sai trong nhóm</strong></p>
-                    <p>Sự chênh lệch trung bình giữa mỗi điểm giá trị và trung bình cộng của nhóm đó</p>
-                    <p style="font-style: italic; color: #666;">Phản ánh sự biến thiên tự nhiên</p>
-                </div>
-                <div class="variance-group">
-                    <h4>📊 Between-group variance</h4>
-                    <p><strong>Phương sai giữa các nhóm</strong></p>
-                    <p>Sự chênh lệch trung bình giữa TBC của từng nhóm và TBC chung (grand mean)</p>
-                    <p style="font-style: italic; color: #666;">Phản ánh ảnh hưởng của treatment</p>
-                </div>
-            </div>
-
-            <div class="warning-box">
-                <h4>⚠️ Ý nghĩa của F-statistic</h4>
-                <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li><strong>Nếu F lớn:</strong> Between-group variance >> Within-group variance → có khả năng bác bỏ H₀ → có sự khác biệt giữa các nhóm</li>
-                    <li><strong>Khi H₀ đúng:</strong> F có giá trị xấp xỉ 1 (không có sự khác biệt thực sự)</li>
-                    <li><strong>Quy tắc quyết định:</strong> Nếu giá trị thu được của F ≥ giá trị quyết định (thường α = 0.05) → bác bỏ H₀</li>
-                </ul>
-            </div>
-
-            <h3>🧮 Bảng ANOVA và các thành phần</h3>
-            <table class="anova-table">
+            <h3>🔄 Các loại ANOVA</h3>
+            <table class="comparison-table">
                 <thead>
                     <tr>
-                        <th>Source</th>
-                        <th>Sum of Squares (SS)</th>
-                        <th>df</th>
-                        <th>Mean Square (MS)</th>
-                        <th>F</th>
-                        <th>p</th>
-                        <th>η²</th>
+                        <th>Loại ANOVA</th>
+                        <th>Số biến độc lập</th>
+                        <th>Thiết kế</th>
+                        <th>Ứng dụng</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td><strong>Treatment</strong></td>
-                        <td>SS<sub>treatment</sub></td>
-                        <td>k - 1</td>
-                        <td>SS<sub>treatment</sub>/df<sub>treatment</sub></td>
-                        <td rowspan="2">MS<sub>treatment</sub>/MS<sub>error</sub></td>
-                        <td rowspan="2">< .05 ?</td>
-                        <td rowspan="2">SS<sub>treatment</sub>/SS<sub>total</sub></td>
+                        <td><span class="highlight">One-way Independent</span></td>
+                        <td>1</td>
+                        <td>Khác nhóm</td>
+                        <td>So sánh 3+ nhóm khác nhau</td>
                     </tr>
                     <tr>
-                        <td><strong>Error</strong></td>
-                        <td>SS<sub>error</sub></td>
-                        <td>N - k</td>
-                        <td>SS<sub>error</sub>/df<sub>error</sub></td>
+                        <td><span class="highlight">One-way Repeated Measures</span></td>
+                        <td>1</td>
+                        <td>Cùng nhóm</td>
+                        <td>So sánh 3+ thời điểm/điều kiện</td>
                     </tr>
                     <tr>
-                        <td><strong>Total</strong></td>
-                        <td>SS<sub>total</sub></td>
-                        <td>N - 1</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
-                        <td>-</td>
+                        <td><span class="highlight">Two-way Independent</span></td>
+                        <td>2</td>
+                        <td>Khác nhóm</td>
+                        <td>2 yếu tố độc lập, nhóm khác nhau</td>
+                    </tr>
+                    <tr>
+                        <td><span class="highlight">Two-way Repeated Measures</span></td>
+                        <td>2</td>
+                        <td>Cùng nhóm</td>
+                        <td>2 yếu tố độc lập, cùng nhóm</td>
+                    </tr>
+                    <tr>
+                        <td><span class="highlight">Two-way Mixed</span></td>
+                        <td>2</td>
+                        <td>Hỗn hợp</td>
+                        <td>1 yếu tố khác nhóm, 1 yếu tố cùng nhóm</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
 
-            <div class="example-box">
-                <h4>📝 Giải thích các thành phần:</h4>
-                <ul style="padding-left: 20px;">
-                    <li><strong>SS (Sum of Squares):</strong> Tổng bình phương độ lệch</li>
-                    <li><strong>df (degrees of freedom):</strong> Bậc tự do</li>
-                    <li><strong>MS (Mean Square):</strong> Phương sai = SS/df</li>
-                    <li><strong>k:</strong> Số nhóm/levels</li>
-                    <li><strong>N:</strong> Tổng số quan sát</li>
-                    <li><strong>η² (eta squared):</strong> Effect size - tỷ lệ phương sai được giải thích</li>
-                </ul>
+        <!-- Phương sai -->
+        <div id="variance" class="content-section">
+            <h2>📊 Hiểu về Phương Sai trong ANOVA</h2>
+
+            <div class="variance-box">
+                <h3>🔍 Phương sai là gì?</h3>
+                <p>Phương sai đo lường <strong>mức độ phân tán</strong> của dữ liệu quanh giá trị trung bình. Trong ANOVA, chúng ta so sánh hai loại phương sai:</p>
             </div>
 
-            <h3>🔧 Giả định quan trọng</h3>
-            <div class="steps-container">
-                <div class="step">
-                    <span class="step-number">1</span>
-                    <strong>Độc lập quan sát:</strong> Các quan sát độc lập với nhau
-                </div>
-                <div class="step">
-                    <span class="step-number">2</span>
-                    <strong>Phân phối chuẩn:</strong> Dữ liệu phân phối chuẩn trong mỗi nhóm
-                </div>
-                <div class="step">
-                    <span class="step-number">3</span>
-                    <strong>Đồng nhất phương sai:</strong> σ²₁ = σ²₂ = σ²₃... (Homogeneity of Variance)
+            <div class="formula-box">
+                <h3>📐 Hai loại phương sai trong ANOVA</h3>
+                <div style="text-align: left; font-size: 1.1em;">
+                    <p><strong>1. Between-group variance (Phương sai giữa các nhóm):</strong></p>
+                    <p style="margin-left: 20px;">→ Sự chênh lệch trung bình giữa TBC của từng nhóm và TBC chung (grand mean)</p>
+                    <p style="margin-left: 20px;">→ Phản ánh <em>sự khác biệt do tác động của biến độc lập</em></p>
+                    
+                    <p style="margin-top: 15px;"><strong>2. Within-group variance (Phương sai trong nhóm):</strong></p>
+                    <p style="margin-left: 20px;">→ Sự chênh lệch trung bình giữa mỗi điểm giá trị và trung bình cộng của nhóm đó</p>
+                    <p style="margin-left: 20px;">→ Phản ánh <em>sự biến thiên tự nhiên không do biến độc lập</em></p>
                 </div>
             </div>
 
             <div class="interactive-demo">
-                <h3>🎮 Demo: Tính F-statistic thực tế</h3>
+                <h3>🎮 Demo: Tính toán F-statistic</h3>
                 <div class="demo-controls">
                     <label>Nhóm 1 (M): <input type="number" id="mean1" value="10" step="0.1"></label>
                     <label>Nhóm 2 (M): <input type="number" id="mean2" value="12" step="0.1"></label>
                     <label>Nhóm 3 (M): <input type="number" id="mean3" value="15" step="0.1"></label><br>
-                    <label>Phương sai trong nhóm: <input type="number" id="withinVar" value="4" step="0.1"></label>
+                    <label>Within-group variance: <input type="number" id="withinVar" value="4" step="0.1"></label>
                     <button class="demo-button" onclick="calculateF()">Tính F-statistic</button>
                 </div>
                 <div class="result-display" id="fResult"></div>
+            </div>
+
+            <div class="example-box">
+                <h3>💡 Ví dụ minh họa</h3>
+                <p><strong>Nghiên cứu:</strong> So sánh điểm thi của 3 lớp học</p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Between-group variance cao:</strong> Lớp A (M=90), Lớp B (M=70), Lớp C (M=50) → F lớn</li>
+                    <li><strong>Within-group variance cao:</strong> Trong mỗi lớp có học sinh giỏi lẫn học sinh yếu → F nhỏ</li>
+                    <li><strong>Kết luận:</strong> F = Between/Within → F càng lớn, càng có bằng chứng về sự khác biệt</li>
+                </ul>
+            </div>
+
+            <div class="concept-box">
+                <h3>⚖️ Giả định về đồng nhất phương sai</h3>
+                <p><strong>Homogeneity of Variance:</strong> σ²₁ = σ²₂ = σ²₃ = σ²₄ = σ²₅</p>
+                <p>Các quần thể phải có cùng phương sai. Nếu vi phạm (heteroscedasticity), kết quả có thể không chính xác.</p>
+                <p><strong>Kiểm tra:</strong> Levene's test (p > 0.05 → đồng nhất phương sai)</p>
             </div>
         </div>
 
@@ -553,67 +494,54 @@
             <h2>📊 One-way ANOVA</h2>
 
             <div class="concept-box">
-                <h3>🎯 Khi nào sử dụng One-way ANOVA?</h3>
+                <h3>🎯 Khi nào sử dụng?</h3>
+                <p>Phân tích phương sai một chiều - So sánh điểm trung bình giữa ba hay nhiều nhóm độc lập</p>
                 <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li>Có <strong>1 biến độc lập</strong> với 3 hoặc nhiều nhóm/levels</li>
+                    <li>Có <strong>1 biến độc lập</strong> với 3 hoặc nhiều nhóm</li>
                     <li>Có <strong>1 biến phụ thuộc</strong> liên tục</li>
-                    <li>Muốn kiểm tra xem các nhóm có khác biệt đáng kể không</li>
+                    <li>Là một kiểm định tham số</li>
                 </ul>
             </div>
 
-            <h3>📋 Giả thuyết trong One-way ANOVA</h3>
+            <h3>📋 Giả định cần kiểm tra</h3>
+            <div class="steps-container">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Tính độc lập:</strong> Các quan sát độc lập với nhau
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Phân phối chuẩn:</strong> Shapiro-Wilk test (p > 0.05 → phân phối chuẩn)
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Đồng nhất phương sai:</strong> Levene's test (p > 0.05 → phương sai đồng nhất)
+                </div>
+            </div>
+
             <div class="formula-box">
-                <div style="text-align: left; font-size: 1.1em;">
-                    <p><strong>H₀:</strong> μ₁ = μ₂ = μ₃ = ... = μₖ</p>
-                    <p style="margin: 10px 0;">KHÔNG có sự khác biệt giữa các nhóm trung bình</p>
-                    <p><strong>H₁:</strong> Ít nhất một nhóm khác biệt đáng kể</p>
-                    <p style="margin: 10px 0;">Có sự khác biệt (có ý nghĩa thống kê)</p>
+                <h3>📊 Công thức ANOVA Chi tiết</h3>
+                <div style="text-align: left; font-size: 1em;">
+                    <p><strong>F = MS<sub>treatment</sub> / MS<sub>error</sub> = (SS<sub>treatment</sub>/df<sub>treatment</sub>) / (SS<sub>error</sub>/df<sub>error</sub>)</strong></p>
+                    <br>
+                    <p><strong>Degrees of Freedom:</strong></p>
+                    <p>• df<sub>treatment</sub> = Number of groups - 1</p>
+                    <p>• df<sub>error</sub> = N<sub>total</sub> - Number of groups</p>
+                    <p>• df<sub>total</sub> = N<sub>total</sub> - 1</p>
                 </div>
             </div>
 
             <h3>🔍 Post-hoc Tests (Hậu phân tích)</h3>
-            <div class="warning-box">
-                <h4>⚠️ Tại sao cần Post-hoc?</h4>
-                <p>Kết quả ANOVA chỉ cho biết có sự khác biệt đáng kể giữa các nhóm hay không. Nhưng <strong>KHÔNG cho biết nhóm nào khác nhóm nào!</strong> (vì H₁ của ta là có sự khác biệt, chứ không rõ khác biệt ở đâu)</p>
-            </div>
-
-            <table class="comparison-table">
-                <thead>
-                    <tr>
-                        <th>Post-hoc Test</th>
-                        <th>Khi nào sử dụng</th>
-                        <th>Ưu điểm</th>
-                        <th>Nhược điểm</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><span class="highlight">Tukey HSD</span></td>
-                        <td>Phương sai đồng nhất</td>
-                        <td>Cân bằng Type I và Type II error</td>
-                        <td>Cần giả định đồng nhất phương sai</td>
-                    </tr>
-                    <tr>
-                        <td><span class="highlight">Games-Howell</span></td>
-                        <td>Phương sai KHÔNG đồng nhất</td>
-                        <td>Không cần giả định đồng nhất</td>
-                        <td>Ít powerful hơn Tukey</td>
-                    </tr>
-                    <tr>
-                        <td><span class="highlight">Bonferroni</span></td>
-                        <td>Kiểm soát chặt chẽ Type I error</td>
-                        <td>Rất conservative</td>
-                        <td>Dễ bỏ sót sự khác biệt thực</td>
-                    </tr>
-                </tbody>
-            </table>
-
             <div class="example-box">
-                <h3>💡 Ví dụ thực tế: So sánh điểm thi của 3 trường</h3>
-                <p><strong>Biến độc lập:</strong> Trường học (A, B, C)</p>
-                <p><strong>Biến phụ thuộc:</strong> Điểm thi toán</p>
-                <p><strong>Kết quả giả định:</strong> F(2, 87) = 12.45, p < .001, η² = .22</p>
-                <p><strong>Giải thích:</strong> Có sự khác biệt có ý nghĩa thống kê giữa các trường (p < .001), với 22% phương sai được giải thích bởi yếu tố trường học.</p>
+                <p><strong>Tại sao cần:</strong> ANOVA chỉ cho biết "có sự khác biệt" nhưng không cho biết "nhóm nào khác nhóm nào"</p>
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li><strong>Tukey HSD:</strong> Khi phương sai đồng nhất</li>
+                    <li><strong>Games-Howell:</strong> Khi phương sai không đồng nhất</li>
+                    <li><strong>Bonferroni:</strong> Kiểm soát chặt chẽ Type I error</li>
+                </ul>
+                <div class="warning">
+                    ⚠️ Chỉ chạy post-hoc khi ANOVA có ý nghĩa (p < 0.05)
+                </div>
             </div>
         </div>
 
@@ -622,25 +550,611 @@
             <h2>📈 Two-way ANOVA</h2>
 
             <div class="concept-box">
-                <h3>🎯 Ưu thế của Two-way ANOVA</h3>
-                <p>Two-way ANOVA cho phép nghiên cứu <strong>2 biến độc lập</strong> cùng lúc và kiểm tra:</p>
+                <h3>🎯 Ưu điểm của Two-way ANOVA</h3>
+                <p>Khi ta có <strong>2 biến độc lập</strong>, Two-way ANOVA cho phép nghiên cứu:</p>
                 <ul style="margin: 10px 0; padding-left: 20px;">
-                    <li><strong>Main Effect A:</strong> Ảnh hưởng của biến độc lập A (bỏ qua biến B)</li>
-                    <li><strong>Main Effect B:</strong> Ảnh hưởng của biến độc lập B (bỏ qua biến A)</li>
-                    <li><strong>Interaction Effect A×B:</strong> Ảnh hưởng kết hợp của A và B</li>
+                    <li><strong>Hiệu ứng chính</strong> của từng biến độc lập</li>
+                    <li><strong>Hiệu ứng tương tác</strong> giữa 2 biến độc lập</li>
+                    <li>Tiết kiệm thời gian so với việc chạy 2 One-way ANOVA riêng biệt</li>
                 </ul>
             </div>
 
-            <h3>⚡ Hiểu về Interaction Effect</h3>
-            <div class="interpretation-guide">
-                <h4>🔍 Interaction Effect có ý nghĩa khi nào?</h4>
-                <p><strong>Có interaction:</strong> Hiệu ứng của biến A phụ thuộc vào level của biến B (hoặc ngược lại)</p>
-                <p><strong>Không có interaction:</strong> Hiệu ứng của biến A giống nhau ở tất cả levels của biến B</p>
-                
-                <div style="margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.8); border-radius: 8px; color: #333;">
-                    <strong>Ví dụ có interaction:</strong><br>
-                    • Phương pháp dạy hiện đại có hiệu quả với nam sinh (+10 điểm)<br>
-                    • Nhưng không có hiệu quả với nữ sinh (0 điểm)<br>
-                    → <em>Hiệu ứng của phương pháp dạy phụ thuộc vào giới tính</em>
+            <div class="formula-box">
+                <h3>📊 Ba hiệu ứng trong Two-way ANOVA</h3>
+                <div style="text-align: left; font-size: 1.1em;">
+                    <p><strong>1. Main Effect A:</strong> Ảnh hưởng của biến A (bỏ qua biến B)</p>
+                    <p><strong>2. Main Effect B:</strong> Ảnh hưởng của biến B (bỏ qua biến A)</p>
+                    <p><strong>3. Interaction A×B:</strong> Ảnh hưởng kết hợp của A và B</p>
+                    <br>
+                    <p style="color: #e74c3c;"><strong>Quan trọng:</strong> Nếu có interaction effect có ý nghĩa, ưu tiên giải thích interaction trước!</p>
                 </div>
-            </div
+            </div>
+
+            <h3>💡 Ví dụ cụ thể từ tài liệu</h3>
+            <div class="example-box">
+                <h4>🧠 Nghiên cứu: Ảnh hưởng của EI và xem phim lên TDST</h4>
+                <p><strong>Biến độc lập 1:</strong> Phân loại EI (Cao, Trung bình, Thấp)</p>
+                <p><strong>Biến độc lập 2:</strong> Xem phim cảm xúc (Tích cực, Tiêu cực)</p>
+                <p><strong>Biến phụ thuộc:</strong> Điểm trạng thái cảm xúc (TDST)</p>
+                <hr style="margin: 15px 0;">
+                <p><strong>Có thể có 3 kết quả:</strong></p>
+                <ul style="padding-left: 20px;">
+                    <li>Main effect EI: F(2,N) = X.XX, p < .05</li>
+                    <li>Main effect Phim: F(1,N) = X.XX, p < .05</li>
+                    <li>Interaction EI × Phim: F(2,N) = X.XX, p < .05</li>
+                </ul>
+            </div>
+
+            <div class="interactive-demo">
+                <h3>🎯 Demo: Hiểu về Interaction Effect</h3>
+                <div class="demo-controls">
+                    <button class="demo-button" onclick="showInteraction('none')">Không có tương tác</button>
+                    <button class="demo-button" onclick="showInteraction('present')">Có tương tác</button>
+                </div>
+                <div class="result-display" id="interactionDemo">
+                    <p>Click vào các nút để xem sự khác biệt giữa có và không có interaction effect!</p>
+                </div>
+            </div>
+
+            <h3>📋 Các bước thực hiện</h3>
+            <div class="steps-container">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Kiểm tra giả định:</strong> Normality, Homogeneity of variance
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Chạy Two-way ANOVA:</strong> Xem kết quả 3 hiệu ứng
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Ưu tiên giải thích:</strong> Interaction → Main effects
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Post-hoc (nếu cần):</strong> Chỉ cho biến có >2 levels và có ý nghĩa
+                </div>
+            </div>
+        </div>
+
+        <!-- Thực hành Jamovi -->
+        <div id="jamovi" class="content-section">
+            <h2>💻 Thực hành với Jamovi</h2>
+
+            <div class="concept-box">
+                <h3>🚀 Hướng dẫn chi tiết từng bước</h3>
+                <p>Jamovi là phần mềm thống kê miễn phí, dễ sử dụng. Dưới đây là hướng dẫn chi tiết theo đúng tài liệu.</p>
+            </div>
+
+            <h3>📊 One-way Independent ANOVA</h3>
+            <div class="steps-container">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Chuẩn bị dữ liệu:</strong> 
+                    <ul style="margin: 5px 0 0 20px;">
+                        <li>Biến phụ thuộc: Thang đo liên tục</li>
+                        <li>Biến nhóm: Thang đo danh nghĩa với 3+ levels</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Kiểm tra normality:</strong> Analyses → Exploration → Descriptives → Normality test (Shapiro-Wilk)
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Chạy ANOVA:</strong> Analyses → ANOVA → One-way ANOVA
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Cài đặt trong Jamovi:</strong> 
+                    <ul style="margin: 5px 0 0 20px;">
+                        <li><strong>Dependent Variable:</strong> Kéo biến phụ thuộc vào</li>
+                        <li><strong>Grouping Variable:</strong> Kéa biến nhóm vào</li>
+                        <li><strong>Assumption Checks:</strong> ✓ Homogeneity test (Levene)</li>
+                        <li><strong>Post-Hoc Tests:</strong> Chọn Tukey hoặc Games-Howell</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>📈 Two-way Independent ANOVA</h3>
+            <div class="steps-container">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Mở ANOVA:</strong> Analyses → ANOVA → ANOVA (general)
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Cài đặt chính:</strong>
+                    <ul style="margin: 5px 0 0 20px;">
+                        <li><strong>Dependent Variable:</strong> Kéo biến phụ thuộc (VD: TDST)</li>
+                        <li><strong>Fixed Factors:</strong> Kéo 2 biến độc lập (VD: Phân loại EI và Xem phim cam xuc)</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Effect Size:</strong> ✓ Partial η² (theo tài liệu)
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Assumption Checks:</strong> ✓ Homogeneity test (Levene's test)
+                </div>
+            </div>
+
+            <div class="warning">
+                ⚠️ <strong>Lưu ý quan trọng:</strong> Nếu p của Levene's test < 0.05 thì phương sai không đồng nhất
+            </div>
+        </div>
+
+        <!-- Đọc kết quả -->
+        <div id="interpretation" class="content-section">
+            <h2>🔍 Cách đọc kết quả ANOVA</h2>
+
+            <div class="result-interpretation">
+                <h3>📊 Bảng kết quả ANOVA gồm có:</h3>
+                <ul style="padding-left: 20px;">
+                    <li><strong>F:</strong> F-statistic (giá trị quan trọng nhất)</li>
+                    <li><strong>df1, df2:</strong> Degrees of freedom</li>
+                    <li><strong>p:</strong> P-value (so sánh với α = 0.05)</li>
+                    <li><strong>η² (eta squared):</strong> Effect size</li>
+                </ul>
+            </div>
+
+            <h3>🎯 Các bước đọc kết quả theo thứ tự</h3>
+            <div class="steps-container">
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Kiểm tra giả định trước:</strong>
+                    <ul style="margin: 5px 0 0 20px;">
+                        <li>Shapiro-Wilk test: p > 0.05 → dữ liệu phân phối chuẩn</li>
+                        <li>Levene's test: p > 0.05 → phương sai đồng nhất</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Đọc p-value chính:</strong>
+                    <ul style="margin: 5px 0 0 20px;">
+                        <li>p < 0.05 → Kết quả có ý nghĩa thống kê</li>
+                        <li>p ≥ 0.05 → Kết quả không có ý nghĩa thống kê</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Đánh giá Effect Size (η²):</strong>
+                    <ul style="margin: 5px 0 0 20px;">
+                        <li>0.01 = Small effect (hiệu ứng nhỏ)</li>
+                        <li>0.06 = Medium effect (hiệu ứng trung bình)</li>
+                        <li>0.14 = Large effect (hiệu ứng lớn)</li>
+                    </ul>
+                </div>
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Quyết định Post-hoc:</strong> Chỉ chạy nếu ANOVA có ý nghĩa và biến có >2 levels
+                </div>
+            </div>
+
+            <div class="example-box">
+                <h3>📋 Ví dụ đọc kết quả cụ thể</h3>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                    <p><strong>Kết quả One-way ANOVA:</strong></p>
+                    <p>F(2,12) = 23.6, p < .001, η² = .28</p>
+                    <br>
+                    <p><strong>Cách đọc:</strong></p>
+                    <ul style="padding-left: 20px;">
+                        <li>F = 23.6 (giá trị F-statistic)</li>
+                        <li>df1 = 2, df2 = 12 (degrees of freedom)</li>
+                        <li>p < .001 → có ý nghĩa thống kê</li>
+                        <li>η² = .28 → hiệu ứng lớn (> 0.14)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <h3>🔄 Two-way ANOVA: Đọc 3 hiệu ứng</h3>
+            <div class="result-interpretation">
+                <p><strong>Theo tài liệu, cần đọc theo thứ tự:</strong></p>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Hiệu ứng chính biến ĐL 1:</strong> Main effect của biến thứ nhất</li>
+                    <li><strong>Hiệu ứng chính biến ĐL 2:</strong> Main effect của biến thứ hai</li>
+                    <li><strong>Hiệu ứng tương tác:</strong> Interaction effect (quan trọng nhất)</li>
+                </ol>
+                <p style="margin-top: 10px;"><strong>Lưu ý:</strong> Nếu interaction có ý nghĩa, ưu tiên giải thích interaction trước main effects!</p>
+            </div>
+
+            <div class="interactive-demo">
+                <h3>🎮 Trình tự quyết định sau khi có kết quả</h3>
+                <div id="decisionTree">
+                    <div class="demo-controls">
+                        <button class="demo-button" onclick="showDecisionStep(1)">Bước 1: Kiểm tra giả định</button>
+                        <button class="demo-button" onclick="showDecisionStep(2)">Bước 2: Xem kết quả ANOVA</button>
+                        <button class="demo-button" onclick="showDecisionStep(3)">Bước 3: Post-hoc (nếu cần)</button>
+                    </div>
+                    <div class="result-display" id="decisionResult"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Báo cáo APA -->
+        <div id="apa" class="content-section">
+            <h2>📝 Báo cáo kết quả theo chuẩn APA</h2>
+
+            <div class="concept-box">
+                <h3>✏️ Cấu trúc báo cáo APA cho ANOVA</h3>
+                <ol style="padding-left: 20px;">
+                    <li><strong>Mở đầu:</strong> Tại sao sử dụng ANOVA</li>
+                    <li><strong>Kiểm tra giả định:</strong> Normality và Homogeneity</li>
+                    <li><strong>Kết quả chính:</strong> F, df, p-value, effect size</li>
+                    <li><strong>Post-hoc (nếu có):</strong> Kết quả so sánh từng cặp</li>
+                    <li><strong>Kết luận:</strong> Ý nghĩa thực tế và liên hệ giả thuyết</li>
+                </ol>
+            </div>
+
+            <h3>📄 Mẫu báo cáo One-way ANOVA (từ tài liệu)</h3>
+            <div class="apa-example">
+                <p>Để kiểm tra sự khác biệt giữa nhóm không sử dụng thuốc, nhóm sử dụng 50 mg/ngày và nhóm sử dụng 100mg/ngày với loại thuốc trị tiểu đường mới, One-way independent ANOVA được sử dụng. Kết quả kiểm tra dữ liệu cho thấy dữ liệu phân phối chuẩn, Shapiro-Wilk test p = 0.104 > 0.05. Kết quả của Levene test F(2,12) = 0.871, p = 0.443 suy ra phương sai đồng nhất.</p>
+
+                <p>Kết quả phân tích One-way independent ANOVA cho thấy có sự khác biệt có ý nghĩa thống kê giữa ba nhóm người trong thí nghiệm thuốc điều trị tiểu đường F(2,12) = 23.6, p < .001. Cụ thể, phân tích Post-hoc với hiệu chỉnh Tukey cho thấy, nhóm sử dụng 100mg/ngày có nồng độ đường trong máu thấp hơn nhóm không sử dụng thuốc, t(12) = 6.70, p < .001 và nhóm sử dụng 50mg/ngày có nồng độ đường trong máu thấp hơn nhóm không sử dụng thuốc, t(12) = 4.68, p = .01. Không có sự khác biệt đáng kể giữa nhóm sử dụng thuốc với liều lượng 100mg/ngày và nhóm 50mg/ngày. Điều này có ý nghĩa việc sử dụng thuốc có mang lại ý nghĩa trị liệu hơn là không sử dụng thuốc. Như vậy, giả thuyết thuốc có tác dụng làm giảm đường trong máu được ủng hộ.</p>
+            </div>
+
+            <h3>📋 Template báo cáo cho Two-way ANOVA</h3>
+            <div class="apa-example">
+                <p><strong>Mở đầu:</strong> Để kiểm tra [mục đích nghiên cứu], Two-way independent ANOVA được sử dụng với [biến ĐL 1] và [biến ĐL 2] làm biến độc lập, [biến PT] làm biến phụ thuộc.</p>
+
+                <p><strong>Giả định:</strong> Kết quả kiểm tra cho thấy dữ liệu [đạt/không đạt] các giả định của Two-way ANOVA. Shapiro-Wilk test cho thấy p = [giá trị], Levene's test F([df1],[df2]) = [F], p = [p-value].</p>
+
+                <p><strong>Kết quả chính:</strong></p>
+                <ul style="padding-left: 20px;">
+                    <li>Main effect của [biến 1]: F([df1],[df2]) = [F], p = [p], η² = [effect size]</li>
+                    <li>Main effect của [biến 2]: F([df1],[df2]) = [F], p = [p], η² = [effect size]</li>
+                    <li>Interaction effect: F([df1],[df2]) = [F], p = [p], η² = [effect size]</li>
+                </ul>
+
+                <p><strong>Post-hoc (nếu cần):</strong> Phân tích post-hoc với hiệu chỉnh [Tukey/Games-Howell/Bonferroni] cho thấy...</p>
+
+                <p><strong>Kết luận:</strong> Kết quả có ý nghĩa là... Như vậy, giả thuyết [được ủng hộ/không được ủng hộ].</p>
+            </div>
+
+            <div class="result-interpretation">
+                <h3>💡 Lưu ý khi viết báo cáo</h3>
+                <ul style="padding-left: 20px;">
+                    <li><strong>Luôn báo cáo đầy đủ:</strong> F(df1, df2) = X.XX, p = .XXX, η² = .XX</li>
+                    <li><strong>Effect size quan trọng:</strong> Cho biết ý nghĩa thực tế của kết quả</li>
+                    <li><strong>Mô tả descriptive statistics:</strong> M và SD của các nhóm</li>
+                    <li><strong>Liên kết với giả thuyết:</strong> Kết quả ủng hộ hay bác bỏ giả thuyết ban đầu</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Bài tập -->
+        <div id="quiz" class="content-section">
+            <h2>🧩 Bài tập trắc nghiệm (10 câu)</h2>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 1: Khi nào nên sử dụng One-way ANOVA thay vì t-test?</div>
+                <ul class="quiz-options" data-answer="b">
+                    <li data-option="a">Khi so sánh 2 nhóm</li>
+                    <li data-option="b">Khi so sánh 3 hoặc nhiều nhóm</li>
+                    <li data-option="c">Khi dữ liệu không phân phối chuẩn</li>
+                    <li data-option="d">Khi có 2 biến độc lập</li>
+                </ul>
+                <div class="feedback" id="feedback1">
+                    <strong>Đúng!</strong> ANOVA được sử dụng khi so sánh 3 hoặc nhiều nhóm để tránh lỗi Type I khi thực hiện nhiều t-test.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 2: F-statistic được tính bằng công thức nào?</div>
+                <ul class="quiz-options" data-answer="a">
+                    <li data-option="a">Between-group variance / Within-group variance</li>
+                    <li data-option="b">Within-group variance / Between-group variance</li>
+                    <li data-option="c">Mean square treatment / Mean square total</li>
+                    <li data-option="d">Sum of squares / Degrees of freedom</li>
+                </ul>
+                <div class="feedback" id="feedback2">
+                    <strong>Chính xác!</strong> F = Between-group variance / Within-group variance. Khi F lớn, có khả năng bác bỏ H₀.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 3: Trong Two-way ANOVA, interaction effect có ý nghĩa khi nào?</div>
+                <ul class="quiz-options" data-answer="c">
+                    <li data-option="a">Khi cả 2 main effect đều có ý nghĩa</li>
+                    <li data-option="b">Khi chỉ 1 main effect có ý nghĩa</li>
+                    <li data-option="c">Khi p-value của interaction < 0.05</li>
+                    <li data-option="d">Khi F-statistic > 1</li>
+                </ul>
+                <div class="feedback" id="feedback3">
+                    <strong>Đúng rồi!</strong> Interaction effect có ý nghĩa khi p < 0.05, độc lập với các main effects.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 4: Post-hoc test nào nên sử dụng khi Levene's test p < 0.05?</div>
+                <ul class="quiz-options" data-answer="b">
+                    <li data-option="a">Tukey HSD</li>
+                    <li data-option="b">Games-Howell</li>
+                    <li data-option="c">Bonferroni</li>
+                    <li data-option="d">Không cần post-hoc</li>
+                </ul>
+                <div class="feedback" id="feedback4">
+                    <strong>Chính xác!</strong> Games-Howell được sử dụng khi phương sai không đồng nhất (Levene's test p < 0.05).
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 5: Effect size η² = 0.08 được xem là mức độ nào?</div>
+                <ul class="quiz-options" data-answer="b">
+                    <li data-option="a">Small effect (< 0.01)</li>
+                    <li data-option="b">Medium effect (0.06-0.14)</li>
+                    <li data-option="c">Large effect (> 0.14)</li>
+                    <li data-option="d">Không có ý nghĩa</li>
+                </ul>
+                <div class="feedback" id="feedback5">
+                    <strong>Đúng!</strong> η² = 0.08 nằm trong khoảng 0.06-0.14, được xem là medium effect.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 6: Khi nào cần chạy post-hoc test?</div>
+                <ul class="quiz-options" data-answer="d">
+                    <li data-option="a">Luôn luôn sau khi chạy ANOVA</li>
+                    <li data-option="b">Khi F-statistic > 1</li>
+                    <li data-option="c">Khi có 2 nhóm so sánh</li>
+                    <li data-option="d">Khi ANOVA có ý nghĩa và biến có >2 levels</li>
+                </ul>
+                <div class="feedback" id="feedback6">
+                    <strong>Chính xác!</strong> Post-hoc chỉ chạy khi ANOVA có ý nghĩa (p < 0.05) và biến độc lập có >2 levels.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 7: Shapiro-Wilk test p = 0.03 có ý nghĩa gì?</div>
+                <ul class="quiz-options" data-answer="b">
+                    <li data-option="a">Dữ liệu phân phối chuẩn</li>
+                    <li data-option="b">Dữ liệu không phân phối chuẩn</li>
+                    <li data-option="c">Phương sai đồng nhất</li>
+                    <li data-option="d">Phương sai không đồng nhất</li>
+                </ul>
+                <div class="feedback" id="feedback7">
+                    <strong>Đúng!</strong> p = 0.03 < 0.05, bác bỏ H₀, dữ liệu không tuân theo phân phối chuẩn.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 8: Trong báo cáo APA, F(2,12) = 23.6 có nghĩa là gì?</div>
+                <ul class="quiz-options" data-answer="c">
+                    <li data-option="a">F = 23.6, df total = 2, N = 12</li>
+                    <li data-option="b">F = 23.6, có 2 nhóm, 12 participants</li>
+                    <li data-option="c">F = 23.6, df1 = 2, df2 = 12</li>
+                    <li data-option="d">F = 23.6, α = 0.02, β = 0.12</li>
+                </ul>
+                <div class="feedback" id="feedback8">
+                    <strong>Chính xác!</strong> F(df1, df2) = F-statistic, với df1 = degrees of freedom treatment, df2 = degrees of freedom error.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 9: Within-group variance cao nghĩa là gì?</div>
+                <ul class="quiz-options" data-answer="b">
+                    <li data-option="a">Các nhóm khác biệt nhiều</li>
+                    <li data-option="b">Trong mỗi nhóm có sự biến thiên lớn</li>
+                    <li data-option="c">F-statistic sẽ lớn</li>
+                    <li data-option="d">Dễ tìm thấy sự khác biệt</li>
+                </ul>
+                <div class="feedback" id="feedback9">
+                    <strong>Đúng!</strong> Within-group variance cao = sự biến thiên lớn trong từng nhóm, làm khó phát hiện sự khác biệt giữa nhóm.
+                </div>
+            </div>
+
+            <div class="quiz-container">
+                <div class="quiz-question">Câu 10: Khi có interaction effect có ý nghĩa trong Two-way ANOVA, nên làm gì?</div>
+                <ul class="quiz-options" data-answer="a">
+                    <li data-option="a">Ưu tiên giải thích interaction trước main effects</li>
+                    <li data-option="b">Bỏ qua main effects hoàn toàn</li>
+                    <li data-option="c">Chỉ báo cáo main effects</li>
+                    <li data-option="d">Chạy lại One-way ANOVA</li>
+                </ul>
+                <div class="feedback" id="feedback10">
+                    <strong>Chính xác!</strong> Khi có interaction có ý nghĩa, ưu tiên giải thích interaction vì nó cho thấy hiệu ứng kết hợp của 2 biến.
+                </div>
+            </div>
+
+            <div class="result-interpretation">
+                <h3>🎯 Bài tập thực hành tình huống</h3>
+                <div class="example-box">
+                    <p><strong>Tình huống:</strong> Bạn nghiên cứu ảnh hưởng của phương pháp dạy (A, B, C) và giới tính (Nam, Nữ) lên điểm thi toán.</p>
+                    <p><strong>Kết quả giả định:</strong></p>
+                    <ul style="padding-left: 20px;">
+                        <li>Main effect Phương pháp: F(2,54) = 8.45, p = .001</li>
+                        <li>Main effect Giới tính: F(1,54) = 0.23, p = .635</li>
+                        <li>Interaction: F(2,54) = 12.67, p < .001</li>
+                    </ul>
+                    <p><strong>Câu hỏi:</strong> Nên giải thích kết quả như thế nào? Có cần post-hoc không?</p>
+                    
+                    <div style="margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.8); border-radius: 8px;">
+                        <strong>Đáp án mẫu:</strong><br>
+                        1. Ưu tiên giải thích interaction effect (p < .001)<br>
+                        2. Hiệu ứng của phương pháp dạy phụ thuộc vào giới tính<br>
+                        3. Cần post-hoc cho phương pháp dạy (3 levels, có ý nghĩa)<br>
+                        4. Không cần post-hoc cho giới tính (2 levels, không ý nghĩa)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentScore = 0;
+        let totalQuestions = 10;
+
+        // Tab navigation
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.content-section');
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // F-statistic calculator
+        function calculateF() {
+            const mean1 = parseFloat(document.getElementById('mean1').value);
+            const mean2 = parseFloat(document.getElementById('mean2').value);
+            const mean3 = parseFloat(document.getElementById('mean3').value);
+            const withinVar = parseFloat(document.getElementById('withinVar').value);
+            
+            const grandMean = (mean1 + mean2 + mean3) / 3;
+            const betweenVar = ((mean1 - grandMean)**2 + (mean2 - grandMean)**2 + (mean3 - grandMean)**2) / 2;
+            const fStat = betweenVar / withinVar;
+            
+            document.getElementById('fResult').innerHTML = `
+                <h4>🧮 Kết quả tính toán:</h4>
+                <p><strong>Grand Mean:</strong> ${grandMean.toFixed(2)}</p>
+                <p><strong>Between-group variance:</strong> ${betweenVar.toFixed(2)}</p>
+                <p><strong>Within-group variance:</strong> ${withinVar}</p>
+                <p><strong>F-statistic:</strong> ${fStat.toFixed(2)}</p>
+                <p><strong>Giải thích:</strong> ${fStat > 3 ? 'F lớn → có khả năng có sự khác biệt đáng kể' : 'F nhỏ → có thể không có sự khác biệt đáng kể'}</p>
+                <p style="font-size: 0.9em; margin-top: 10px;">
+                    <em>Between-group variance cao = các nhóm khác biệt nhiều<br>
+                    Within-group variance cao = trong nhóm có sự biến thiên lớn</em>
+                </p>
+            `;
+        }
+
+        // Interaction demo
+        function showInteraction(type) {
+            const demo = document.getElementById('interactionDemo');
+            
+            if (type === 'none') {
+                demo.innerHTML = `
+                    <h4>📊 Không có Interaction Effect</h4>
+                    <p><strong>Biến A:</strong> Phương pháp dạy (Truyền thống vs Hiện đại)</p>
+                    <p><strong>Biến B:</strong> Giới tính (Nam vs Nữ)</p>
+                    <div style="margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.8); border-radius: 8px; color: #333;">
+                        <strong>Kết quả giả định:</strong><br>
+                        • Nam: 75 (TT) → 80 (HĐ) = +5 điểm<br>
+                        • Nữ: 78 (TT) → 83 (HĐ) = +5 điểm<br>
+                        • <em>Hiệu ứng của phương pháp giống nhau cho cả hai giới (đường song song)</em>
+                    </div>
+                `;
+            } else {
+                demo.innerHTML = `
+                    <h4>⚡ Có Interaction Effect</h4>
+                    <p><strong>Biến A:</strong> Phương pháp dạy (Truyền thống vs Hiện đại)</p>
+                    <p><strong>Biến B:</strong> Giới tính (Nam vs Nữ)</p>
+                    <div style="margin: 15px 0; padding: 15px; background: rgba(255,255,255,0.8); border-radius: 8px; color: #333;">
+                        <strong>Kết quả giả định:</strong><br>
+                        • Nam: 75 (TT) → 85 (HĐ) = +10 điểm<br>
+                        • Nữ: 78 (TT) → 78 (HĐ) = 0 điểm<br>
+                        • <em>Phương pháp hiện đại chỉ có hiệu quả với nam sinh! (đường cắt nhau)</em>
+                    </div>
+                `;
+            }
+        }
+
+        // Decision tree demo
+        function showDecisionStep(step) {
+            const resultDiv = document.getElementById('decisionResult');
+            
+            switch(step) {
+                case 1:
+                    resultDiv.innerHTML = `
+                        <h4>🔍 Bước 1: Kiểm tra giả định</h4>
+                        <p><strong>Shapiro-Wilk test:</strong></p>
+                        <ul style="padding-left: 20px;">
+                            <li>p > 0.05 → Dữ liệu phân phối chuẩn → Tiếp tục ANOVA</li>
+                            <li>p ≤ 0.05 → Vi phạm normality → Cân nhắc non-parametric test</li>
+                        </ul>
+                        <p><strong>Levene's test:</strong></p>
+                        <ul style="padding-left: 20px;">
+                            <li>p > 0.05 → Phương sai đồng nhất → Dùng Tukey post-hoc</li>
+                            <li>p ≤ 0.05 → Phương sai không đồng nhất → Dùng Games-Howell</li>
+                        </ul>
+                    `;
+                    break;
+                case 2:
+                    resultDiv.innerHTML = `
+                        <h4>📊 Bước 2: Xem kết quả ANOVA</h4>
+                        <p><strong>Nếu p < 0.05:</strong></p>
+                        <ul style="padding-left: 20px;">
+                            <li>✅ Có sự khác biệt có ý nghĩa</li>
+                            <li>→ Xem effect size (η²)</li>
+                            <li>→ Tiến hành post-hoc (nếu >2 nhóm)</li>
+                        </ul>
+                        <p><strong>Nếu p ≥ 0.05:</strong></p>
+                        <ul style="padding-left: 20px;">
+                            <li>❌ Không có sự khác biệt có ý nghĩa</li>
+                            <li>→ Kết luận không bác bỏ được H₀</li>
+                            <li>→ KHÔNG cần post-hoc</li>
+                        </ul>
+                    `;
+                    break;
+                case 3:
+                    resultDiv.innerHTML = `
+                        <h4>🔍 Bước 3: Post-hoc test</h4>
+                        <p><strong>Điều kiện:</strong> ANOVA có ý nghĩa VÀ biến có >2 levels</p>
+                        <p><strong>Chọn test:</strong></p>
+                        <ul style="padding-left: 20px;">
+                            <li>Phương sai đồng nhất → <strong>Tukey HSD</strong></li>
+                            <li>Phương sai không đồng nhất → <strong>Games-Howell</strong></li>
+                            <li>Kiểm soát nghiêm ngặt → <strong>Bonferroni</strong></li>
+                        </ul>
+                        <p><strong>Kết quả post-hoc:</strong> p < 0.05 = có sự khác biệt giữa 2 nhóm đó</p>
+                    `;
+                    break;
+            }
+        }
+
+        // Quiz functionality with scoring
+        document.addEventListener('DOMContentLoaded', function() {
+            const quizOptions = document.querySelectorAll('.quiz-options');
+            
+            quizOptions.forEach((quiz, index) => {
+                const options = quiz.querySelectorAll('li');
+                const correctAnswer = quiz.dataset.answer;
+                const feedback = document.getElementById(`feedback${index + 1}`);
+                let answered = false;
+                
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (answered) return; // Prevent multiple answers
+                        
+                        const selectedOption = this.dataset.option;
+                        answered = true;
+                        
+                        options.forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                            if (opt.dataset.option === correctAnswer) {
+                                opt.classList.add('correct');
+                            } else if (opt.dataset.option === selectedOption && selectedOption !== correctAnswer) {
+                                opt.classList.add('incorrect');
+                            }
+                        });
+                        
+                        if (selectedOption === correctAnswer) {
+                            currentScore++;
+                            feedback.style.background = '#e8f5e8';
+                        } else {
+                            feedback.innerHTML = `<strong>Sai rồi!</strong> Đáp án đúng là: ${correctAnswer.toUpperCase()}. ${feedback.innerHTML.split('</strong> ')[1]}`;
+                            feedback.style.background = '#ffebee';
+                        }
+                        
+                        feedback.style.display = 'block';
+                        updateScore();
+                    });
+                });
+            });
+        });
+
+        function updateScore() {
+            document.getElementById('currentScore').textContent = currentScore;
+            if (currentScore === totalQuestions) {
+                setTimeout(() => {
+                    alert('🎉 Chúc mừng! Bạn đã hoàn thành tất cả câu hỏi!');
+                }, 500);
+            }
+        }
+    </script>
+</body>
+</html>
