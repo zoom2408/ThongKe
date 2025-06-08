@@ -41,6 +41,18 @@ if (typeof window !== 'undefined') {
   }
 
   function loadPage(event, file, samePage = false) {
+    const viewer = document.getElementById('viewer');
+    if (viewer) {
+      if (!samePage && file) {
+        viewer.src = file;
+      } else if (samePage) {
+        viewer.src = viewer.getAttribute('data-default') || viewer.src;
+      }
+      document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+      if (event) event.currentTarget.classList.add('active');
+      return;
+    }
+
     const container = document.querySelector('.content.main');
     if (!container) return;
     if (samePage) {
