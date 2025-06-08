@@ -6,7 +6,8 @@
       margin: 0;
       padding: 20px;
     }
-    #index{
+
+    #index {
       padding: 0 !important;
     }
 
@@ -420,6 +421,13 @@
 
     .stat-cheatsheet tr:nth-child(even) td {
       background: #f6faff;
+    }
+
+    .note {
+      background: #e6f7e6;
+      border-left: 5px solid #55a869;
+      padding: 12px;
+      margin: 16px 0;
     }
 
     @media (max-width:700px) {

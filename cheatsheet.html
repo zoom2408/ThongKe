@@ -8,78 +8,115 @@
 </head>
 <body>
   <div class="stat-cheatsheet">
-    <h2>Bảng tham chiếu nhanh khi đọc bảng số liệu & kết quả kiểm định</h2>
-    <table>
-      <tr>
-        <th>Chỉ số</th>
-        <th>Ý nghĩa/Khoảng</th>
-        <th>Cách diễn giải</th>
-      </tr>
-      <tr>
-        <td><b>p-value</b></td>
-        <td>
-          <b>&lt; 0.001</b><br>
-          <b>&lt; 0.01</b><br>
-          <b>&lt; 0.05</b><br>
-          <b>≥ 0.05</b>
-        </td>
-        <td>
-          Rất có ý nghĩa thống kê (bác bỏ H0 rất mạnh)<br>
-          Có ý nghĩa thống kê cao<br>
-          Có ý nghĩa thống kê (phổ biến nhất)<br>
-          Không có ý nghĩa thống kê (thường không bác bỏ H0)
-        </td>
-      </tr>
-      <tr>
-        <td><b>Hệ số tương quan r</b> (Pearson/Spearman)</td>
-        <td>
-          <b>|r| &lt; 0.1</b><br>
-          <b>0.1 ≤ |r| &lt; 0.3</b><br>
-          <b>0.3 ≤ |r| &lt; 0.5</b><br>
-          <b>|r| ≥ 0.5</b>
-        </td>
-        <td>
-          Không/tương quan rất yếu<br>
-          Tương quan yếu<br>
-          Tương quan vừa<br>
-          Tương quan mạnh
-        </td>
-      </tr>
-      <tr>
-        <td><b>Hiệu ứng (effect size)</b> <br>(Cohen’s d, R²...)</td>
-        <td>
-          <b>d ≈ 0.2</b><br>
-          <b>d ≈ 0.5</b><br>
-          <b>d ≥ 0.8</b><br>
-          <b>R² = 0.01</b><br>
-          <b>R² = 0.09</b><br>
-          <b>R² = 0.25</b>
-        </td>
-        <td>
-          Hiệu ứng nhỏ<br>
-          Hiệu ứng trung bình<br>
-          Hiệu ứng lớn<br>
-          (R²) Nhỏ<br>
-          (R²) Trung bình<br>
-          (R²) Lớn
-        </td>
-      </tr>
-      <tr>
-        <td><b>Bảng mô tả</b> <br>(Mean, Median, SD...)</td>
-        <td>
-          Trung bình &amp; Trung vị<br>
-          SD (độ lệch chuẩn)<br>
-          Min - Max<br>
-          Tần suất, tỉ lệ %
-        </td>
-        <td>
-          Nếu mean ≈ median: phân phối chuẩn<br>
-          SD nhỏ: dữ liệu đồng đều<br>
-          Xem min/max để phát hiện outlier<br>
-          Tần suất % nhóm nhiều nhất là nhóm đặc trưng
-        </td>
-      </tr>
-    </table>
+    <h2>Cheatsheet: Đọc Bảng Số Liệu & Suy Luận Kiểm Định Thống Kê</h2>
+  <table>
+    <tr>
+      <th>Chỉ số / Kiểm định</th>
+      <th>Giá trị/Khoảng số cần nhớ</th>
+      <th>Ý nghĩa & Cách đọc</th>
+      <th>Khi nào cân nhắc kiểm định tiếp theo?</th>
+    </tr>
+    <tr>
+      <td><b>Mean (Trung bình)</b></td>
+      <td>-</td>
+      <td>Điểm trung bình của dữ liệu</td>
+      <td>So sánh với Median để xem phân phối chuẩn hay lệch</td>
+    </tr>
+    <tr>
+      <td><b>Median (Trung vị)</b></td>
+      <td>-</td>
+      <td>Giá trị giữa khi sắp xếp từ nhỏ đến lớn</td>
+      <td>So với Mean: Mean ≈ Median thì dữ liệu cân đối, ngược lại thì lệch</td>
+    </tr>
+    <tr>
+      <td><b>SD (Độ lệch chuẩn)</b></td>
+      <td>-</td>
+      <td>SD nhỏ: Dữ liệu đồng đều<br>SD lớn: Dữ liệu phân tán nhiều</td>
+      <td>Xem xét Min/Max phát hiện outlier, kiểm tra giả định khi làm kiểm định tham số</td>
+    </tr>
+    <tr>
+      <td><b>Skewness<br>(Độ lệch)</b></td>
+      <td>
+        |Skew| &lt; 0.5: cân đối<br>
+        0.5 &le; |Skew| &lt; 1: lệch vừa<br>
+        |Skew| &ge; 1: lệch mạnh
+      </td>
+      <td>Lệch dương (đuôi phải dài): Skewness > 0<br>Lệch âm (đuôi trái dài): Skewness < 0</td>
+      <td>Lệch mạnh nên dùng kiểm định phi tham số, hoặc biến đổi dữ liệu</td>
+    </tr>
+    <tr>
+      <td><b>Kurtosis<br>(Độ nhọn)</b></td>
+      <td>
+        ≈ 3: Chuẩn<br>
+        &lt; 3: Bẹt (platykurtic)<br>
+        &gt; 3: Nhọn (leptokurtic)
+      </td>
+      <td>Đánh giá độ “đặc biệt” của phân phối</td>
+      <td>Chỉ số quá cao/thấp: cẩn trọng khi dùng kiểm định tham số</td>
+    </tr>
+    <tr>
+      <td><b>Shapiro-Wilk p</b></td>
+      <td>
+        &gt; 0.05: Có thể coi là phân phối chuẩn<br>
+        &lt; 0.05: Không chuẩn
+      </td>
+      <td>Kiểm định giả định phân phối chuẩn cho các test tham số (t-test, ANOVA…)</td>
+      <td>p &lt; 0.05: chuyển sang phi tham số (Mann-Whitney, Wilcoxon…)</td>
+    </tr>
+    <tr>
+      <td><b>Levene’s Test p</b></td>
+      <td>
+        &gt; 0.05: Phương sai đồng nhất<br>
+        &lt; 0.05: Phương sai không đồng nhất
+      </td>
+      <td>Kiểm tra giả định phương sai đồng nhất trước khi làm t-test/ANOVA</td>
+      <td>p &lt; 0.05: Dùng Welch’s t-test hoặc Games-Howell post-hoc</td>
+    </tr>
+    <tr>
+      <td><b>p-value</b></td>
+      <td>
+        &lt; 0.001: Rất có ý nghĩa<br>
+        &lt; 0.01: Có ý nghĩa cao<br>
+        &lt; 0.05: Có ý nghĩa<br>
+        &ge; 0.05: Không có ý nghĩa
+      </td>
+      <td>Xác suất xảy ra kết quả nếu H₀ đúng</td>
+      <td>Bác bỏ H₀ nếu p &lt; mức ý nghĩa đã chọn (thường là 0.05)</td>
+    </tr>
+    <tr>
+      <td><b>Tương quan Pearson/Spearman r</b></td>
+      <td>
+        |r| &lt; 0.1: Không/tương quan rất yếu<br>
+        0.1 ≤ |r| &lt; 0.3: Yếu<br>
+        0.3 ≤ |r| &lt; 0.5: Trung bình<br>
+        |r| ≥ 0.5: Mạnh
+      </td>
+      <td>r > 0: đồng biến<br>r < 0: nghịch biến</td>
+      <td>Xem r và p-value để xác định ý nghĩa, mạnh yếu</td>
+    </tr>
+    <tr>
+      <td><b>Effect size (Cohen’s d, R², η²...)</b></td>
+      <td>
+        d ≈ 0.2: Nhỏ<br>
+        d ≈ 0.5: Trung bình<br>
+        d ≥ 0.8: Lớn<br>
+        R² = 0.01: Nhỏ<br>
+        R² = 0.09: Trung bình<br>
+        R² = 0.25: Lớn
+      </td>
+      <td>Đo kích thước hiệu ứng (khác biệt, dự báo…)</td>
+      <td>Cần khi so sánh ý nghĩa thực tiễn của kết quả</td>
+    </tr>
+  </table>
+
+  <div class="note">
+    <b>Gợi ý chọn kiểm định dựa trên bảng mô tả:</b><br>
+    • <b>Dữ liệu chuẩn (Skewness/Kurtosis ổn, Shapiro-Wilk p > 0.05):</b> Ưu tiên kiểm định tham số (t-test, ANOVA, Pearson r…)<br>
+    • <b>Dữ liệu lệch mạnh hoặc p < 0.05:</b> Chuyển sang phi tham số (Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman rho...)<br>
+    • <b>So sánh 2 nhóm độc lập:</b> Independent t-test (hoặc Mann-Whitney U test nếu dữ liệu không chuẩn)<br>
+    • <b>So sánh 3 nhóm trở lên:</b> One-way ANOVA (hoặc Kruskal-Wallis)<br>
+    • <b>So sánh 2 lần đo trên cùng nhóm:</b> Paired t-test (hoặc Wilcoxon signed-rank test)
+  </div>
   </div>
 </body>
 </html>
