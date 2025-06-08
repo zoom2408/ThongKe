@@ -16,18 +16,161 @@
       <p>Tổng quan, ví dụ thực tiễn & luyện tập trắc nghiệm – Chuẩn bị cho kiểm tra!</p>
     </div>
     <div class="menu">
-      <button class="page-link sidebar-item" onclick="loadPage(event, '01_intro.html')">Giới thiệu</button>
-      <button class="page-link sidebar-item" onclick="loadPage(event, '02_descriptiveStat.html')">Thống kê mô tả</button>
-      <button class="page-link sidebar-item" onclick="loadPage(event, '03_test_1.html')">Chi Square &amp; T-test</button>
+      <button class="page-link" onclick="loadPage(event, '01_intro.html')">Giới thiệu</button>
+      <button class="page-link" onclick="loadPage(event, '02_descriptiveStat.html')">Thống kê mô tả</button>
+      <button class="page-link" onclick="loadPage(event, '03_test_1.html')">Chi Square &amp; T-test</button>
     </div>
     <hr>
     <div class="tabs">
-      <button class="tab sidebar-item" onclick="showTab(event, 'cheatsheet')">Bảng Tham Chiếu</button>
-      <button class="tab sidebar-item" onclick="showTab(event, 'examples')">Ví dụ thực tiễn</button>
-      <button class="tab sidebar-item" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
+      <button class="tab" onclick="showTab(event, 'cheatsheet')">Bảng Tham Chiếu</button>
+      <button class="tab" onclick="showTab(event, 'examples')">Ví dụ thực tiễn</button>
+      <button class="tab" onclick="showTab(event, 'quiz')">Quiz trắc nghiệm</button>
     </div>
   </div>
 
+          <div class="stat-explain-boxes">
+            <div class="se-box" onclick="showSEPanel('mota')">
+              <div class="se-ico se-blue">📊</div>
+              <div>
+                <div class="se-title">Thống kê mô tả là gì?</div>
+                <div class="se-desc">Tóm tắt, mô tả đặc điểm của dữ liệu bằng các chỉ số như <b>trung bình</b>, <b>trung
+                    vị</b>, <b>độ lệch chuẩn</b>, <b>tỷ lệ</b>... Đây là nền tảng để nhận diện mẫu số liệu trước khi suy
+                  luận.</div>
+              </div>
+            </div>
+            <div class="se-box" onclick="showSEPanel('docbang')">
+              <div class="se-ico se-yellow">🔍</div>
+              <div>
+                <div class="se-title">Cách đọc bảng số liệu, biểu đồ</div>
+                <ul class="se-list">
+                  <li><b>Trung bình (Mean):</b> Đọc cùng <b>SD</b> để biết sự phân tán.</li>
+                  <li><b>Trung vị (Median):</b> Nếu khác nhiều so với Mean thì có thể có outlier hoặc dữ liệu lệch.</li>
+                  <li><b>Tỷ lệ (%), tần suất:</b> Giúp nhận biết nhóm phổ biến, nhóm nhỏ nhất.</li>
+                  <li><b>SD nhỏ:</b> Dữ liệu đồng đều. <b>SD lớn:</b> Dữ liệu phân tán mạnh.</li>
+                  <li>So sánh <b>min-max</b> để phát hiện outlier.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="se-box" onclick="showSEPanel('thamso')">
+              <div class="se-ico se-green">🧪</div>
+              <div>
+                <div class="se-title">Kiểm định tham số & phi tham số</div>
+                <div class="se-desc">
+                  <b>Tham số:</b> (t-test, ANOVA, hồi quy...) khi dữ liệu liên tục, phân phối gần chuẩn, phương sai các
+                  nhóm xấp xỉ bằng nhau.<br>
+                  <b>Phi tham số:</b> (Mann-Whitney, Wilcoxon, Chi-square...) khi dữ liệu thứ bậc, định tính, không
+                  chuẩn, có outlier hoặc cỡ mẫu nhỏ.
+                </div>
+                <div class="se-tip"><b>Mẹo:</b> Luôn kiểm tra histogram/boxplot hoặc kiểm định chuẩn hóa trước khi chọn
+                  kiểm định!</div>
+              </div>
+            </div>
+            <div class="se-box" onclick="showSEPanel('bienphu')">
+              <div class="se-ico se-red">🔗</div>
+              <div>
+                <div class="se-title">Biến phụ thuộc & độc lập</div>
+                <ul class="se-list">
+                  <li><b>Biến phụ thuộc (DV):</b> Kết quả bạn đo lường (ví dụ: điểm, mức stress...)</li>
+                  <li><b>Biến độc lập (IV):</b> Yếu tố phân nhóm, yếu tố bạn muốn xem ảnh hưởng (ví dụ: nhóm giới tính,
+                    có can thiệp hay không...)</li>
+                </ul>
+              </div>
+            </div>
+            <div class="se-box" onclick="showSEPanel('thongso')">
+              <div class="se-ico se-purple">📝</div>
+              <div>
+                <div class="se-title">Cách đọc bảng kiểm định & chú ý thông số</div>
+                <ul class="se-list">
+                  <li>Xác định rõ đâu là DV, đâu là IV trong đề bài & bảng kết quả.</li>
+                  <li>Chú ý các cột: <b>trung bình, median mỗi nhóm</b> (nếu có), <b>SD</b>, <b>tần suất</b>.</li>
+                  <li>Đọc kỹ các thông số: <b>giá trị kiểm định (t, F, U, Chi-square...)</b>, <b>p-value</b> (ý nghĩa
+                    thống kê nếu p &lt; 0.05), <b>effect size</b> (nếu có).</li>
+                  <li><b>Ghi nhớ:</b> Không phải kết quả có ý nghĩa thống kê đều có ý nghĩa thực tiễn!</li>
+                </ul>
+              </div>
+            </div>
+            <div class="se-box" onclick="showSEPanel('thangdo')">
+              <div class="se-ico se-gray">📏</div>
+              <div>
+                <div class="se-title">Các loại thang đo</div>
+                <ul class="se-list">
+                  <li><b>Định danh (Nominal):</b> Không có thứ bậc (giới tính, nhóm máu...)</li>
+                  <li><b>Thứ bậc (Ordinal):</b> Có thứ tự nhưng khoảng cách không đều (hài lòng, trình độ...)</li>
+                  <li><b>Khoảng (Interval):</b> Có khoảng cách đều, không zero tuyệt đối (nhiệt độ...)</li>
+                  <li><b>Tỷ lệ (Ratio):</b> Có zero tuyệt đối (cân nặng, chiều cao...)</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+
+        <!--Slide out panel -->
+        <div class="se-panel" id="se-panel">
+          <button class="se-panel-close" onclick="closeSEPanel()">&times;</button>
+          <div id="se-panel-content"></div>
+        </div>
+
+      </div>
+      <!-- Lưu đồ & Sơ đồ trực quan -->
+      <div class="tab-content" id="schema">
+        <!-- Lưu đồ kiểm định -->
+        <div style="background:#f7fafd;padding:14px 0;border-radius:10px;margin:20px 0;">
+          <h3 style="text-align:center;font-weight:600;color:#2176d3;">Lược đồ kiểm định (xem file PDF)</h3>
+          <embed src="source/schema.pdf" type="application/pdf" width="100%" height="600px"
+            style="border-radius:10px;box-shadow:0 3px 24px #b2bde544;">
+        </div>
+
+        <!--Danh sách loại thống kê-->
+        <div class="stat-board">
+          <div class="stat-board-col">
+            <div class="stat-board-header descr">Thống kê mô tả</div>
+            <div class="stat-card" onclick="showTestPanel('mota-mean')">Trung bình</div>
+            <div class="stat-card" onclick="showTestPanel('mota-median')">Trung vị</div>
+            <div class="stat-card" onclick="showTestPanel('mota-mode')">Mốt (Mode)</div>
+            <div class="stat-card" onclick="showTestPanel('mota-std')">Độ lệch chuẩn (SD)</div>
+            <div class="stat-card" onclick="showTestPanel('mota-percent')">Tỉ lệ & Tần suất</div>
+            <div class="stat-card" onclick="showTestPanel('mota-hist')">Biểu đồ tần số</div>
+          </div>
+          <div class="stat-board-col">
+            <div class="stat-board-header para">Kiểm định tham số</div>
+            <div class="stat-card" onclick="showTestPanel('t1')">Kiểm định t một mẫu</div>
+            <div class="stat-card" onclick="showTestPanel('t2i')">Kiểm định t hai mẫu độc lập</div>
+            <div class="stat-card" onclick="showTestPanel('t2c')">Kiểm định t hai mẫu cặp</div>
+            <div class="stat-card" onclick="showTestPanel('anova')">Kiểm định ANOVA</div>
+            <div class="stat-card" onclick="showTestPanel('reg')">Hồi quy tuyến tính</div>
+          </div>
+          <div class="stat-board-col">
+            <div class="stat-board-header nonpara">Kiểm định phi tham số</div>
+            <div class="stat-card" onclick="showTestPanel('chi2')">Kiểm định Chi bình phương</div>
+            <div class="stat-card" onclick="showTestPanel('mw')">Mann-Whitney U</div>
+            <div class="stat-card" onclick="showTestPanel('wil')">Wilcoxon</div>
+            <div class="stat-card" onclick="showTestPanel('sign')">Sign test</div>
+            <div class="stat-card" onclick="showTestPanel('runs')">Runs test</div>
+          </div>
+        </div>
+        <div class="stat-panel" id="stat-panel">
+          <button class="stat-panel-close" onclick="closeTestPanel()">&times;</button>
+          <div id="stat-panel-content"></div>
+        </div>
+      </div>
+      <!-- Thuật ngữ-->
+      <div class="tab-content" id="terms">
+        <div class="stat-terms">
+          <h2>Thuật ngữ quan trọng</h2>
+          <ul>
+            <li><b>p-value:</b> Xác suất để bác bỏ giả thuyết không (H0). Thường dùng ngưỡng 0.05.</li>
+            <li><b>Hệ số tương quan (r):</b> Đo lường mối liên hệ giữa hai biến. Giá trị từ -1 đến 1.</li>
+            <li><b>Hiệu ứng (Effect size):</b> Đo lường mức độ ảnh hưởng của IV lên DV (Cohen’s d, R²...)</li>
+            <li><b>Biến phụ thuộc (DV):</b> Biến được đo lường, phụ thuộc vào IV.</li>
+            <li><b>Biến độc lập (IV):</b> Biến phân nhóm, tác động đến DV.</li>
+            <li><b>Thang đo:</b> Cách phân loại dữ liệu (định danh, thứ bậc, khoảng, tỷ lệ).</li>
+          </ul>
+        </div>
+      </div>
+      <!-- Tham chiếu -->
+      <div class="tab-content" id="cheatsheet">
     <div class="content main">
       <div class="tab-content active" id="cheatsheet">
         <div class="stat-cheatsheet">
