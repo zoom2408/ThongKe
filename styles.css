@@ -44,6 +44,7 @@
       text-decoration: none;
       border-left: 4px solid transparent;
       margin-bottom: 4px;
+      cursor: pointer;
     }
 
     .sidebar a:hover,
