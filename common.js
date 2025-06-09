@@ -49,7 +49,6 @@ if (typeof window !== 'undefined') {
     showOverlay();
     if (btn) {
       btn.classList.add('open');
-      btn.textContent = '✖';
     }
   }
 
@@ -61,7 +60,6 @@ if (typeof window !== 'undefined') {
     hideOverlay();
     if (btn) {
       btn.classList.remove('open');
-      btn.textContent = '☰';
     }
   }
 
