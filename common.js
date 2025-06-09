@@ -43,24 +43,8 @@ if (typeof window !== 'undefined') {
 
   function openSidebar() {
     const sb = document.querySelector('.sidebar');
-    const btn = document.querySelector('.menu-btn');
-    if (sb) sb.classList.add('open');
-    if (btn) {
-      btn.classList.add('open');
-      btn.textContent = '✕';
-    }
-    showOverlay();
-  }
 
-  function closeSidebar() {
-    const sb = document.querySelector('.sidebar');
-    const btn = document.querySelector('.menu-btn');
     if (sb) sb.classList.remove('open');
-    if (btn) {
-      btn.classList.remove('open');
-      btn.textContent = '☰';
-    }
-    hideOverlay();
   }
 
   function toggleSidebar() {
