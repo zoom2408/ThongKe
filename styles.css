@@ -29,6 +29,7 @@
       border-radius: 4px;
       font-size: 1.2em;
       cursor: pointer;
+      transition: left .3s;
 
     }
 
@@ -110,6 +111,11 @@
       .menu-btn {
         display: block;
       }
+
+      .menu-btn.open {
+        left: 280px;
+      }
+
     }
 
     .sidebar h2 {

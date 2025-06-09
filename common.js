@@ -49,7 +49,7 @@ if (typeof window !== 'undefined') {
         showOverlay();
         if (btn) {
             btn.classList.add('open');
-            btn.textContent = '⤫';
+            btn.textContent = '✖';
         }
     }
 
@@ -64,7 +64,6 @@ if (typeof window !== 'undefined') {
             btn.textContent = '☰';
         }
     }
-
     function toggleSidebar() {
         const sb = document.querySelector('.sidebar');
         if (!sb) return;
