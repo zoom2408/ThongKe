@@ -30,23 +30,29 @@
   border-radius: 4px;
   cursor: pointer;
   transition: left .3s;
+  align-items: center;
+  justify-content: center;
 }
 
-.menu-icon,
+.menu-icon {
+  position: relative;
+  width: 24px;
+  height: 2px;
+  background: #fff;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .menu-icon::before,
 .menu-icon::after {
   position: absolute;
-  left: 8px;
+  left: 0;
   width: 24px;
   height: 2px;
   background: #fff;
   content: '';
   transition: transform .3s, top .3s, opacity .3s;
-}
-
-.menu-icon {
-  top: 50%;
-  transform: translateY(-50%);
 }
 
 .menu-icon::before { top: -6px; }
@@ -92,7 +98,7 @@
   }
 
   .menu-btn {
-    display: block;
+    display: flex;
   }
 
   .menu-btn.open {
