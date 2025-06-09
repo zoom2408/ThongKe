@@ -464,7 +464,7 @@ const allQuestions = [
     explain: "Phản ứng hung hăng là biến phụ thuộc (đo lường kết quả), tiếp xúc với bạo lực là biến độc lập (nguyên nhân)."
   },
   {
-    p: "Năm đứa trẻ được yêu cầu chọn màu sắc yêu thích của chúng bên dưới. Yếu vị trong chuỗi [Hồng, hồng, xanh, hồng, hồng] này là gì?",
+    q: "Năm đứa trẻ được yêu cầu chọn màu sắc yêu thích của chúng bên dưới. Yếu vị trong chuỗi [Hồng, hồng, xanh, hồng, hồng] này là gì?",
     opts: [
       "Hồng",
       "Xanh",
