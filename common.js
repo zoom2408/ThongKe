@@ -38,6 +38,29 @@ if (typeof window !== 'undefined') {
     hideOverlay();
     if (typeof closeSEPanel === "function") closeSEPanel();
     if (typeof closeTestPanel === "function") closeTestPanel();
+    if (typeof closeSidebar === "function") closeSidebar();
+  }
+
+  function openSidebar() {
+    const sb = document.querySelector('.sidebar');
+    if (sb) sb.classList.add('open');
+    showOverlay();
+  }
+
+  function closeSidebar() {
+    const sb = document.querySelector('.sidebar');
+    if (sb) sb.classList.remove('open');
+    hideOverlay();
+  }
+
+  function toggleSidebar() {
+    const sb = document.querySelector('.sidebar');
+    if (!sb) return;
+    if (sb.classList.contains('open')) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
   }
 
   function loadPage(event, file, samePage = false) {
@@ -50,6 +73,7 @@ if (typeof window !== 'undefined') {
       }
       document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
       if (event) event.currentTarget.classList.add('active');
+      if (typeof closeSidebar === 'function') closeSidebar();
       return;
     }
 
@@ -62,6 +86,7 @@ if (typeof window !== 'undefined') {
     }
     document.querySelectorAll('.page-link').forEach(btn => btn.classList.remove('active'));
     if (event) event.currentTarget.classList.add('active');
+    if (typeof closeSidebar === 'function') closeSidebar();
   }
 
 }
