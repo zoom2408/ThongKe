@@ -1,156 +1,60 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flowchart Thống kê Tâm lý học</title>
-    <!-- Nhúng Mermaid -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <!-- Nhúng thư viện zoom/drag -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <style>
-        #flowchart-container {
-            width: 100%;
-            height: 80vh;
-            border: 1px solid #ccc;
-            overflow: hidden;
-            cursor: move;
+<script>
+    // Khởi tạo Mermaid
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        flowchart: {
+            useMaxWidth: false,
+            htmlLabels: true
         }
-        .mermaid {
-            transform-origin: 0 0;
-        }
-        .controls {
-            margin: 10px 0;
-            text-align: center;
-        }
-        button {
-            padding: 8px 15px;
-            margin: 0 5px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <h1 style="text-align: center;">Flowchart Chọn Kiểm định Thống kê</h1>
-    
-    <div class="controls">
-        <button onclick="zoom(0.1)">Zoom In (+)</button>
-        <button onclick="zoom(-0.1)">Zoom Out (-)</button>
-        <button onclick="resetView()">Reset View</button>
-    </div>
-    
-    <div id="flowchart-container">
-        <div class="mermaid">
-            flowchart TD
-                A[["Bắt đầu"]] --> B{{"Loại câu hỏi nghiên cứu?"}}
-                
-                %% SO SÁNH NHÓM
-                B -->|So sánh nhóm| C{{"Thang đo biến phụ thuộc (DV)?"}}
-                C -->|Định danh/Thứ bậc| D["Kiểm định χ²"]
-                C -->|Khoảng/Tỉ lệ| E{{"Số nhóm so sánh?"}}
-                E -->|2 nhóm| F{{"Mẫu độc lập hay phối hợp?"}}
-                F -->|Độc lập| G["t-test độc lập"]
-                F -->|Phối hợp| H["t-test phối hợp"]
-                E -->|≥3 nhóm| I{{"Mẫu độc lập hay phối hợp?"}}
-                I -->|Độc lập| J["ANOVA 1 chiều"]
-                I -->|Phối hợp| K["ANOVA lặp lại"]
-                
-                %% MỐI QUAN HỆ
-                B -->|Kiểm tra mối quan hệ| L{{"Số biến cần phân tích?"}}
-                L -->|2 biến| M{{"Thang đo của các biến?"}}
-                M -->|Cả 2 là Khoảng/Tỉ lệ| N["Tương quan Pearson (r)"]
-                M -->|Có biến Thứ bậc| O["Tương quan Spearman (ρ)"]
-                M -->|Cả 2 là Định danh| P["Kiểm định χ²"]
-                
-                %% DỰ ĐOÁN
-                B -->|Dự đoán giá trị| Q{{"Thang đo biến phụ thuộc (DV)?"}}
-                Q -->|Khoảng/Tỉ lệ| R{{"Số biến độc lập (IV)?"}}
-                R -->|1 biến| S["Hồi quy tuyến tính đơn"]
-                R -->|≥2 biến| T["Hồi quy tuyến tính bội"]
-                
-                %% KẾT THÚC
-                D --> U[["Kết thúc"]]
-                G --> U
-                H --> U
-                J --> U
-                K --> U
-                N --> U
-                O --> U
-                P --> U
-                S --> U
-                T --> U
+    });
 
-                classDef startend fill:#2ECC71,stroke:#27AE60,color:white
-                classDef decision fill:#3498DB,stroke:#2980B9,color:white
-                classDef process fill:#9B59B6,stroke:#8E44AD,color:white
-                class A,U startend
-                class B,C,E,F,I,L,M,Q,R decision
-                class D,G,H,J,K,N,O,P,S,T process
-        </div>
-    </div>
+    let d3Zoom, svg, g, container;
 
-    <script>
-        // Khởi tạo Mermaid
-        mermaid.initialize({
-            startOnLoad: true,
-            theme: 'default',
-            flowchart: {
-                useMaxWidth: false,
-                htmlLabels: true
-            }
-        });
+    function initZoom() {
+        svg = d3.select("#flowchart-container svg");
+        g = svg.select("g");
+        container = d3.select("#flowchart-container");
 
-        // Biến toàn cục cho zoom và drag
-        let scale = 1;
-        let transform = d3.zoomIdentity;
+        d3Zoom = d3.zoom()
+            .scaleExtent([0.5, 3])
+            .on("zoom", (event) => {
+                g.attr("transform", event.transform);
+            });
 
-        // Áp dụng zoom/drag sau khi Mermaid render xong
-        function initZoom() {
-            const svg = d3.select("#flowchart-container svg");
-            const container = d3.select("#flowchart-container");
+        container.call(d3Zoom);
 
-            // Thiết lập zoom
-            const zoom = d3.zoom()
-                .scaleExtent([0.5, 3]) // Giới hạn zoom min/max
-                .on("zoom", (event) => {
-                    transform = event.transform;
-                    svg.attr("transform", transform);
-                });
+        // Reset to identity at start
+        svg.call(d3Zoom.transform, d3.zoomIdentity);
+    }
 
-            container.call(zoom);
-        }
+    function zoom(delta) {
+        if (!svg || !d3Zoom) return;
+        // Get current transform
+        let t = d3.zoomTransform(g.node());
+        let newScale = Math.min(Math.max(0.5, t.k + delta), 3);
 
-        // Hàm zoom thủ công
-        function zoom(delta) {
-            scale += delta;
-            scale = Math.min(Math.max(0.5, scale), 3); // Giới hạn tỉ lệ
+        // Zoom to center
+        const center = [
+            container.node().clientWidth / 2,
+            container.node().clientHeight / 2
+        ];
 
-            const container = document.getElementById("flowchart-container");
-            const centerX = container.clientWidth / 2;
-            const centerY = container.clientHeight / 2;
+        // Compute new transform
+        let newTransform = d3.zoomIdentity
+            .translate(center[0], center[1])
+            .scale(newScale)
+            .translate(-center[0], -center[1]);
 
-            transform = d3.zoomIdentity
-                .translate(centerX, centerY)
-                .scale(scale)
-                .translate(-centerX, -centerY);
+        svg.transition().duration(200).call(d3Zoom.transform, newTransform);
+    }
 
-            d3.select("#flowchart-container svg")
-                .attr("transform", transform);
-        }
+    function resetView() {
+        if (!svg || !d3Zoom) return;
+        svg.transition().duration(200).call(d3Zoom.transform, d3.zoomIdentity);
+    }
 
-        // Reset view
-        function resetView() {
-            scale = 1;
-            transform = d3.zoomIdentity;
-            d3.select("#flowchart-container svg")
-                .attr("transform", transform);
-        }
-
-        // Tự động khởi tạo zoom sau khi render
-        document.addEventListener('DOMContentLoaded', () => {
-            // Đợi Mermaid render xong
-            setTimeout(initZoom, 1000);
-        });
-    </script>
-</body>
-</html>
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(initZoom, 1000);
+    });
+</script>
