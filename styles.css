@@ -379,7 +379,7 @@
 
 
     .stat-cheatsheet {
-      max-width: 950px;
+      max-width: 100vw;
       margin: 26px auto 18px auto;
       background: #f7fafc;
       border-radius: 13px;
