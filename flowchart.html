@@ -1,241 +1,226 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flowchart Thống kê Tâm lý học</title>
-    <!-- Nhúng Mermaid -->
-    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
-    <!-- Nhúng thư viện zoom/drag -->
-    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
         #flowchart-container {
             width: 100%;
             height: 80vh;
-            border: 1px solid #ccc;
+            border: 1px solid #ddd;
             overflow: hidden;
-            cursor: move;
+            background-color: #f9f9f9;
         }
-
-        .mermaid {
-            transform-origin: 0 0;
-        }
-
         .controls {
-            margin: 10px 0;
+            margin: 15px 0;
             text-align: center;
         }
-
         button {
             padding: 8px 15px;
             margin: 0 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
         }
     </style>
 </head>
-
 <body>
-    <h1 style="text-align: center;">Chọn Kiểm định Thống kê</h1>
-
+    <h1>Lưu đồ Chọn Kiểm định Thống kê trong Tâm lý học</h1>
+    
     <div class="controls">
-        <button onclick="zoom(0.1)">Zoom In (+)</button>
-        <button onclick="zoom(-0.1)">Zoom Out (-)</button>
-        <button onclick="resetView()">Reset View</button>
+        <button id="zoom-in">Zoom In (+)</button>
+        <button id="zoom-out">Zoom Out (-)</button>
+        <button id="reset">Reset</button>
+        <button id="fit">Fit to Screen</button>
     </div>
+    
+    <div id="flowchart-container"></div>
 
-    <div id="flowchart-container">
-        <div class="mermaid">
-            flowchart TD
-            A[["Bắt đầu"]] --> B{{"Loại câu hỏi nghiên cứu?"}}
-
-            %% SO SÁNH NHÓM
-            B -->|So sánh nhóm| C{{"Thang đo biến phụ thuộc (DV)?"}}
-            C -->|Định danh/Thứ bậc| D["Kiểm định Chi Square (χ²)"]
-            C -->|Khoảng/Tỉ lệ| E{{"Số nhóm so sánh?"}}
-            E -->|2 nhóm| F{{"Mẫu độc lập hay phối hợp?"}}
-            F -->|Độc lập| G["t-test độc lập"]
-            F -->|Phối hợp| H["t-test phối hợp"]
-            E -->|≥3 nhóm| I{{"Mẫu độc lập hay phối hợp?"}}
-            I -->|Độc lập| J["ANOVA 1 chiều"]
-            I -->|Phối hợp| K["ANOVA lặp lại"]
-
-            %% MỐI QUAN HỆ
-            B -->|Kiểm tra mối quan hệ| L{{"Số biến cần phân tích?"}}
-            L -->|2 biến| M{{"Thang đo của các biến?"}}
-            M -->|Cả 2 là Khoảng/Tỉ lệ| N["Tương quan Pearson (r)"]
-            M -->|Có biến Thứ bậc| O["Tương quan Spearman (ρ)"]
-            M -->|Cả 2 là Định danh| P["Kiểm định χ²"]
-
-            %% DỰ ĐOÁN
-            B -->|Dự đoán giá trị| Q{{"Thang đo biến phụ thuộc (DV)?"}}
-            Q -->|Khoảng/Tỉ lệ| R{{"Số biến độc lập (IV)?"}}
-            R -->|1 biến| S["Hồi quy tuyến tính đơn"]
-            R -->|≥2 biến| T["Hồi quy tuyến tính bội"]
-
-            %% KẾT THÚC
-            D --> U[["Kết thúc"]]
-            G --> U
-            H --> U
-            J --> U
-            K --> U
-            N --> U
-            O --> U
-            P --> U
-            S --> U
-            T --> U
-
-            classDef startend fill:#2ECC71,stroke:#27AE60,color:white
-            classDef decision fill:#3498DB,stroke:#2980B9,color:white
-            classDef process fill:#9B59B6,stroke:#8E44AD,color:white
-            class A,U startend
-            class B,C,E,F,I,L,M,Q,R decision
-            class D,G,H,J,K,N,O,P,S,T process
-        </div>
-
-        <div class="mermaid">
-            flowchart TD
-            Start([Start: Xác định mục tiêu nghiên cứu])
-            TypeQ{Câu hỏi nghiên cứu<br>Là kiểm tra mối quan hệ<br>hay sự khác biệt?}
-            Correlate[Kiểm tra tương quan/correlation]
-            Compare[Kiểm tra sự khác biệt/so sánh nhóm]
-
-            # Nhánh tương quan
-            CorType{Dữ liệu: Cấp độ đo lường?}
-            CorrParametric[Parametric: Pearson r]
-            CorrNonParametric[Non-parametric: Spearman rho]
-
-            # Nhánh so sánh nhóm
-            CompLevels{Bao nhiêu nhóm?}
-            CompWithin[So sánh cùng nhóm/cặp đôi (repeated/cặp)]
-            CompBetween[So sánh khác nhóm/độc lập]
-            OneGroup[1 nhóm]
-            TwoGroups[2 nhóm]
-            ThreeGroups[3 nhóm trở lên]
-
-            # 1 nhóm
-            OneParametric[Parametric: One sample t-test]
-            OneNonParametric[Non-parametric: Sign test]
-
-            # 2 nhóm
-            TwoWithinParametric[Parametric: Paired t-test]
-            TwoWithinNonParametric[Non-parametric: Wilcoxon]
-            TwoBetweenParametric[Parametric: Independent t-test]
-            TwoBetweenNonParametric[Non-parametric: Mann-Whitney]
-
-            # 3 nhóm trở lên
-            ThreeWithinParametric[Parametric: One-way related ANOVA]
-            ThreeWithinNonParametric[Non-parametric: Friedman]
-            ThreeBetweenParametric[Parametric: One-way independent ANOVA]
-            ThreeBetweenNonParametric[Non-parametric: Kruskal-Wallis]
-
-            # Hai biến độc lập
-            TwoIV{Có 2 biến ĐL?}
-            TwoWayANOVA[Parametric: Two-way ANOVA (related, unrelated, mixed)]
-            TwoWayNonParametric[Non-parametric (nâng cao)]
-
-            # Connections
-            Start --> TypeQ
-            TypeQ -->|Kiểm tra mối quan hệ| Correlate
-            TypeQ -->|So sánh nhóm| Compare
-
-            Correlate --> CorType
-            CorType -->|Ít nhất thang đo khoảng| CorrParametric
-            CorType -->|Thang đo thứ bậc| CorrNonParametric
-
-            Compare --> CompLevels
-            CompLevels -->|1 nhóm| OneGroup
-            CompLevels -->|2 nhóm| TwoGroups
-            CompLevels -->|3+ nhóm| ThreeGroups
-
-            OneGroup --> OneParametric
-            OneGroup --> OneNonParametric
-
-            TwoGroups --> CompWithin
-            TwoGroups --> CompBetween
-
-            CompWithin --> TwoWithinParametric
-            CompWithin --> TwoWithinNonParametric
-            CompBetween --> TwoBetweenParametric
-            CompBetween --> TwoBetweenNonParametric
-
-            ThreeGroups --> CompWithin
-            ThreeGroups --> CompBetween
-            CompWithin --> ThreeWithinParametric
-            CompWithin --> ThreeWithinNonParametric
-            CompBetween --> ThreeBetweenParametric
-            CompBetween --> ThreeBetweenNonParametric
-
-            ThreeGroups --> TwoIV
-            TwoIV -->|Có| TwoWayANOVA
-            TwoIV -->|Không| ThreeBetweenParametric
-
-        </div>
-    </div>
+    <!-- Load thư viện -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 
     <script>
         // Khởi tạo Mermaid
         mermaid.initialize({
-            startOnLoad: true,
+            startOnLoad: false,
             theme: 'default',
             flowchart: {
                 useMaxWidth: false,
-                htmlLabels: true
+                htmlLabels: true,
+                curve: 'basis'
             }
         });
 
-        // Biến toàn cục cho zoom và drag
-        let scale = 1;
-        let transform = d3.zoomIdentity;
+        // Định nghĩa flowchart
+        const graphDefinition = `
+flowchart TD
+    Start([Start: Xác định mục tiêu nghiên cứu])
+    TypeQ{"Câu hỏi nghiên cứu là gì?"}
+    Correlate[Kiểm tra tương quan]
+    Compare[So sánh nhóm]
+    
+    %% Nhánh tương quan
+    CorType{"Thang đo của biến?"}
+    Pearson[Pearson r]
+    Spearman[Spearman rho]
+    
+    %% Nhánh so sánh
+    GroupNum{"Số nhóm cần so sánh?"}
+    OneGroup[1 nhóm]
+    TwoGroups[2 nhóm]
+    ThreeGroups[3+ nhóm]
+    
+    %% 1 nhóm
+    OneSampleT[One-sample t-test]
+    Wilcoxon1[Wilcoxon signed-rank]
+    
+    %% 2 nhóm
+    TwoGroupType{"Nhóm độc lập hay phối hợp?"}
+    IndepT[Independent t-test]
+    PairedT[Paired t-test]
+    MannWhitney[Mann-Whitney U]
+    Wilcoxon2[Wilcoxon signed-rank]
+    
+    %% 3+ nhóm
+    MultiGroupType{"Nhóm độc lập hay phối hợp?"}
+    ANOVA[One-way ANOVA]
+    RepeatedANOVA[Repeated ANOVA]
+    Kruskal[Kruskal-Wallis]
+    Friedman[Friedman test]
+    
+    %% Kết nối
+    Start --> TypeQ
+    TypeQ -->|Mối quan hệ| Correlate
+    TypeQ -->|Khác biệt| Compare
+    
+    Correlate --> CorType
+    CorType -->|Khoảng/tỉ lệ| Pearson
+    CorType -->|Thứ bậc| Spearman
+    
+    Compare --> GroupNum
+    GroupNum -->|1| OneGroup
+    OneGroup -->|Parametric| OneSampleT
+    OneGroup -->|Non-parametric| Wilcoxon1
+    
+    GroupNum -->|2| TwoGroups
+    TwoGroups --> TwoGroupType
+    TwoGroupType -->|Độc lập| IndepT
+    TwoGroupType -->|Phối hợp| PairedT
+    IndepT -->|Non-parametric| MannWhitney
+    PairedT -->|Non-parametric| Wilcoxon2
+    
+    GroupNum -->|3+| ThreeGroups
+    ThreeGroups --> MultiGroupType
+    MultiGroupType -->|Độc lập| ANOVA
+    MultiGroupType -->|Phối hợp| RepeatedANOVA
+    ANOVA -->|Non-parametric| Kruskal
+    RepeatedANOVA -->|Non-parametric| Friedman
+    
+    %% Định dạng
+    class Start start
+    class TypeQ,CorType,GroupNum,TwoGroupType,MultiGroupType decision
+    class Correlate,Compare,Pearson,Spearman,OneGroup,TwoGroups,ThreeGroups,OneSampleT,Wilcoxon1,IndepT,PairedT,MannWhitney,Wilcoxon2,ANOVA,RepeatedANOVA,Kruskal,Friedman process
+    
+    classDef start fill:#2ecc71,stroke:#27ae60,color:white
+    classDef decision fill:#3498db,stroke:#2980b9,color:white
+    classDef process fill:#9b59b6,stroke:#8e44ad,color:white
+`;
 
-        // Áp dụng zoom/drag sau khi Mermaid render xong
-        function initZoom() {
-            const svg = d3.select("#flowchart-container svg");
+        // Render đồ thị
+        const renderFlowchart = async () => {
+            const { svg } = await mermaid.mermaidAPI.render('mermaid-svg', graphDefinition);
+            document.getElementById('flowchart-container').innerHTML = svg;
+            initZoom();
+        };
+
+        // Khởi tạo zoom và drag
+        const initZoom = () => {
             const container = d3.select("#flowchart-container");
+            const svg = d3.select("#flowchart-container svg");
+            const inner = svg.select("g");
+            
+            // Tính toán kích thước ban đầu
+            const bbox = inner.node().getBBox();
+            const width = bbox.width;
+            const height = bbox.height;
+            const containerWidth = container.node().clientWidth;
+            const containerHeight = container.node().clientHeight;
+            
+            // Tỉ lệ zoom ban đầu
+            const initialScale = Math.min(
+                containerWidth / (width + 100),
+                containerHeight / (height + 100)
+            );
+            
+            // Vị trí ban đầu
+            const initialX = containerWidth/2 - (width/2 + bbox.x) * initialScale;
+            const initialY = containerHeight/2 - (height/2 + bbox.y) * initialScale;
+            
+            let transform = d3.zoomIdentity
+                .translate(initialX, initialY)
+                .scale(initialScale);
+            
+            inner.attr("transform", transform);
 
             // Thiết lập zoom
             const zoom = d3.zoom()
-                .scaleExtent([0.5, 3]) // Giới hạn zoom min/max
+                .scaleExtent([0.2, 5])
                 .on("zoom", (event) => {
                     transform = event.transform;
-                    svg.attr("transform", transform);
+                    inner.attr("transform", transform);
                 });
 
-            container.call(zoom);
-        }
+            svg.call(zoom)
+               .call(zoom.transform, transform);
 
-        // Hàm zoom thủ công
-        function zoom(delta) {
-            scale += delta;
-            scale = Math.min(Math.max(0.5, scale), 3); // Giới hạn tỉ lệ
+            // Các nút điều khiển
+            document.getElementById("zoom-in").onclick = () => {
+                zoom.scaleBy(svg.transition().duration(300), 1.2);
+            };
+            
+            document.getElementById("zoom-out").onclick = () => {
+                zoom.scaleBy(svg.transition().duration(300), 0.8);
+            };
+            
+            document.getElementById("reset").onclick = () => {
+                svg.transition()
+                   .duration(300)
+                   .call(zoom.transform, d3.zoomIdentity
+                       .translate(initialX, initialY)
+                       .scale(initialScale));
+            };
+            
+            document.getElementById("fit").onclick = () => {
+                const currentBBox = inner.node().getBBox();
+                const newScale = Math.min(
+                    containerWidth / (currentBBox.width + 100),
+                    containerHeight / (currentBBox.height + 100)
+                );
+                const newX = containerWidth/2 - (currentBBox.width/2 + currentBBox.x) * newScale;
+                const newY = containerHeight/2 - (currentBBox.height/2 + currentBBox.y) * newScale;
+                
+                svg.transition()
+                   .duration(300)
+                   .call(zoom.transform, d3.zoomIdentity
+                       .translate(newX, newY)
+                       .scale(newScale));
+            };
+        };
 
-            const container = document.getElementById("flowchart-container");
-            const centerX = container.clientWidth / 2;
-            const centerY = container.clientHeight / 2;
-
-            transform = d3.zoomIdentity
-                .translate(centerX, centerY)
-                .scale(scale)
-                .translate(-centerX, -centerY);
-
-            d3.select("#flowchart-container svg")
-                .attr("transform", transform);
-        }
-
-        // Reset view
-        function resetView() {
-            scale = 1;
-            transform = d3.zoomIdentity;
-            d3.select("#flowchart-container svg")
-                .attr("transform", transform);
-        }
-
-        // Tự động khởi tạo zoom sau khi render
-        document.addEventListener('DOMContentLoaded', () => {
-            // Đợi Mermaid render xong
-            setTimeout(initZoom, 1000);
-        });
+        // Bắt đầu render
+        renderFlowchart();
     </script>
 </body>
-
 </html>
