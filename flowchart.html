@@ -1,5 +1,4 @@
 <script>
-    // Khởi tạo Mermaid
     mermaid.initialize({
         startOnLoad: true,
         theme: 'default',
@@ -9,49 +8,67 @@
         }
     });
 
-    let d3Zoom, svg, g, container;
+    let scale = 1;
+    let transform = d3.zoomIdentity;
+    let zoomBehavior;
+
+    function getSvgAndGroup() {
+        const svg = d3.select("#flowchart-container svg");
+        // Mermaid puts the graph in the first <g> inside <svg>
+        const g = svg.select("g");
+        return {svg, g};
+    }
 
     function initZoom() {
-        svg = d3.select("#flowchart-container svg");
-        g = svg.select("g");
-        container = d3.select("#flowchart-container");
+        const {svg, g} = getSvgAndGroup();
+        if (svg.empty() || g.empty()) return;
 
-        d3Zoom = d3.zoom()
+        zoomBehavior = d3.zoom()
             .scaleExtent([0.5, 3])
             .on("zoom", (event) => {
-                g.attr("transform", event.transform);
+                transform = event.transform;
+                g.attr("transform", transform);
+                scale = transform.k;
             });
 
-        container.call(d3Zoom);
+        svg.call(zoomBehavior);
 
-        // Reset to identity at start
-        svg.call(d3Zoom.transform, d3.zoomIdentity);
+        // Optional: set initial transform to identity
+        g.attr("transform", d3.zoomIdentity);
     }
 
     function zoom(delta) {
-        if (!svg || !d3Zoom) return;
-        // Get current transform
-        let t = d3.zoomTransform(g.node());
-        let newScale = Math.min(Math.max(0.5, t.k + delta), 3);
+        scale += delta;
+        scale = Math.min(Math.max(0.5, scale), 3);
 
-        // Zoom to center
-        const center = [
-            container.node().clientWidth / 2,
-            container.node().clientHeight / 2
-        ];
+        const {svg, g} = getSvgAndGroup();
+        if (svg.empty() || g.empty()) return;
 
-        // Compute new transform
-        let newTransform = d3.zoomIdentity
-            .translate(center[0], center[1])
-            .scale(newScale)
-            .translate(-center[0], -center[1]);
+        // Center zoom on the middle of the container
+        const container = document.getElementById("flowchart-container");
+        const centerX = container.clientWidth / 2;
+        const centerY = container.clientHeight / 2;
 
-        svg.transition().duration(200).call(d3Zoom.transform, newTransform);
+        transform = d3.zoomIdentity
+            .translate(centerX, centerY)
+            .scale(scale)
+            .translate(-centerX, -centerY);
+
+        g.attr("transform", transform);
+
+        // Update D3 zoom's internal state
+        svg.call(zoomBehavior.transform, transform);
     }
 
     function resetView() {
-        if (!svg || !d3Zoom) return;
-        svg.transition().duration(200).call(d3Zoom.transform, d3.zoomIdentity);
+        scale = 1;
+        transform = d3.zoomIdentity;
+
+        const {svg, g} = getSvgAndGroup();
+        if (svg.empty() || g.empty()) return;
+
+        g.attr("transform", transform);
+        svg.call(zoomBehavior.transform, transform);
     }
 
     document.addEventListener('DOMContentLoaded', () => {
