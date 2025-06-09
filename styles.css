@@ -28,6 +28,7 @@
   padding: 8px 12px;
   border-radius: 4px;
   font-size: 1.2em;
+  transition: left .3s;
 }
 .sidebar {
   width: 280px;
@@ -67,6 +68,10 @@
 
   .menu-btn {
     display: block;
+  }
+
+  .menu-btn.open {
+    left: 275px;
   }
 
 
