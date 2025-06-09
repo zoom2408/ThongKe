@@ -1,77 +1,120 @@
-<script>
-    mermaid.initialize({
-        startOnLoad: true,
-        theme: 'default',
-        flowchart: {
-            useMaxWidth: false,
-            htmlLabels: true
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flowchart Thống kê Tâm lý học</title>
+    <!-- Nhúng thư viện Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        .flowchart-container {
+            width: 100%;
+            height: 600px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
         }
-    });
 
-    let scale = 1;
-    let transform = d3.zoomIdentity;
-    let zoomBehavior;
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .mermaid { 
+    max-width: 100%; 
+    overflow: auto;
+}
+    </style>
+</head>
 
-    function getSvgAndGroup() {
-        const svg = d3.select("#flowchart-container svg");
-        // Mermaid puts the graph in the first <g> inside <svg>
-        const g = svg.select("g");
-        return {svg, g};
-    }
+<body>
+    <h1>Lựa chọn Kiểm định Thống kê trong Tâm lý học</h1>
+    <div class="mermaid flowchart-container">
+        flowchart TD
+        A[["Bắt đầu"]] --> B{{"Loại câu hỏi nghiên cứu?"}}
 
-    function initZoom() {
-        const {svg, g} = getSvgAndGroup();
-        if (svg.empty() || g.empty()) return;
+        %% SO SÁNH NHÓM
+        B -->|So sánh nhóm| C{{"Thang đo biến phụ thuộc (DV)?"}}
+        C -->|Định danh/Thứ bậc| D["Kiểm định Chi-Square Test (χ)²"]
+        C -->|Khoảng/Tỉ lệ| E{{"Số nhóm so sánh?"}}
+        E -->|2 nhóm| F{{"Mẫu độc lập hay phối hợp?"}}
+        F -->|Độc lập| G["t-test độc lập"]
+        F -->|Phối hợp| H["t-test phối hợp"]
+        E -->|≥3 nhóm| I{{"Mẫu độc lập hay phối hợp?"}}
+        I -->|Độc lập| J["ANOVA 1 chiều"]
+        I -->|Phối hợp| K["ANOVA lặp lại"]
 
-        zoomBehavior = d3.zoom()
-            .scaleExtent([0.5, 3])
-            .on("zoom", (event) => {
-                transform = event.transform;
-                g.attr("transform", transform);
-                scale = transform.k;
-            });
+        %% MỐI QUAN HỆ
+        B -->|Kiểm tra mối quan hệ| L{{"Số biến cần phân tích?"}}
+        L -->|2 biến| M{{"Thang đo của các biến?"}}
+        M -->|Cả 2 là Khoảng/Tỉ lệ| N["Tương quan Pearson (r)"]
+        M -->|Có biến Thứ bậc| O["Tương quan Spearman (ρ)"]
+        M -->|Cả 2 là Định danh| P["Kiểm định χ²"]
 
-        svg.call(zoomBehavior);
+        %% DỰ ĐOÁN
+        B -->|Dự đoán giá trị| Q{{"Thang đo biến phụ thuộc (DV)?"}}
+        Q -->|Khoảng/Tỉ lệ| R{{"Số biến độc lập (IV)?"}}
+        R -->|1 biến| S["Hồi quy tuyến tính đơn"]
+        R -->|≥2 biến| T["Hồi quy tuyến tính bội"]
 
-        // Optional: set initial transform to identity
-        g.attr("transform", d3.zoomIdentity);
-    }
+        %% KẾT THÚC
+        D --> U[["Kết thúc"]]
+        G --> U
+        H --> U
+        J --> U
+        K --> U
+        N --> U
+        O --> U
+        P --> U
+        S --> U
+        T --> U
 
-    function zoom(delta) {
-        scale += delta;
-        scale = Math.min(Math.max(0.5, scale), 3);
+        classDef startend fill:#2ECC71,stroke:#27AE60,color:white
+        classDef decision fill:#3498DB,stroke:#2980B9,color:white
+        classDef process fill:#9B59B6,stroke:#8E44AD,color:white
+        class A,U startend
+        class B,C,E,F,I,L,M,Q,R decision
+        class D,G,H,J,K,N,O,P,S,T process
+    </div>
+    <button onclick="downloadSVG()"
+        style="display: block; margin: 20px auto; padding: 10px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Tải xuống SVG
+    </button>
 
-        const {svg, g} = getSvgAndGroup();
-        if (svg.empty() || g.empty()) return;
+    <script>
+        function downloadSVG() {
+            const svg = document.querySelector('.mermaid svg');
+            const serializer = new XMLSerializer();
+            let svgStr = serializer.serializeToString(svg);
 
-        // Center zoom on the middle of the container
-        const container = document.getElementById("flowchart-container");
-        const centerX = container.clientWidth / 2;
-        const centerY = container.clientHeight / 2;
+            // Thêm namespace nếu thiếu
+            if (!svgStr.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/))
+                svgStr = svgStr.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
 
-        transform = d3.zoomIdentity
-            .translate(centerX, centerY)
-            .scale(scale)
-            .translate(-centerX, -centerY);
+            // Thêm declaration
+            svgStr = '<?xml version="1.0" standalone="no"?>\r\n' + svgStr;
 
-        g.attr("transform", transform);
+            // Tạo blob và tải xuống
+            const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'flowchart-thong-ke-tam-ly-hoc.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
-        // Update D3 zoom's internal state
-        svg.call(zoomBehavior.transform, transform);
-    }
+        // Khởi tạo Mermaid với cấu hình
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
 
-    function resetView() {
-        scale = 1;
-        transform = d3.zoomIdentity;
-
-        const {svg, g} = getSvgAndGroup();
-        if (svg.empty() || g.empty()) return;
-
-        g.attr("transform", transform);
-        svg.call(zoomBehavior.transform, transform);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(initZoom, 1000);
-    });
-</script>
+</html>
