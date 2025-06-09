@@ -1,4 +1,5 @@
 const allQuestions = [
+  //Câu hỏi trong Demo test
   {
     q: "Một nhà nghiên cứu tiến hành một cuộc khảo sát để kiểm tra xem liệu một chương trình can thiệp tâm lý có làm giảm lo âu ở sinh viên hay không. Giả thuyết không (null hypothesis) được đặt ra là 'chương trình không có tác dụng'. Sau khi phân tích dữ liệu, nhà nghiên cứu thấy rằng nhóm sinh viên tham gia chương trình có mức độ lo âu thấp hơn so với nhóm không tham gia, và quyết định bác bỏ giả thuyết không. Tuy nhiên, trên thực tế, chương trình không có tác dụng trong việc giảm lo âu. Tình huống này là ví dụ về:",
     opts: [
@@ -450,6 +451,7 @@ const allQuestions = [
     ans: 1,
     explain: "Thứ bậc: có thể so sánh thứ tự (ví dụ: xếp hạng)"
   },
+  //Các câu hỏi trong Slide
   {
     q: "Trong một thí nghiệm so sánh các phản ứng hung hăng sau khi tiếp xúc với bạo lực trên phương tiện truyền thông trong chương trình truyền hình và trò chơi điện tử, “phản ứng hung hăng” là __________ và “tiếp xúc với bạo lực trên phương tiện truyền thông” là__________.",
     opts: [
@@ -516,6 +518,7 @@ const allQuestions = [
     ans: 1,
     explain: "Sắp xếp chuỗi theo thứ tự tăng dần: 11, 12, 13, 15, 22. Số trung vị là giá trị ở giữa, tức là 13."
   },
+  // Các câu hỏi về biến độc lập và phụ thuộc
   {
     q: "Trong một nghiên cứu về ảnh hưởng của việc uống cà phê lên chất lượng giấc ngủ, đâu là biến độc lập?",
     opts: [
@@ -625,5 +628,257 @@ const allQuestions = [
     ],
     ans: 1,
     explain: "Mức huyết áp đo được là biến phụ thuộc vì nó thay đổi dựa trên mức độ stress."
+  },
+  // Các câu hỏi về kiểm đinh thống kê
+  {
+    q: "Khi nào nên sử dụng kiểm định Chi-square (Kiểm định Chi bình phương)?",
+    opts: [
+      "A. Khi cả biến độc lập và biến phụ thuộc đều là biến định lượng.",
+      "B. Khi cả biến độc lập và biến phụ thuộc đều là biến phân loại.",
+      "C. Khi biến độc lập là phân loại, biến phụ thuộc là định lượng.",
+      "D. Khi cả hai biến đều là liên tục."
+    ],
+    ans: 1,
+    explain: "Kiểm định Chi-square dùng để kiểm tra mối liên hệ giữa hai biến phân loại (categorical)."
+  },
+
+  {
+    q: "Mục đích chính của kiểm định t-test độc lập là gì?",
+    opts: [
+      "A. So sánh trung bình giữa nhiều nhóm.",
+      "B. So sánh trung bình giữa hai nhóm độc lập.",
+      "C. Kiểm tra mối quan hệ giữa hai biến liên tục.",
+      "D. So sánh phương sai giữa hai nhóm."
+    ],
+    ans: 1,
+    explain: "T-test độc lập dùng để so sánh trung bình của hai nhóm độc lập với nhau."
+  },
+
+  {
+    q: "Khi nào dùng t-test paired (t-test cặp)?",
+    opts: [
+      "A. So sánh hai nhóm độc lập.",
+      "B. So sánh trước-sau của cùng một nhóm.",
+      "C. So sánh nhiều nhóm.",
+      "D. So sánh phương sai giữa các nhóm."
+    ],
+    ans: 1,
+    explain: "T-test paired dùng khi cùng một nhóm đối tượng được đo lường hai lần (trước-sau can thiệp)."
+  },
+
+  {
+    q: "Hệ số tương quan Pearson r cho biết điều gì?",
+    opts: [
+      "A. Độ mạnh và chiều hướng mối quan hệ tuyến tính giữa hai biến liên tục.",
+      "B. Sự khác biệt giữa trung bình các nhóm.",
+      "C. Tỷ lệ phần trăm phương sai giải thích.",
+      "D. Số lượng nhóm cần so sánh."
+    ],
+    ans: 0,
+    explain: "Pearson r đo lường độ mạnh và chiều hướng mối liên hệ tuyến tính giữa hai biến liên tục."
+  },
+
+  {
+    q: "Giả định quan trọng khi dùng Pearson r là gì?",
+    opts: [
+      "A. Hai biến phải là phân loại.",
+      "B. Mối quan hệ giữa hai biến là tuyến tính và dữ liệu phân phối chuẩn.",
+      "C. Biến phụ thuộc phải là nhị phân.",
+      "D. Không cần giả định nào."
+    ],
+    ans: 1,
+    explain: "Pearson r yêu cầu dữ liệu liên tục, tuyến tính và phân phối chuẩn."
+  },
+
+  {
+    q: "Khi dữ liệu vi phạm giả định phân phối chuẩn, thay vì dùng Pearson r nên dùng kiểm định nào?",
+    opts: [
+      "A. t-test độc lập.",
+      "B. Spearman’s rho.",
+      "C. Chi-square.",
+      "D. ANOVA."
+    ],
+    ans: 1,
+    explain: "Spearman’s rho là kiểm định phi tham số thay thế cho Pearson r khi dữ liệu không phân phối chuẩn."
+  },
+
+  {
+    q: "ANOVA là gì và khi nào sử dụng?",
+    opts: [
+      "A. Kiểm tra mối quan hệ giữa hai biến liên tục.",
+      "B. So sánh trung bình của hai nhóm độc lập.",
+      "C. So sánh trung bình của ba nhóm trở lên.",
+      "D. Kiểm tra tần suất xuất hiện của các giá trị."
+    ],
+    ans: 2,
+    explain: "ANOVA được sử dụng để so sánh trung bình của ba nhóm trở lên dựa trên biến độc lập phân loại."
+  },
+
+  {
+    q: "Khác biệt giữa One-way ANOVA và Two-way ANOVA là gì?",
+    opts: [
+      "A. One-way ANOVA dùng cho một biến độc lập, Two-way ANOVA cho hai biến độc lập.",
+      "B. One-way ANOVA dùng cho dữ liệu định tính.",
+      "C. Two-way ANOVA không so sánh tương tác.",
+      "D. Không có sự khác biệt."
+    ],
+    ans: 0,
+    explain: "One-way ANOVA kiểm tra tác động của một biến độc lập; Two-way ANOVA kiểm tra đồng thời hai biến độc lập và hiệu ứng tương tác."
+  },
+
+  {
+    q: "Điều kiện bắt buộc khi sử dụng ANOVA là gì?",
+    opts: [
+      "A. Các nhóm phải độc lập, dữ liệu phân phối chuẩn và phương sai đồng nhất.",
+      "B. Chỉ cần các nhóm độc lập.",
+      "C. Chỉ cần dữ liệu phân phối chuẩn.",
+      "D. Không cần điều kiện nào."
+    ],
+    ans: 0,
+    explain: "ANOVA yêu cầu các nhóm độc lập, dữ liệu phân phối chuẩn trong từng nhóm, phương sai đồng nhất."
+  },
+
+  {
+    q: "Sau khi ANOVA cho kết quả có ý nghĩa, bước tiếp theo là gì?",
+    opts: [
+      "A. Kết luận nhóm nào khác nhau.",
+      "B. Làm post-hoc test để biết nhóm nào khác nhóm nào.",
+      "C. Vẽ biểu đồ tán xạ.",
+      "D. Không cần làm gì thêm."
+    ],
+    ans: 1,
+    explain: "ANOVA chỉ cho biết có sự khác biệt, post-hoc test giúp xác định cặp nhóm nào khác biệt."
+  },
+
+  {
+    q: "Khi nào sử dụng hồi quy tuyến tính đơn giản?",
+    opts: [
+      "A. Dự đoán giá trị của một biến phụ thuộc từ một biến độc lập liên tục.",
+      "B. So sánh trung bình nhiều nhóm.",
+      "C. Kiểm tra tần suất.",
+      "D. So sánh tỷ lệ."
+    ],
+    ans: 0,
+    explain: "Hồi quy tuyến tính đơn giản dùng để dự đoán một biến Y từ một biến X (cả hai liên tục)."
+  },
+
+  {
+    q: "Hệ số hồi quy (b1) trong phương trình hồi quy tuyến tính (y=a+b1x) nghĩa là gì?",
+    opts: [
+      "A. Giá trị trung bình của biến độc lập.",
+      "B. Sự thay đổi kỳ vọng của Y khi X tăng 1 đơn vị.",
+      "C. Phương sai của Y.",
+      "D. Sai số chuẩn."
+    ],
+    ans: 1,
+    explain: "b1 cho biết Y thay đổi bao nhiêu khi X tăng lên một đơn vị."
+  },
+
+  {
+    q: "Khi nào sử dụng hồi quy đa biến (multivariate regression)?",
+    opts: [
+      "A. Khi muốn dự đoán Y từ nhiều biến X.",
+      "B. Khi có một biến độc lập.",
+      "C. Khi so sánh trung bình.",
+      "D. Khi phân tích bảng tần suất."
+    ],
+    ans: 0,
+    explain: "Hồi quy đa biến dùng khi có nhiều biến độc lập dự đoán biến phụ thuộc."
+  },
+
+  {
+    q: "Để kiểm tra đa cộng tuyến trong hồi quy, nên xem chỉ số nào?",
+    opts: [
+      "A. R².",
+      "B. Cronbach’s alpha.",
+      "C. VIF (Variance Inflation Factor).",
+      "D. p-value."
+    ],
+    ans: 2,
+    explain: "VIF dùng để kiểm tra hiện tượng đa cộng tuyến giữa các biến độc lập trong hồi quy."
+  },
+
+  {
+    q: "Khi biến phụ thuộc là nhị phân (có/không, đậu/trượt), nên dùng loại hồi quy nào?",
+    opts: [
+      "A. Hồi quy tuyến tính.",
+      "B. Hồi quy logistic.",
+      "C. ANOVA.",
+      "D. Pearson."
+    ],
+    ans: 1,
+    explain: "Hồi quy logistic dùng để dự đoán biến phụ thuộc nhị phân."
+  },
+
+  {
+    q: "Mục đích chính của kiểm định Chi-square độc lập là gì?",
+    opts: [
+      "A. So sánh trung bình hai nhóm.",
+      "B. Kiểm tra mối liên hệ giữa hai biến phân loại.",
+      "C. Kiểm tra phương sai.",
+      "D. Kiểm tra tính tuyến tính."
+    ],
+    ans: 1,
+    explain: "Chi-square test kiểm tra xem hai biến phân loại có liên quan với nhau không."
+  },
+
+  {
+    q: "Khi nào sử dụng kiểm định t-test Welch?",
+    opts: [
+      "A. Khi dữ liệu hai nhóm có phương sai bằng nhau.",
+      "B. Khi dữ liệu hai nhóm có phương sai không đồng nhất.",
+      "C. Khi so sánh nhiều nhóm.",
+      "D. Khi dữ liệu không phân phối chuẩn."
+    ],
+    ans: 1,
+    explain: "Welch t-test dùng khi hai nhóm có phương sai không đồng nhất."
+  },
+
+  {
+    q: "Trong phân tích tương quan Pearson, giá trị r = -0.78 có ý nghĩa gì?",
+    opts: [
+      "A. Hai biến có tương quan nghịch mạnh.",
+      "B. Hai biến độc lập hoàn toàn.",
+      "C. Hai biến đồng biến chặt chẽ.",
+      "D. Không có mối liên hệ."
+    ],
+    ans: 0,
+    explain: "r = -0.78 thể hiện tương quan nghịch rất mạnh giữa hai biến liên tục."
+  },
+
+  {
+    q: "Nếu trong ANOVA, p-value > 0.05, ta kết luận điều gì?",
+    opts: [
+      "A. Có sự khác biệt ý nghĩa giữa các nhóm.",
+      "B. Không có đủ bằng chứng về sự khác biệt ý nghĩa giữa các nhóm.",
+      "C. Phải làm thêm test khác.",
+      "D. Không thể kết luận gì."
+    ],
+    ans: 1,
+    explain: "p-value > 0.05 nghĩa là không đủ bằng chứng thống kê về sự khác biệt giữa các nhóm."
+  },
+
+  {
+    q: "Khi nào nên dùng kiểm định phi tham số (non-parametric test)?",
+    opts: [
+      "A. Khi dữ liệu phân phối chuẩn, phương sai đồng nhất.",
+      "B. Khi dữ liệu không phân phối chuẩn hoặc không thỏa mãn giả định của kiểm định tham số.",
+      "C. Khi phân tích nhiều biến.",
+      "D. Khi chỉ có hai nhóm so sánh."
+    ],
+    ans: 1,
+    explain: "Kiểm định phi tham số phù hợp khi dữ liệu không đáp ứng giả định của kiểm định tham số."
+  },
+
+  {
+    q: "Sự khác biệt chính giữa hồi quy và tương quan là gì?",
+    opts: [
+      "A. Hồi quy dùng để dự đoán, tương quan chỉ đo mối liên hệ.",
+      "B. Cả hai đều giống nhau.",
+      "C. Tương quan cho biết phương sai.",
+      "D. Hồi quy không dùng cho dữ liệu liên tục."
+    ],
+    ans: 0,
+    explain: "Tương quan đo lường mức độ liên hệ giữa hai biến; hồi quy ngoài ra còn cho biết chiều và lượng thay đổi để dự đoán."
   }
 ];
