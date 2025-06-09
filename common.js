@@ -43,14 +43,8 @@ if (typeof window !== 'undefined') {
 
   function openSidebar() {
     const sb = document.querySelector('.sidebar');
-    if (sb) sb.classList.add('open');
-    showOverlay();
-  }
 
-  function closeSidebar() {
-    const sb = document.querySelector('.sidebar');
     if (sb) sb.classList.remove('open');
-    hideOverlay();
   }
 
   function toggleSidebar() {
@@ -90,33 +84,21 @@ if (typeof window !== 'undefined') {
   }
 
 }
+
         function showSection(sectionId) {
-            // Ẩn tất cả sections
-            const sections = document.querySelectorAll('.section');
-            sections.forEach(section => {
-                if (section) {
-                    section.classList.remove('active');
-                }
-            });
-            
-            // Hiện section được chọn
+            const sections = document.querySelectorAll('.content-section, .section');
+            sections.forEach(section => section.classList.remove('active'));
+
             const targetSection = document.getElementById(sectionId);
-            if (targetSection) {
-                targetSection.classList.add('active');
-            }
-            
-            // Cập nhật tab active
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                if (tab) {
-                    tab.classList.remove('active');
-                }
-            });
-            
-            // Tìm tab được click và set active
-            const clickedTab = event?.target;
-            if (clickedTab) {
-                clickedTab.classList.add('active');
+            if (targetSection) targetSection.classList.add('active');
+
+            const tabs = document.querySelectorAll('.nav-btn, .tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            if (event?.currentTarget) event.currentTarget.classList.add('active');
+
+            if (sectionId === 'quiz' && typeof initializeQuiz === 'function' && !quizCompleted) {
+                initializeQuiz();
             }
         }
 
@@ -393,28 +375,6 @@ if (typeof window !== 'undefined') {
         let userAnswers = [];
         let quizCompleted = false;
 
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.content-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            
-            // Remove active class from all nav buttons
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            
-            // Show selected section
-            document.getElementById(sectionId).classList.add('active');
-            
-            // Add active class to clicked button
-            event.target.classList.add('active');
-            
-            // Initialize quiz if quiz section is selected
-            if (sectionId === 'quiz' && !quizCompleted) {
-                initializeQuiz();
-            }
-        }
 
         function calculateStats() {
             const input = document.getElementById('numbers').value;

@@ -29,7 +29,6 @@
   border-radius: 4px;
   font-size: 1.2em;
 }
-
 .sidebar {
   width: 280px;
   padding: 20px;
@@ -69,7 +68,7 @@
   .menu-btn {
     display: block;
   }
-}
+
 
     .sidebar h2 {
       font-size: 18px;
