@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Flowchart Thống kê Tâm lý học</title>
+    <!-- Nhúng thư viện Mermaid -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        .flowchart-container {
+            width: 100%;
+            height: 600px;
+            margin: 0 auto;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        .mermaid {
+            max-width: 100%;
+            overflow: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Lựa chọn Kiểm định Thống kê trong Tâm lý học</h1>
+    <div class="mermaid flowchart-container">
+        flowchart TD
+        A[["Bắt đầu"]] --> B{{"Loại câu hỏi nghiên cứu?"}}
+
+        %% SO SÁNH NHÓM
+        B -->|So sánh nhóm| C{{"Thang đo biến phụ thuộc (DV)?"}}
+        C -->|Định danh/Thứ bậc| D["Kiểm định χ²"]
+        C -->|Khoảng/Tỉ lệ| E{{"Số nhóm so sánh?"}}
+        E -->|2 nhóm| F{{"Mẫu độc lập hay phối hợp?"}}
+        F -->|Độc lập| G["t-test độc lập"]
+        F -->|Phối hợp| H["t-test phối hợp"]
+        E -->|≥3 nhóm| I{{"Mẫu độc lập hay phối hợp?"}}
+        I -->|Độc lập| J["ANOVA 1 chiều"]
+        I -->|Phối hợp| K["ANOVA lặp lại"]
+
+        %% MỐI QUAN HỆ
+        B -->|Kiểm tra mối quan hệ| L{{"Số biến cần phân tích?"}}
+        L -->|2 biến| M{{"Thang đo của các biến?"}}
+        M -->|Cả 2 là Khoảng/Tỉ lệ| N["Tương quan Pearson (r)"]
+        M -->|Có biến Thứ bậc| O["Tương quan Spearman (ρ)"]
+        M -->|Cả 2 là Định danh| P["Kiểm định χ²"]
+
+        %% DỰ ĐOÁN
+        B -->|Dự đoán giá trị| Q{{"Thang đo biến phụ thuộc (DV)?"}}
+        Q -->|Khoảng/Tỉ lệ| R{{"Số biến độc lập (IV)?"}}
+        R -->|1 biến| S["Hồi quy tuyến tính đơn"]
+        R -->|≥2 biến| T["Hồi quy tuyến tính bội"]
+
+        %% KẾT THÚC
+        D --> U[["Kết thúc"]]
+        G --> U
+        H --> U
+        J --> U
+        K --> U
+        N --> U
+        O --> U
+        P --> U
+        S --> U
+        T --> U
+
+        classDef startend fill:#2ECC71,stroke:#27AE60,color:white
+        classDef decision fill:#3498DB,stroke:#2980B9,color:white
+        classDef process fill:#9B59B6,stroke:#8E44AD,color:white
+        class A,U startend
+        class B,C,E,F,I,L,M,Q,R decision
+        class D,G,H,J,K,N,O,P,S,T process
+    </div>
+    <button onclick="downloadSVG()"
+        style="display: block; margin: 20px auto; padding: 10px 15px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Tải xuống SVG
+    </button>
+
+    <script>
+        function downloadSVG() {
+            const svg = document.querySelector('.mermaid svg');
+            const serializer = new XMLSerializer();
+            let svgStr = serializer.serializeToString(svg);
+
+            // Thêm namespace nếu thiếu
+            if (!svgStr.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/))
+                svgStr = svgStr.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+
+            // Thêm declaration
+            svgStr = '<?xml version="1.0" standalone="no"?>\r\n' + svgStr;
+
+            // Tạo blob và tải xuống
+            const blob = new Blob([svgStr], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'flowchart-thong-ke-tam-ly-hoc.svg';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Khởi tạo Mermaid với cấu hình
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+
+</html>
