@@ -468,7 +468,6 @@
 
 
     .stat-cheatsheet {
-      width: 100vw;
       margin: 26px auto 18px auto;
       background: #f7fafc;
       border-radius: 13px;
@@ -487,6 +486,7 @@
     .stat-cheatsheet table {
       border-collapse: collapse;
       width: 100%;
+      margin: 25px 0;
       background: #fff;
       box-shadow: 0 2px 8px #e0e8ef;
     }
