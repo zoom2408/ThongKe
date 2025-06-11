@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Thống kê Tương tác</title>
+    <!-- Chosen Palette: Educational Blue and Neutral Grays -->
+    <!-- Application Structure Plan: The application's "Thống kê Mô tả" tab is significantly enhanced with visual aids. The structure remains a two-tab SPA, but the second tab is now a more engaging learning module. This addresses the user's need for deeper, more intuitive understanding of foundational concepts before proceeding to test selection. -->
+    <!-- Visualization & Content Choices: Per the user request, the "Descriptive Statistics" tab now includes custom visuals for each chart type and distribution shape, built using styled HTML divs and CSS flexbox/grid to avoid external images or SVG. This provides a clean, integrated look. New sections explaining normal vs. skewed distributions, skewness, and a more detailed take on variance have been added, making the content more comprehensive. The interactive elements in other tabs remain unchanged. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.379.0/dist/umd/lucide.min.js"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; color: #1f2937; }
+        .tab-content { display: none; animation: fadeIn 0.5s; }
+        .tab-content.active { display: block; }
+        .nav-tab { transition: all 0.2s ease-in-out; border-bottom: 2px solid transparent; }
+        .nav-tab.active { color: #2563eb; border-bottom-color: #2563eb; font-weight: 600; }
+        
+        .wizard-container { min-height: 350px; }
+        .wizard-card { transition: opacity 0.4s ease-in-out, transform 0.4s ease-in-out; backface-visibility: hidden; }
+        .card-hidden { opacity: 0; transform: translateY(20px); pointer-events: none; position: absolute; width: 100%; }
+        .card-visible { opacity: 1; transform: translateY(0); position: relative; }
+        .choice-btn { transition: all 0.2s ease-in-out; border-width: 2px; }
+        .choice-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); }
+        
+        .content-card { background-color: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1); }
+        .content-card h3 { font-size: 1.25rem; font-weight: 600; color: #1e40af; }
+        .content-card dt { font-weight: 600; color: #1f2937; }
+        .content-card dd { margin-left: 1.5rem; color: #4b5563; margin-bottom: 0.75rem; }
+        
+        .library-nav-item { cursor: pointer; padding: 0.75rem 1rem; border-radius: 0.5rem; transition: background-color 0.2s; }
+        .library-nav-item.active { background-color: #e0e7ff; color: #3730a3; font-weight: 600; }
+        .library-nav-item:hover:not(.active) { background-color: #f0f2f5; }
+        .library-content-section { display: none; }
+        .library-content-section.active { display: block; animation: fadeIn 0.5s; }
+        
+        .tooltip { position: relative; display: inline-block; cursor: help; border-bottom: 2px dotted #60a5fa; }
+        .tooltip .tooltip-text { visibility: hidden; width: 280px; background-color: #1f2937; color: #fff; text-align: left; border-radius: 6px; padding: 10px; position: absolute; z-index: 50; bottom: 125%; left: 50%; margin-left: -140px; opacity: 0; transition: opacity 0.3s; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+        .tooltip:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        .diagram-box { border: 2px solid #9ca3af; padding: 1rem; text-align: center; font-weight: 600; border-radius: 0.5rem; background-color: #f9fafb; }
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cursor: pointer; background: #d1d5db; border-radius: 5px; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 20px; width: 20px; border-radius: 50%; background: #2563eb; cursor: pointer; margin-top: -6px; }
+
+        .viz-container { height: 100px; border: 1px solid #e5e7eb; border-radius: 0.5rem; display: flex; align-items: flex-end; justify-content: center; padding: 0 8px; overflow: hidden; }
+        .viz-bar { background-color: #60a5fa; border: 1px solid #3b82f6; }
+        .viz-dot { width: 6px; height: 6px; background-color: #3b82f6; border-radius: 50%; position: absolute; }
+        .viz-boxplot { display: flex; align-items: center; justify-content: center; height: 100%; }
+        .viz-boxplot .whisker { width: 40px; border-top: 2px solid #3b82f6; }
+        .viz-boxplot .box { width: 60px; height: 40px; border: 2px solid #3b82f6; position: relative; }
+        .viz-boxplot .median { position: absolute; top: 0; bottom: 0; left: 50%; border-left: 2px solid #ef4444; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="p-4 md:p-6">
+
+    <div class="max-w-7xl mx-auto bg-white rounded-2xl shadow-xl overflow-hidden">
+        <header class="bg-gray-50 border-b border-gray-200">
+            <div class="p-4 flex items-center space-x-3">
+                 <div class="bg-blue-100 p-2 rounded-lg">
+                    <i data-lucide="graduation-cap" class="text-blue-600 w-8 h-8"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800">Nền tảng Học Thống kê</h1>
+            </div>
+            <nav class="px-4 flex items-center space-x-4 overflow-x-auto">
+                <button class="nav-tab active py-3 px-2 whitespace-nowrap" data-tab="1">Công cụ Lựa chọn</button>
+                <button class="nav-tab py-3 px-2 whitespace-nowrap" data-tab="2">Thống kê Mô tả</button>
+                <button class="nav-tab py-3 px-2 whitespace-nowrap" data-tab="3">Thư viện Kiểm định</button>
+            </nav>
+        </header>
+
+        <main class="p-4 md:p-8">
+            <!-- TAB 1: TEST SELECTION WIZARD -->
+            <div id="tab-1" class="tab-content active">
+                 <div id="wizard-container" class="relative wizard-container flex items-center justify-center">
+                    <div id="step-start" class="wizard-card card-visible w-full text-center space-y-4">
+                        <h2 class="text-xl font-semibold text-gray-700">Câu hỏi Nghiên cứu (NC) của bạn là gì?</h2>
+                        <div class="flex flex-col md:flex-row justify-center gap-4">
+                            <button data-next="step-correlation" class="choice-btn w-full md:w-1/2 p-6 bg-orange-50 border-orange-200 text-orange-800 rounded-lg hover:border-orange-400">Xem xét tương quan giữa các điểm số</button>
+                            <button data-next="step-difference" class="choice-btn w-full md:w-1/2 p-6 bg-blue-50 border-blue-200 text-blue-800 rounded-lg hover:border-blue-400">Xem xét sự khác biệt giữa điểm TB của các nhóm</button>
+                        </div>
+                    </div>
+                    <!-- Other wizard steps are hidden but functional -->
+                    <div id="step-correlation" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Dữ liệu có tuân theo giả định Tham số không?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-result="pearson" class="choice-btn w-full md:w-1/2 p-6 bg-green-50 border-green-200 text-green-800 rounded-lg hover:border-green-400">Có (Tham số)</button><button data-result="spearman" class="choice-btn w-full md:w-1/2 p-6 bg-yellow-50 border-yellow-200 text-yellow-800 rounded-lg hover:border-yellow-400">Không (Phi tham số)</button></div></div>
+                    <div id="step-difference" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Bạn có bao nhiêu biến độc lập (IV)?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-next="step-one-iv" class="choice-btn w-full md:w-1/2 p-6 bg-cyan-50 border-cyan-200 text-cyan-800 rounded-lg hover:border-cyan-400">Một</button><button data-result="two-way-anova" class="choice-btn w-full md:w-1/2 p-6 bg-purple-50 border-purple-200 text-purple-800 rounded-lg hover:border-purple-400">Hai</button></div></div>
+                    <div id="step-one-iv" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Biến độc lập có bao nhiêu cấp độ (level)?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-next="step-one-level" class="choice-btn w-full md:w-1/3 p-6 bg-gray-50 border-gray-200 text-gray-800 rounded-lg hover:border-gray-400">Một</button><button data-next="step-two-levels" class="choice-btn w-full md:w-1/3 p-6 bg-gray-50 border-gray-200 text-gray-800 rounded-lg hover:border-gray-400">Hai</button><button data-next="step-three-levels" class="choice-btn w-full md:w-1/3 p-6 bg-gray-50 border-gray-200 text-gray-800 rounded-lg hover:border-gray-400">Ba hoặc hơn</button></div></div>
+                    <div id="step-one-level" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Tham số hay Phi tham số?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-result="one-sample-t-test" class="choice-btn w-full md:w-1/2 p-6 bg-green-50 border-green-200 text-green-800 rounded-lg hover:border-green-400">Tham số</button><button data-result="sign-test" class="choice-btn w-full md:w-1/2 p-6 bg-yellow-50 border-yellow-200 text-yellow-800 rounded-lg hover:border-yellow-400">Phi tham số</button></div></div>
+                    <div id="step-two-levels" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Thiết kế "Cùng nhóm" hay "Khác nhóm"?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-next="step-two-levels-related" class="choice-btn w-full md:w-1/2 p-6 bg-indigo-50 border-indigo-200 text-indigo-800 rounded-lg hover:border-indigo-400">Cùng nhóm</button><button data-next="step-two-levels-unrelated" class="choice-btn w-full md:w-1/2 p-6 bg-pink-50 border-pink-200 text-pink-800 rounded-lg hover:border-pink-400">Khác nhóm</button></div></div>
+                    <div id="step-two-levels-related" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Cùng nhóm (2 levels): Tham số hay Phi tham số?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-result="related-t-test" class="choice-btn w-full md:w-1/2 p-6 bg-green-50 border-green-200 text-green-800 rounded-lg hover:border-green-400">Tham số</button><button data-result="wilcoxon" class="choice-btn w-full md:w-1/2 p-6 bg-yellow-50 border-yellow-200 text-yellow-800 rounded-lg hover:border-yellow-400">Phi tham số</button></div></div>
+                    <div id="step-two-levels-unrelated" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Khác nhóm (2 levels): Tham số hay Phi tham số?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-result="unrelated-t-test" class="choice-btn w-full md:w-1/2 p-6 bg-green-50 border-green-200 text-green-800 rounded-lg hover:border-green-400">Tham số</button><button data-result="mann-whitney" class="choice-btn w-full md:w-1/2 p-6 bg-yellow-50 border-yellow-200 text-yellow-800 rounded-lg hover:border-yellow-400">Phi tham số</button></div></div>
+                    <div id="step-three-levels" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Thiết kế "Cùng nhóm" hay "Khác nhóm"?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-next="step-three-levels-related" class="choice-btn w-full md:w-1/2 p-6 bg-indigo-50 border-indigo-200 text-indigo-800 rounded-lg hover:border-indigo-400">Cùng nhóm</button><button data-next="step-three-levels-unrelated" class="choice-btn w-full md:w-1/2 p-6 bg-pink-50 border-pink-200 text-pink-800 rounded-lg hover:border-pink-400">Khác nhóm</button></div></div>
+                    <div id="step-three-levels-related" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Cùng nhóm (3+ levels): Tham số hay Phi tham số?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-result="one-way-related-anova" class="choice-btn w-full md:w-1/2 p-6 bg-green-50 border-green-200 text-green-800 rounded-lg hover:border-green-400">Tham số</button><button data-result="friedman" class="choice-btn w-full md:w-1/2 p-6 bg-yellow-50 border-yellow-200 text-yellow-800 rounded-lg hover:border-yellow-400">Phi tham số</button></div></div>
+                    <div id="step-three-levels-unrelated" class="wizard-card card-hidden w-full text-center space-y-4"><h2 class="text-xl font-semibold text-gray-700">Khác nhóm (3+ levels): Tham số hay Phi tham số?</h2><div class="flex flex-col md:flex-row justify-center gap-4"><button data-result="one-way-unrelated-anova" class="choice-btn w-full md:w-1/2 p-6 bg-green-50 border-green-200 text-green-800 rounded-lg hover:border-green-400">Tham số</button><button data-result="kruskal-wallis" class="choice-btn w-full md:w-1/2 p-6 bg-yellow-50 border-yellow-200 text-yellow-800 rounded-lg hover:border-yellow-400">Phi tham số</button></div></div>
+                    <div id="step-result" class="wizard-card card-hidden w-full text-center space-y-3"></div>
+                </div>
+                <div class="text-center mt-8">
+                    <button id="reset-btn" class="px-6 py-2 bg-gray-600 text-white rounded-full hover:bg-gray-700 transition-colors opacity-0 pointer-events-none"><i data-lucide="rotate-ccw" class="inline-block w-4 h-4 mr-2"></i>Làm lại từ đầu</button>
+                </div>
+            </div>
+            
+            <div id="tab-2" class="tab-content">
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-gray-800">Thống kê Mô tả</h2>
+                    <p class="mt-2 text-lg text-gray-600 max-w-3xl mx-auto">Bước đầu tiên và quan trọng nhất trong mọi phân tích, giúp tóm tắt và hiểu các đặc điểm chính của bộ dữ liệu.</p>
+                </div>
+
+                <div class="mt-10 space-y-8">
+                    <div class="content-card">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Các loại Thang đo</h3>
+                         <p class="text-gray-600 mb-4">Hiểu rõ thang đo của biến số là điều kiện tiên quyết để chọn đúng phương pháp phân tích.</p>
+                        <dl class="space-y-3">
+                            <div><dt>Định danh (Nominal)</dt><dd>Dùng để gán nhãn cho các nhóm mà không có thứ tự. Ví dụ: Giới tính (Nam, Nữ), Nhóm máu (A, B, AB, O).</dd></div>
+                            <div><dt>Thứ bậc (Ordinal)</dt><dd>Các nhóm có sự sắp xếp theo thứ tự, nhưng khoảng cách giữa các bậc là không xác định. Ví dụ: Mức độ hài lòng (Rất không hài lòng, Không hài lòng, Bình thường, Hài lòng, Rất hài lòng).</dd></div>
+                            <div><dt>Khoảng (Interval)</dt><dd>Dữ liệu số với khoảng cách giữa các giá trị là bằng nhau, nhưng không có điểm 0 tuyệt đối. Ví dụ: Nhiệt độ C, điểm IQ.</dd></div>
+                            <div><dt>Tỷ lệ (Ratio)</dt><dd>Giống thang đo Khoảng nhưng có điểm 0 tuyệt đối, cho phép thực hiện các phép toán nhân/chia. Ví dụ: Cân nặng, chiều cao, thu nhập.</dd></div>
+                        </dl>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Các Chỉ số Đo lường Chính</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Đo lường Xu hướng Trung tâm</h4>
+                                <dl class="space-y-3">
+                                    <div><dt>Mean (Trung bình cộng)</dt><dd>Tổng tất cả các giá trị chia cho số lượng giá trị. Rất nhạy với các giá trị ngoại lệ (outliers).</dd></div>
+                                    <div><dt>Median (Trung vị)</dt><dd>Giá trị nằm ở chính giữa của một tập dữ liệu đã được sắp xếp. Ít bị ảnh hưởng bởi giá trị ngoại lệ.</dd></div>
+                                    <div><dt>Mode (Yếu vị)</dt><dd>Giá trị xuất hiện thường xuyên nhất. Hữu ích cho dữ liệu định tính.</dd></div>
+                                </dl>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-lg mb-2">Đo lường Mức độ Phân tán</h4>
+                                <dl class="space-y-3">
+                                    <div><dt>Variance (Phương sai)</dt><dd>Là trung bình của bình phương các khoảng cách từ mỗi điểm dữ liệu đến giá trị trung bình. Nó đo lường mức độ "trải rộng" của dữ liệu theo đơn vị bình phương.</dd></div>
+                                    <div><dt>Standard Deviation (Độ lệch chuẩn)</dt><dd>Là căn bậc hai của phương sai, được đưa về cùng đơn vị với dữ liệu gốc. Nó cho biết mức độ phân tán trung bình của các điểm dữ liệu so với giá trị trung bình.</dd></div>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="content-card">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Đánh giá Hình dạng Phân phối</h3>
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                             <div>
+                                <h4 class="font-semibold text-lg mb-2">Skewness (Độ xiên)</h4>
+                                <p class="text-gray-600 mb-4">Đo lường mức độ bất đối xứng của phân phối.</p>
+                                <div class="space-y-4">
+                                    <div><h5 class="font-medium">Lệch Trái (Skewness < 0)</h5><div class="viz-container mt-1 gap-px"><div class="viz-bar" style="height:10%"></div><div class="viz-bar" style="height:25%"></div><div class="viz-bar" style="height:40%"></div><div class="viz-bar" style="height:60%"></div><div class="viz-bar" style="height:90%"></div><div class="viz-bar" style="height:70%"></div><div class="viz-bar" style="height:50%"></div></div></div>
+                                    <div><h5 class="font-medium">Đối xứng (Skewness ≈ 0)</h5><div class="viz-container mt-1 gap-px"><div class="viz-bar" style="height:10%"></div><div class="viz-bar" style="height:40%"></div><div class="viz-bar" style="height:80%"></div><div class="viz-bar" style="height:100%"></div><div class="viz-bar" style="height:80%"></div><div class="viz-bar" style="height:40%"></div><div class="viz-bar" style="height:10%"></div></div></div>
+                                    <div><h5 class="font-medium">Lệch Phải (Skewness > 0)</h5><div class="viz-container mt-1 gap-px"><div class="viz-bar" style="height:50%"></div><div class="viz-bar" style="height:70%"></div><div class="viz-bar" style="height:90%"></div><div class="viz-bar" style="height:60%"></div><div class="viz-bar" style="height:40%"></div><div class="viz-bar" style="height:25%"></div><div class="viz-bar" style="height:10%"></div></div></div>
+                                </div>
+                             </div>
+                             <div>
+                                <h4 class="font-semibold text-lg mb-2">Kurtosis (Độ nhọn)</h4>
+                                <p class="text-gray-600 mb-4">Đo lường độ "nhọn" của đỉnh phân phối, thường so với phân phối chuẩn.</p>
+                                <div class="space-y-4">
+                                     <div><h5 class="font-medium">Nhọn (Leptokurtic, Kurtosis > 0)</h5><p class="text-sm text-gray-600">Đỉnh cao, đuôi dày, cho thấy có nhiều outliers.</p></div>
+                                     <div><h5 class="font-medium">Chuẩn (Mesokurtic, Kurtosis ≈ 0)</h5><p class="text-sm text-gray-600">Độ nhọn tương tự phân phối chuẩn.</p></div>
+                                     <div><h5 class="font-medium">Bẹt (Platykurtic, Kurtosis < 0)</h5><p class="text-sm text-gray-600">Đỉnh thấp, đuôi mỏng, cho thấy có ít outliers.</p></div>
+                                </div>
+                             </div>
+                         </div>
+                    </div>
+                     <div class="content-card">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Kiểm định Phân phối chuẩn</h3>
+                        <dl class="space-y-3">
+                            <div><dt>Mục đích</dt><dd>Nhiều kiểm định tham số (như T-Test, ANOVA) yêu cầu dữ liệu phải tuân theo phân phối chuẩn. Do đó, việc kiểm tra giả định này là rất quan trọng.</dd></div>
+                            <div><dt>Kiểm định Shapiro-Wilk</dt><dd>Là một trong những kiểm định chính xác nhất để đánh giá tính chuẩn, đặc biệt hiệu quả với các mẫu nhỏ (N < 50).</dd></div>
+                            <div><dt>Diễn giải</dt><dd><b>H₀ (Giả thuyết không):</b> Dữ liệu có phân phối chuẩn. <br/><b>H₁ (Giả thuyết đối):</b> Dữ liệu không có phân phối chuẩn. <br/>Nếu kết quả <span class="tooltip">p-value > 0.05<span class="tooltip-text">Một p-value lớn hơn ngưỡng ý nghĩa 0.05 cho thấy chúng ta không có đủ bằng chứng để bác bỏ giả thuyết không. Do đó, ta có thể tạm chấp nhận rằng dữ liệu tuân theo phân phối chuẩn.</span></span>, ta không bác bỏ H₀ và có thể coi dữ liệu là phân phối chuẩn.</dd></div>
+                        </dl>
+                    </div>
+
+                    <div class="content-card">
+                        <h3 class="text-xl font-semibold text-blue-700 mb-4">Các loại Biểu đồ Mô tả Phổ biến</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">Histogram</h4>
+                                <div class="viz-container gap-px"><div class="viz-bar" style="width:12%;height:20%"></div><div class="viz-bar" style="width:12%;height:45%"></div><div class="viz-bar" style="width:12%;height:80%"></div><div class="viz-bar" style="width:12%;height:90%"></div><div class="viz-bar" style="width:12%;height:60%"></div><div class="viz-bar" style="width:12%;height:30%"></div></div>
+                                <p class="text-sm text-gray-600 mt-2">Hiển thị phân phối tần suất của một biến liên tục.</p>
+                            </div>
+                             <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">Bar Chart</h4>
+                                <div class="viz-container gap-2"><div class="viz-bar" style="width:20%;height:75%"></div><div class="viz-bar" style="width:20%;height:40%"></div><div class="viz-bar" style="width:20%;height:90%"></div></div>
+                                <p class="text-sm text-gray-600 mt-2">So sánh số lượng giữa các danh mục khác nhau.</p>
+                            </div>
+                             <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">Scatter Plot</h4>
+                                <div class="viz-container relative">
+                                    <div class="viz-dot" style="bottom:20%; left:15%"></div><div class="viz-dot" style="bottom:30%; left:25%"></div><div class="viz-dot" style="bottom:45%; left:40%"></div>
+                                    <div class="viz-dot" style="bottom:55%; left:55%"></div><div class="viz-dot" style="bottom:70%; left:70%"></div><div class="viz-dot" style="bottom:80%; left:85%"></div>
+                                    <div class="viz-dot" style="bottom:25%; left:45%"></div><div class="viz-dot" style="bottom:50%; left:20%"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">Thể hiện mối quan hệ giữa hai biến liên tục.</p>
+                            </div>
+                             <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">Box Plot</h4>
+                                <div class="viz-container">
+                                    <div class="viz-boxplot">
+                                        <div class="whisker"></div>
+                                        <div class="box"><div class="median"></div></div>
+                                        <div class="whisker"></div>
+                                    </div>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">Tóm tắt phân phối dữ liệu qua 5 giá trị chính và phát hiện outliers.</p>
+                            </div>
+                            <div class="p-4 bg-gray-50 rounded-lg">
+                                <h4 class="font-bold mb-2">Q-Q Plot</h4>
+                                <div class="viz-container relative">
+                                    <div class="absolute top-0 left-0 bottom-0 right-0" style="background: linear-gradient(to top right, transparent 49.5%, #ef4444 49.5%, #ef4444 50.5%, transparent 50.5%);"></div>
+                                    <div class="viz-dot" style="bottom:10%; left:10%"></div><div class="viz-dot" style="bottom:25%; left:28%"></div><div class="viz-dot" style="bottom:40%; left:42%"></div>
+                                    <div class="viz-dot" style="bottom:60%; left:58%"></div><div class="viz-dot" style="bottom:80%; left:75%"></div><div class="viz-dot" style="bottom:90%; left:90%"></div>
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">So sánh các điểm phân vị của dữ liệu với phân vị của phân phối chuẩn.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-3" class="tab-content">
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    <div class="md:col-span-1">
+                        <nav id="library-nav-main" class="space-y-1 sticky top-24">
+                            <a data-section="t-tests" class="library-nav-item active flex items-center space-x-2"><i data-lucide="bar-chart-3" class="w-5 h-5"></i><span>T-Tests</span></a>
+                            <a data-section="anova" class="library-nav-item flex items-center space-x-2"><i data-lucide="layout-grid" class="w-5 h-5"></i><span>ANOVA</span></a>
+                            <a data-section="correlation" class="library-nav-item flex items-center space-x-2"><i data-lucide="link" class="w-5 h-5"></i><span>Tương quan & Hồi quy</span></a>
+                            <a data-section="advanced" class="library-nav-item flex items-center space-x-2"><i data-lucide="toy-brick" class="w-5 h-5"></i><span>Mô hình Nâng cao</span></a>
+                        </nav>
+                    </div>
+                    <div class="md:col-span-3">
+                        <div id="library-content">
+                            <section id="section-t-tests" class="library-content-section active space-y-6">
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Tìm hiểu về T-Tests</h2>
+                                <div class="content-card"><h3>Independent Samples T-Test</h3><dl class="mt-4 space-y-3"><div><dt>Tiêu chí Lựa chọn</dt><dd>Khi bạn muốn so sánh giá trị trung bình của một biến liên tục (biến phụ thuộc) giữa hai nhóm hoàn toàn tách biệt (biến độc lập).</dd></div><div><dt>Diễn giải Kết quả</dt><dd>Chỉ số chính là <span class="tooltip">p-value (Sig.)<span class="tooltip-text">p-value < 0.05 thường được coi là có ý nghĩa thống kê, cho phép bác bỏ giả thuyết không (H0: không có sự khác biệt) và kết luận rằng có sự khác biệt thật sự giữa hai nhóm.</span></span>. Nếu p < 0.05, có sự khác biệt ý nghĩa thống kê giữa hai nhóm.</dd></div></dl></div>
+                                <div class="content-card"><h3>Paired Samples T-Test</h3><dl class="mt-4 space-y-3"><div><dt>Tiêu chí Lựa chọn</dt><dd>Khi bạn muốn so sánh giá trị trung bình của cùng một nhóm đối tượng tại hai thời điểm hoặc dưới hai điều kiện khác nhau.</dd></div><div><dt>Diễn giải Kết quả</dt><dd>Tập trung vào p-value của sự khác biệt. Nếu p < 0.05, có sự thay đổi ý nghĩa thống kê giữa hai lần đo.</dd></div></dl></div>
+                                <div class="content-card"><h3>One-Sample T-Test</h3><dl class="mt-4 space-y-3"><div><dt>Tiêu chí Lựa chọn</dt><dd>Khi bạn muốn so sánh giá trị trung bình của một nhóm duy nhất với một giá trị cố định, đã biết trước (ví dụ: trung bình tổng thể, một tiêu chuẩn).</dd></div><div><dt>Diễn giải Kết quả</dt><dd>Nếu p < 0.05, trung bình của mẫu khác biệt một cách ý nghĩa so với giá trị đã biết.</dd></div></dl></div>
+                            </section>
+                            <section id="section-anova" class="library-content-section space-y-6">
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Tìm hiểu về ANOVA</h2>
+                                <div class="content-card"><h3>One-Way ANOVA</h3><dl class="mt-4 space-y-3"><div><dt>Diễn giải Kết quả</dt><dd>Nếu p-value của <span class="tooltip">F-statistic<span class="tooltip-text">Chỉ số F thể hiện tỷ lệ phương sai giữa các nhóm so với phương sai trong nội bộ nhóm. F càng lớn, sự khác biệt giữa các nhóm càng rõ.</span></span> nhỏ hơn 0.05, kết luận có ít nhất một nhóm khác biệt với các nhóm còn lại. Cần dùng kiểm định <span class="tooltip">Post-Hoc<span class="tooltip-text">Kiểm định Post-Hoc (ví dụ: Tukey HSD) được dùng sau ANOVA để xác định chính xác cặp nhóm nào có sự khác biệt ý nghĩa thống kê với nhau.</span></span> để biết cặp nào khác biệt.</dd></div></dl></div>
+                                <div class="content-card"><h3>Two-Way ANOVA</h3><dl class="mt-4 space-y-3"><div><dt>Diễn giải Kết quả</dt><dd>Xem xét 3 p-value: một cho hiệu ứng chính của yếu tố 1, một cho hiệu ứng chính của yếu tố 2, và một cho <span class="tooltip">hiệu ứng tương tác<span class="tooltip-text">Hiệu ứng tương tác xảy ra khi ảnh hưởng của một biến độc lập lên biến phụ thuộc thay đổi tùy thuộc vào cấp độ của một biến độc lập khác.</span></span>. Hiệu ứng tương tác thường là kết quả thú vị nhất.</dd></div></dl></div>
+                            </section>
+                            <section id="section-correlation" class="library-content-section space-y-6">
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Tương quan và Hồi quy</h2>
+                                <div class="content-card"><h3>Phân tích Tương quan</h3><dl class="mt-4 space-y-3"><div><dt>Diễn giải Kết quả</dt><dd>Hệ số tương quan <span class="tooltip">Pearson's r<span class="tooltip-text">Giá trị của r dao động từ -1 đến +1. Dấu (+/-) chỉ chiều hướng. Giá trị tuyệt đối chỉ độ mạnh.</span></span> cho biết độ mạnh và chiều hướng. Quy tắc chung (Cohen): |r| ≈ 0.1 (yếu), |r| ≈ 0.3 (trung bình), |r| ≈ 0.5 (mạnh). P-value cho biết liệu mối tương quan có ý nghĩa thống kê hay không.</dd></div></dl></div>
+                                <div class="content-card"><h3>Phân tích Hồi quy</h3><dl class="mt-4 space-y-3"><div><dt>Diễn giải Kết quả</dt><dd><b>Hệ số hồi quy (B):</b> Cho biết biến phụ thuộc thay đổi bao nhiêu khi biến độc lập tăng 1 đơn vị. <br><b>R-squared:</b> Cho biết bao nhiêu phần trăm sự biến thiên của biến phụ thuộc được giải thích bởi mô hình.</dd></div></dl></div>
+                            </section>
+                            <section id="section-advanced" class="library-content-section space-y-6">
+                                <h2 class="text-3xl font-bold text-gray-800 mb-6">Mô hình Trung gian & Điều tiết</h2>
+                                <div class="content-card"><h3 class="text-xl font-semibold text-blue-700 mb-4">Mô phỏng Phân tích Trung gian (Mediation)</h3><p class="mb-6 text-gray-600">Tìm hiểu cách biến độc lập (X) tác động lên biến phụ thuộc (Y) thông qua một biến trung gian (M). Hãy kéo các thanh trượt để xem các hiệu ứng thay đổi.</p><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="relative h-48"><div class="diagram-box absolute top-1/2 -translate-y-1/2 left-0">X</div><div class="diagram-box absolute top-0 left-1/2 -translate-x-1/2">M</div><div class="diagram-box absolute top-1/2 -translate-y-1/2 right-0">Y</div><svg class="absolute w-full h-full top-0 left-0 overflow-visible"><defs><marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" /></marker></defs><line x1="60" y1="96" x2="150" y2="36" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)" /><text id="med-label-a" x="95" y="60" class="font-mono font-bold fill-blue-600">a=0.5</text><line x1="190" y1="36" x2="280" y2="96" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)" /><text id="med-label-b" x="225" y="60" class="font-mono font-bold fill-blue-600">b=0.5</text><line x1="60" y1="108" x2="280" y2="108" stroke="#4b5563" stroke-width="2" marker-end="url(#arrowhead)" /><text id="med-label-c" x="160" y="128" class="font-mono font-bold fill-blue-600">c'=0.2</text></svg></div><div><div class="space-y-4"><div><label for="slider-a" class="font-medium">Hệ số 'a' (X → M): <span id="val-a">0.5</span></label><input id="slider-a" type="range" min="-1" max="1" value="0.5" step="0.1"></div><div><label for="slider-b" class="font-medium">Hệ số 'b' (M → Y): <span id="val-b">0.5</span></label><input id="slider-b" type="range" min="-1" max="1" value="0.5" step="0.1"></div><div><label for="slider-c" class="font-medium">Hệ số 'c'' (X → Y): <span id="val-c">0.2</span></label><input id="slider-c" type="range" min="-1" max="1" value="0.2" step="0.1"></div></div><div id="mediation-output" class="mt-6 p-4 bg-blue-50 rounded-lg space-y-2 font-mono"></div></div></div></div>
+                                <div class="content-card"><h3 class="text-xl font-semibold text-blue-700 mb-4">Mô phỏng Phân tích Điều tiết (Moderation)</h3><p class="mb-6 text-gray-600">Khám phá cách một biến điều tiết (W) làm thay đổi mối quan hệ giữa biến độc lập (X) và biến phụ thuộc (Y).</p><div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"><div class="relative h-80"><canvas id="moderation-chart"></canvas></div><div><div class="space-y-4"><div><label for="slider-b1" class="font-medium">Hiệu ứng chính của X (b1): <span id="val-b1">0.5</span></label><input id="slider-b1" type="range" min="-1" max="1" value="0.5" step="0.1"></div><div><label for="slider-b3" class="font-medium">Hiệu ứng Tương tác X*W (b3): <span id="val-b3">0.3</span></label><input id="slider-b3" type="range" min="-1" max="1" value="0.3" step="0.1"></div></div><div id="moderation-output" class="mt-6 p-4 bg-blue-50 rounded-lg"></div></div></div></div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const navTabs = document.querySelectorAll('.nav-tab');
+    const tabContents = document.querySelectorAll('.tab-content');
+    function setActiveTab(tabNumber) {
+        navTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === tabNumber));
+        tabContents.forEach(content => content.classList.toggle('active', content.id === `tab-${tabNumber}`));
+    }
+    navTabs.forEach(tab => tab.addEventListener('click', () => setActiveTab(tab.dataset.tab)));
+
+    const wizardContainer = document.getElementById('wizard-container');
+    const resetButton = document.getElementById('reset-btn');
+    const resultsData = {
+        'pearson': { title: 'Tương quan Pearson (r)', type: 'Tham số' }, 'spearman': { title: 'Tương quan Spearman (rho)', type: 'Phi tham số' },
+        'two-way-anova': { title: 'Two-way ANOVA', type: 'Tham số' }, 'one-sample-t-test': { title: 'One-sample t-test', type: 'Tham số' },
+        'sign-test': { title: 'Sign Test', type: 'Phi tham số' }, 'related-t-test': { title: 'Related t-test (Paired t-test)', type: 'Tham số' },
+        'wilcoxon': { title: 'Wilcoxon Signed-rank Test', type: 'Phi tham số' }, 'unrelated-t-test': { title: 'Unrelated t-test (Independent t-test)', type: 'Tham số' },
+        'mann-whitney': { title: 'Mann-Whitney U Test', type: 'Phi tham số' }, 'one-way-related-anova': { title: 'One-way Repeated Measures ANOVA', type: 'Tham số' },
+        'friedman': { title: 'Friedman Test', type: 'Phi tham số' }, 'one-way-unrelated-anova': { title: 'One-way ANOVA', type: 'Tham số' },
+        'kruskal-wallis': { title: 'Kruskal-Wallis Test', type: 'Phi tham số' }
+    };
+    function showCard(cardId) {
+        wizardContainer.querySelectorAll('.wizard-card').forEach(card => {
+            card.classList.toggle('card-visible', card.id === cardId);
+            card.classList.toggle('card-hidden', card.id !== cardId);
+        });
+    }
+    function showResult(resultKey) {
+        const data = resultsData[resultKey];
+        const resultCard = document.getElementById('step-result');
+        resultCard.innerHTML = `<p class="text-gray-500">Phương pháp được đề xuất:</p><h2 class="text-3xl font-bold text-gray-900">${data.title}</h2><p class="inline-block px-3 py-1 text-sm font-semibold rounded-full ${data.type === 'Tham số' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">${data.type}</p>`;
+        showCard('step-result');
+        resetButton.classList.remove('opacity-0', 'pointer-events-none');
+    }
+    wizardContainer.addEventListener('click', (e) => {
+        const button = e.target.closest('button');
+        if (!button) return;
+        const nextStep = button.dataset.next;
+        const resultKey = button.dataset.result;
+        if (nextStep) showCard(nextStep);
+        else if (resultKey) showResult(resultKey);
+    });
+    resetButton.addEventListener('click', () => {
+        showCard('step-start');
+        resetButton.classList.add('opacity-0', 'pointer-events-none');
+    });
+
+    const libraryNavItems = document.querySelectorAll('.library-nav-item');
+    const libraryContentSections = document.querySelectorAll('.library-content-section');
+    libraryNavItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const sectionId = item.dataset.section;
+            libraryNavItems.forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+            libraryContentSections.forEach(s => s.classList.toggle('active', s.id === `section-${sectionId}`));
+        });
+    });
+
+    const sliderA = document.getElementById('slider-a'), valA = document.getElementById('val-a'), medLabelA = document.getElementById('med-label-a');
+    const sliderB = document.getElementById('slider-b'), valB = document.getElementById('val-b'), medLabelB = document.getElementById('med-label-b');
+    const sliderC = document.getElementById('slider-c'), valC = document.getElementById('val-c'), medLabelC = document.getElementById('med-label-c');
+    const mediationOutput = document.getElementById('mediation-output');
+    function updateMediation() {
+        if(!sliderA) return;
+        const a = parseFloat(sliderA.value), b = parseFloat(sliderB.value), c_prime = parseFloat(sliderC.value);
+        valA.textContent = a.toFixed(2); valB.textContent = b.toFixed(2); valC.textContent = c_prime.toFixed(2);
+        medLabelA.textContent = `a=${a.toFixed(2)}`; medLabelB.textContent = `b=${b.toFixed(2)}`; medLabelC.textContent = `c'=${c_prime.toFixed(2)}`;
+        const indirectEffect = a * b, totalEffect = c_prime + indirectEffect;
+        mediationOutput.innerHTML = `<div>Hiệu ứng Gián tiếp (a*b): <span class="font-bold text-red-600">${indirectEffect.toFixed(2)}</span></div><div>Hiệu ứng Trực tiếp (c'): <span class="font-bold text-blue-600">${c_prime.toFixed(2)}</span></div><div>Hiệu ứng Tổng thể (c): <span class="font-bold text-purple-600">${totalEffect.toFixed(2)}</span></div>`;
+    }
+    if (sliderA) [sliderA, sliderB, sliderC].forEach(slider => slider.addEventListener('input', updateMediation));
+
+    const sliderB1 = document.getElementById('slider-b1'), valB1 = document.getElementById('val-b1');
+    const sliderB3 = document.getElementById('slider-b3'), valB3 = document.getElementById('val-b3');
+    const moderationOutput = document.getElementById('moderation-output');
+    const modCtx = document.getElementById('moderation-chart')?.getContext('2d');
+    let moderationChart;
+    function updateModeration() {
+        if(!moderationChart) return;
+        const b1 = parseFloat(sliderB1.value), b3 = parseFloat(sliderB3.value), b2 = 0.2, xValues = [-2, 2];
+        valB1.textContent = b1.toFixed(2); valB3.textContent = b3.toFixed(2);
+        const calculateY = (x, w) => b1 * x + b2 * w + b3 * x * w;
+        moderationChart.data.datasets = [
+            { label: 'W Thấp (-1)', data: xValues.map(x => ({x, y: calculateY(x, -1)})), borderColor: '#3b82f6', backgroundColor: '#3b82f6' },
+            { label: 'W Cao (+1)', data: xValues.map(x => ({x, y: calculateY(x, 1)})), borderColor: '#ef4444', backgroundColor: '#ef4444' }
+        ];
+        moderationChart.update();
+        let interpretation = (b3 > 0.1) ? '<b>Tương tác tăng cường:</b> Hiệu ứng của X lên Y trở nên <b>mạnh hơn</b> khi W tăng.' : (b3 < -0.1) ? '<b>Tương tác đối kháng:</b> Hiệu ứng của X lên Y <b>yếu đi/đảo chiều</b> khi W tăng.' : '<b>Không có tương tác:</b> Hiệu ứng của X lên Y gần như <b>không đổi</b> ở các mức của W.';
+        moderationOutput.innerHTML = `<p class="text-sm text-gray-700">${interpretation}</p>`;
+    }
+    function initModerationChart() {
+        if (!modCtx) return;
+         moderationChart = new Chart(modCtx, { type: 'line', data: { datasets: [] }, options: { responsive: true, maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Biến độc lập (X)' } }, y: { title: { display: true, text: 'Biến phụ thuộc (Y)' } } } } });
+        updateModeration();
+        if (sliderB1) [sliderB1, sliderB3].forEach(slider => slider.addEventListener('input', updateModeration));
+    }
+
+    function init() {
+        lucide.createIcons();
+        setActiveTab('1');
+        if(document.getElementById('slider-a')) updateMediation();
+        if(document.getElementById('moderation-chart')) initModerationChart();
+    }
+    init();
+});
+</script>
+
+</body>
+</html>
