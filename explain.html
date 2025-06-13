@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiến Thức Thống Kê Tâm Lý</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 30px 0;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            flex-wrap: nowrap;
+            margin-bottom: 30px;
+            gap: 5px;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
+        .tab-button {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: 2px solid rgba(255,255,255,0.3);
+            padding: 12px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-weight: 500;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-size: 0.9rem;
+        }
+
+        .tab-button:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #667eea;
+            border-color: white;
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+        }
+
+        .content-section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, #667eea, #764ba2);
+            border-radius: 2px;
+        }
+
+        .subsection {
+            margin-bottom: 30px;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .subsection h3 {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .formula-box {
+            background: #f0f7ff;
+            border: 2px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+        }
+
+        .example-box {
+            background: #fff9e6;
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        tr:hover {
+            background: #f8f9ff;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid #667eea;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .nav-tabs {
+                justify-content: flex-start;
+                padding: 10px;
+            }
+            
+            .tab-button {
+                font-size: 0.8rem;
+                padding: 10px 12px;
+            }
+            
+            .content-section {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+        }
+
+        .quick-reference {
+            position: fixed;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.95);
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            max-width: 200px;
+            backdrop-filter: blur(10px);
+        }
+
+        .quick-reference h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .quick-reference ul {
+            list-style: none;
+            font-size: 0.8rem;
+        }
+
+        .quick-reference li {
+            margin: 5px 0;
+            cursor: pointer;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .quick-reference li:hover {
+            color: #667eea;
+        }
+
+        @media (max-width: 1024px) {
+            .quick-reference {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Kiến Thức Thống Kê Tâm Lý</h1>
+            <p>Tổng hợp đầy đủ các khái niệm thống kê cần thiết cho nghiên cứu tâm lý học</p>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-button active" onclick="showTab('hypotheses')">Giả Thuyết H0 & H1</button>
+            <button class="tab-button" onclick="showTab('distributions')">Phân Phối Chuẩn</button>
+            <button class="tab-button" onclick="showTab('tests')">Các Loại Test</button>
+            <button class="tab-button" onclick="showTab('errors')">Lỗi I & II</button>
+            <button class="tab-button" onclick="showTab('cronbach')">Cronbach's Alpha</button>
+            <button class="tab-button" onclick="showTab('variance')">Phương Sai</button>
+            <button class="tab-button" onclick="showTab('symbols')">Ký Hiệu & Viết Tắt</button>
+            <button class="tab-button" onclick="showTab('examples')">Ví Dụ Thực Tế</button>
+        </div>
+
+        <!-- Giả Thuyết H0 & H1 -->
+        <div class="content-section active" id="hypotheses">
+            <h2 class="section-title">Giả Thuyết H0 & H1</h2>
+            
+            <div class="subsection">
+                <h3>🎯 Khái Niệm Cơ Bản</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>H0 (Giả thuyết không)</h4>
+                        <p><strong>Định nghĩa:</strong> Không có tác động/khác biệt trong quần thể</p>
+                        <p><strong>Ý nghĩa:</strong> Giả thuyết mặc định cần kiểm tra</p>
+                        <p><strong>Trả lời:</strong> "Không, không có tác động nào"</p>
+                    </div>
+                    <div class="card">
+                        <h4>H1 (Giả thuyết thay thế)</h4>
+                        <p><strong>Định nghĩa:</strong> Có tác động/khác biệt có ý nghĩa</p>
+                        <p><strong>Ý nghĩa:</strong> Điều chúng ta muốn chứng minh</p>
+                        <p><strong>Trả lời:</strong> "Có, có tác động trong quần thể"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📋 Ví Dụ Theo Loại Test</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Loại Test</th>
+                            <th>H0</th>
+                            <th>H1</th>
+                        </tr>
+                        <tr>
+                            <td>t-test</td>
+                            <td>Khác biệt giữa 2 nhóm là nhỏ, không đáng kể</td>
+                            <td>Khác biệt giữa 2 nhóm là đủ lớn, có ý nghĩa</td>
+                        </tr>
+                        <tr>
+                            <td>ANOVA</td>
+                            <td>KHÔNG có sự khác biệt giữa các nhóm</td>
+                            <td>Có ít nhất một nhóm khác biệt đáng kể</td>
+                        </tr>
+                        <tr>
+                            <td>Tương quan</td>
+                            <td>Không có mối quan hệ giữa A và B</td>
+                            <td>Có mối quan hệ (thuận/nghịch) giữa A và B</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Mục Tiêu Kiểm Định</h3>
+                <p>Xem liệu chúng ta có đủ bằng chứng để <strong>bác bỏ H0</strong> và <strong>chấp nhận H1</strong> hay không.</p>
+            </div>
+        </div>
+
+        <!-- Phân Phối Chuẩn -->
+        <div class="content-section" id="distributions">
+            <h2 class="section-title">Phân Phối Chuẩn & Lựa Chọn Test</h2>
+            
+            <div class="subsection">
+                <h3>📐 Định Nghĩa Phân Phối Chuẩn</h3>
+                <div class="formula-box">
+                    Điểm trung bình = Số trung vị = Số yếu vị
+                </div>
+                <p><strong>Độ lệch chuẩn (SD):</strong></p>
+                <ul>
+                    <li>SD nhỏ = Dữ liệu gần trung bình hơn</li>
+                    <li>SD lớn = Dữ liệu phân tán rộng</li>
+                </ul>
+            </div>
+
+            <div class="subsection">
+                <h3>🔍 Kiểm Tra Phân Phối Chuẩn - Shapiro-Wilk Test</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>H0: Dữ liệu có phân phối chuẩn</h4>
+                        <h4>H1: Dữ liệu không có phân phối chuẩn</h4>
+                    </div>
+                    <div class="card">
+                        <h4>Diễn Giải Kết Quả:</h4>
+                        <p><strong>p > 0.05:</strong> Dữ liệu có phân phối chuẩn → Dùng test tham số</p>
+                        <p><strong>p < 0.05:</strong> Dữ liệu không phân phối chuẩn → Dùng test phi tham số</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>⚖️ So Sánh Test Tham Số vs Phi Tham Số</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Test Tham Số</th>
+                            <th>Test Phi Tham Số</th>
+                            <th>Yêu Cầu</th>
+                        </tr>
+                        <tr>
+                            <td>t-test</td>
+                            <td>Mann-Whitney U</td>
+                            <td>So sánh 2 nhóm độc lập</td>
+                        </tr>
+                        <tr>
+                            <td>Pearson correlation</td>
+                            <td>Spearman correlation</td>
+                            <td>Phân tích tương quan</td>
+                        </tr>
+                        <tr>
+                            <td>ANOVA</td>
+                            <td>Kruskal-Wallis</td>
+                            <td>So sánh nhiều nhóm</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Các Loại Test -->
+        <div class="content-section" id="tests">
+            <h2 class="section-title">Các Loại Test Thống Kê</h2>
+            
+            <div class="subsection">
+                <h3>📊 One-sample t-test</h3>
+                <div class="example-box">
+                    <strong>Ví dụ:</strong> So sánh mức độ tự tin của sinh viên một trường (70 điểm) với mức trung bình toàn quốc.
+                    <br><strong>H0:</strong> Mức tự tin trường này = 70 điểm
+                    <br><strong>H1:</strong> Mức tự tin trường này ≠ 70 điểm
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📊 Independent samples t-test</h3>
+                <div class="example-box">
+                    <strong>Ví dụ:</strong> So sánh mức độ hạnh phúc giữa sinh viên thành phố A và B.
+                    <br><strong>H0:</strong> Không có khác biệt về hạnh phúc giữa A và B
+                    <br><strong>H1:</strong> Có khác biệt đáng kể về hạnh phúc giữa A và B
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📊 Paired samples t-test</h3>
+                <div class="example-box">
+                    <strong>Ví dụ:</strong> Đánh giá can thiệp tâm lý (đo trước và sau trên cùng nhóm).
+                    <br><strong>H0:</strong> Can thiệp không thay đổi mức lo âu
+                    <br><strong>H1:</strong> Can thiệp có tác động thay đổi mức lo âu
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔗 Phân Tích Tương Quan</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Mức độ tương quan |r|</th>
+                            <th>Đánh giá</th>
+                        </tr>
+                        <tr>
+                            <td>< 0.3</td>
+                            <td>Tương quan yếu</td>
+                        </tr>
+                        <tr>
+                            <td>0.3 - 0.5</td>
+                            <td>Tương quan trung bình</td>
+                        </tr>
+                        <tr>
+                            <td>0.5 - 0.7</td>
+                            <td>Tương quan chặt chẽ</td>
+                        </tr>
+                        <tr>
+                            <td>≥ 0.7</td>
+                            <td>Tương quan rất chặt chẽ</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Quy Tắc Quyết Định (α = 0.05)</h3>
+                <p><strong>p ≤ 0.05:</strong> Bác bỏ H0, chấp nhận H1 → "Có ý nghĩa thống kê"</p>
+                <p><strong>p > 0.05:</strong> Không bác bỏ H0 → "Không có ý nghĩa thống kê"</p>
+            </div>
+        </div>
+
+        <!-- Lỗi I & II -->
+        <div class="content-section" id="errors">
+            <h2 class="section-title">Lỗi Loại I & II</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <h4>🚨 Lỗi Loại I (α)</h4>
+                    <p><strong>Định nghĩa:</strong> Bác bỏ H0 khi H0 thực sự đúng</p>
+                    <p><strong>Còn gọi:</strong> "Dương tính giả" (False Positive)</p>
+                    <p><strong>Xác suất:</strong> α (thường = 0.05)</p>
+                    <p><strong>Nghĩa:</strong> Kết luận có tác động khi thực tế không có</p>
+                </div>
+                <div class="card">
+                    <h4>🔍 Lỗi Loại II (β)</h4>
+                    <p><strong>Định nghĩa:</strong> Không bác bỏ H0 khi H0 thực sự sai</p>
+                    <p><strong>Còn gọi:</strong> "Âm tính giả" (False Negative)</p>
+                    <p><strong>Xác suất:</strong> β</p>
+                    <p><strong>Nghĩa:</strong> Bỏ lỡ tác động thực sự</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>⚖️ Bảng Tóm Tắt Các Trường Hợp</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Quyết định</th>
+                            <th>H0 đúng</th>
+                            <th>H0 sai (H1 đúng)</th>
+                        </tr>
+                        <tr>
+                            <td>Không bác bỏ H0</td>
+                            <td>✅ Quyết định đúng (1-α)</td>
+                            <td>❌ Lỗi loại II (β)</td>
+                        </tr>
+                        <tr>
+                            <td>Bác bỏ H0</td>
+                            <td>❌ Lỗi loại I (α)</td>
+                            <td>✅ Quyết định đúng = Power (1-β)</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔄 Sự Đánh Đổi Giữa Các Loại Lỗi</h3>
+                <div class="highlight-box">
+                    <p><strong>Giảm α</strong> (mức ý nghĩa) → <strong>Tăng β</strong> (lỗi loại II)</p>
+                    <p><strong>Tăng Power</strong> → <strong>Tăng α</strong> (lỗi loại I)</p>
+                    <p><strong>Cần cân bằng</strong> giữa việc tránh hai loại lỗi</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🏥 Ví Dụ Thực Tế</h3>
+                <div class="example-box">
+                    <strong>Nghiên cứu liệu pháp mới:</strong>
+                    <br><strong>Lỗi loại I:</strong> Kết luận liệu pháp hiệu quả khi thực tế không hiệu quả
+                    <br><strong>Lỗi loại II:</strong> Kết luận liệu pháp không hiệu quả khi thực tế có hiệu quả
+                    <br><strong>Power ≥ 80%:</strong> Chuẩn chấp nhận cho nghiên cứu
+                </div>
+            </div>
+        </div>
+
+        <!-- Cronbach's Alpha -->
+        <div class="content-section" id="cronbach">
+            <h2 class="section-title">Cronbach's Alpha - Độ Tin Cậy</h2>
+            
+            <div class="subsection">
+                <h3>🎯 Định Nghĩa</h3>
+                <p><strong>Cronbach's Alpha</strong> đánh giá <strong>độ tin cậy nội tại (internal consistency)</strong> - mức độ nhất quán giữa các câu hỏi trong cùng một thang đo.</p>
+            </div>
+
+            <div class="subsection">
+                <h3>📏 Thang Đánh Giá</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Cronbach's Alpha</th>
+                            <th>Mức độ</th>
+                            <th>Hành động</th>
+                        </tr>
+                        <tr>
+                            <td>α ≥ 0.9</td>
+                            <td>Rất tốt</td>
+                            <td>Không cần làm gì</td>
+                        </tr>
+                        <tr>
+                            <td>0.8 ≤ α < 0.9</td>
+                            <td>Tốt</td>
+                            <td>Không cần làm gì</td>
+                        </tr>
+                        <tr>
+                            <td>0.7 ≤ α < 0.8</td>
+                            <td>Chấp nhận được</td>
+                            <td>Không cần làm gì</td>
+                        </tr>
+                        <tr>
+                            <td>0.6 ≤ α < 0.7</td>
+                            <td>Nghi ngờ</td>
+                            <td>Thêm câu hỏi</td>
+                        </tr>
+                        <tr>
+                            <td>0.5 ≤ α < 0.6</td>
+                            <td>Không tốt</td>
+                            <td>Tạo/thêm câu hỏi mới</td>
+                        </tr>
+                        <tr>
+                            <td>α < 0.5</td>
+                            <td>Không chấp nhận</td>
+                            <td>Nghĩ lại toàn bộ thang đo</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🏪 Ví Dụ: Đo Mức Độ Hài Lòng Khách Hàng</h3>
+                <div class="example-box">
+                    <strong>3 câu hỏi:</strong>
+                    <br>1. "Bạn nghĩ cửa hàng có sạch sẽ không?"
+                    <br>2. "Bạn có hài lòng với các mặt hàng không?"
+                    <br>3. "Mức độ thân thiện của nhân viên như thế nào?"
+                    <br><br>
+                    <strong>Alpha cao:</strong> 3 câu đều đo chung "hài lòng"
+                    <br><strong>Alpha thấp:</strong> Các câu đo khái niệm khác nhau
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>🎯 Ý Nghĩa Quan Trọng</h3>
+                <p>Cronbach's Alpha đảm bảo tất cả câu hỏi đều phản ánh cùng một khái niệm. Nếu các câu hỏi mâu thuẫn → thang đo không đáng tin cậy.</p>
+            </div>
+        </div>
+
+        <!-- Phương Sai -->
+        <div class="content-section" id="variance">
+            <h2 class="section-title">Phương Sai & Độ Lệch Chuẩn</h2>
+            
+            <div class="subsection">
+                <h3>📊 Định Nghĩa</h3>
+                <p><strong>Phương sai</strong> là thước đo <strong>sự phân tán</strong> trong dữ liệu - cho biết các giá trị thay đổi như thế nào so với trung bình.</p>
+                <div class="formula-box">
+                    Phương sai = Trung bình của (độ lệch)²
+                    <br>
+                    Độ lệch chuẩn = √Phương sai
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🧮 Ví Dụ Tính Toán</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Điểm</th>
+                            <th>Trung bình</th>
+                            <th>Độ lệch</th>
+                            <th>Độ lệch²</th>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>5</td>
+                            <td>-2</td>
+                            <td>4</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>5</td>
+                            <td>-1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>5</td>
+                            <td>1</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>5</td>
+                            <td>2</td>
+                            <td>4</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="formula-box">
+                    Phương sai = (4+1+0+1+4)/5 = 2.0
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📈 Ý Nghĩa Trong Nghiên Cứu</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Phương sai nhỏ</h4>
+                        <p><strong>Ưu điểm:</strong> Kết quả dự đoán được, can thiệp hiệu quả đồng đều</p>
+                        <p><strong>Nhược điểm:</strong> Ít đa dạng, có thể bỏ lỡ trường hợp đặc biệt</p>
+                    </div>
+                    <div class="card">
+                        <h4>Phương sai lớn</h4>
+                        <p><strong>Ưu điểm:</strong> Phản ánh sự đa dạng thực tế</p>
+                        <p><strong>Nhược điểm:</strong> Khó dự đoán, cần phân tích sâu hơn</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>⚖️ Đồng Nhất Phương Sai (Homogeneity of Variance)</h3>
+                <div class="highlight-box">
+                    <p><strong>Định nghĩa:</strong> Giả thuyết rằng các quan thể có cùng phương sai</p>
+                    <p><strong>Ký hiệu:</strong> σ²₁ = σ²₂ = σ²₃ = σ²₄ = σ²₅</p>
+                    <p><strong>Kiểm tra:</strong> Levene's Test</p>
+                    <p><strong>Tầm quan trọng:</strong> Điều kiện bắt buộc cho t-test, ANOVA</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🧠 Ứng Dụng Trong ANOVA</h3>
+                <div class="example-box">
+                    <strong>Phương sai trong nhóm (MSerror):</strong> Sự phân tán trong mỗi nhóm
+                    <br><strong>Phương sai giữa các nhóm (MStreatment):</strong> Sự khác biệt giữa trung bình các nhóm
+                    <br><strong>Nếu 2 biến tương quan:</strong> Chúng chia sẻ một tỉ lệ phương sai → Tỉ lệ càng cao, tương quan càng mạnh
+                </div>
+            </div>
+        </div>
+
+        <!-- Ký Hiệu & Viết Tắt -->
+        <div class="content-section" id="symbols">
+            <h2 class="section-title">Ký Hiệu & Viết Tắt Thống Kê</h2>
+            
+            <div class="subsection">
+                <h3>🔤 Ký Hiệu Hy Lạp (Greek Letters)</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Ký hiệu</th>
+                            <th>Tên</th>
+                            <th>Ý nghĩa</th>
+                            <th>Ví dụ sử dụng</th>
+                        </tr>
+                        <tr>
+                            <td><strong>α</strong> (alpha)</td>
+                            <td>Alpha</td>
+                            <td>Mức ý nghĩa, xác suất lỗi loại I</td>
+                            <td>α = 0.05 (5%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>β</strong> (beta)</td>
+                            <td>Beta</td>
+                            <td>Xác suất lỗi loại II</td>
+                            <td>β = 0.20 (20%)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>μ</strong> (mu)</td>
+                            <td>Mu</td>
+                            <td>Trung bình quần thể</td>
+                            <td>μ = 100</td>
+                        </tr>
+                        <tr>
+                            <td><strong>σ</strong> (sigma)</td>
+                            <td>Sigma</td>
+                            <td>Độ lệch chuẩn quần thể</td>
+                            <td>σ = 15</td>
+                        </tr>
+                        <tr>
+                            <td><strong>σ²</strong></td>
+                            <td>Sigma bình phương</td>
+                            <td>Phương sai quần thể</td>
+                            <td>σ² = 225</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ρ</strong> (rho)</td>
+                            <td>Rho</td>
+                            <td>Hệ số tương quan quần thể</td>
+                            <td>ρ = 0.75</td>
+                        </tr>
+                        <tr>
+                            <td><strong>χ²</strong> (chi-square)</td>
+                            <td>Chi bình phương</td>
+                            <td>Thống kê chi-square</td>
+                            <td>χ² = 12.5</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📊 Ký Hiệu Mẫu (Sample Statistics)</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Ký hiệu</th>
+                            <th>Tên</th>
+                            <th>Ý nghĩa</th>
+                            <th>Công thức/Ví dụ</th>
+                        </tr>
+                        <tr>
+                            <td><strong>n</strong></td>
+                            <td>Kích thước mẫu</td>
+                            <td>Số quan sát trong mẫu</td>
+                            <td>n = 30</td>
+                        </tr>
+                        <tr>
+                            <td><strong>M</strong> hoặc <strong>x̄</strong></td>
+                            <td>Trung bình mẫu</td>
+                            <td>Trung bình cộng của mẫu</td>
+                            <td>M = Σx/n</td>
+                        </tr>
+                        <tr>
+                            <td><strong>s</strong></td>
+                            <td>Độ lệch chuẩn mẫu</td>
+                            <td>Độ phân tán của mẫu</td>
+                            <td>s = √(Σ(x-M)²/(n-1))</td>
+                        </tr>
+                        <tr>
+                            <td><strong>s²</strong></td>
+                            <td>Phương sai mẫu</td>
+                            <td>Phương sai của mẫu</td>
+                            <td>s² = Σ(x-M)²/(n-1)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>r</strong></td>
+                            <td>Hệ số tương quan mẫu</td>
+                            <td>Mức độ tương quan Pearson</td>
+                            <td>r = 0.65</td>
+                        </tr>
+                        <tr>
+                            <td><strong>rs</strong></td>
+                            <td>Spearman's rho</td>
+                            <td>Tương quan Spearman</td>
+                            <td>rs = 0.78</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🧮 Ký Hiệu Kiểm Định (Test Statistics)</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Ký hiệu</th>
+                            <th>Tên</th>
+                            <th>Loại Test</th>
+                            <th>Ví dụ</th>
+                        </tr>
+                        <tr>
+                            <td><strong>t</strong></td>
+                            <td>Thống kê t</td>
+                            <td>t-test</td>
+                            <td>t = 2.45</td>
+                        </tr>
+                        <tr>
+                            <td><strong>F</strong></td>
+                            <td>Thống kê F</td>
+                            <td>ANOVA, F-test</td>
+                            <td>F = 12.8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Z</strong></td>
+                            <td>Thống kê Z</td>
+                            <td>Z-test</td>
+                            <td>Z = 1.96</td>
+                        </tr>
+                        <tr>
+                            <td><strong>U</strong></td>
+                            <td>Mann-Whitney U</td>
+                            <td>Phi tham số</td>
+                            <td>U = 45</td>
+                        </tr>
+                        <tr>
+                            <td><strong>W</strong></td>
+                            <td>Wilcoxon W</td>
+                            <td>Phi tham số</td>
+                            <td>W = 0.89</td>
+                        </tr>
+                        <tr>
+                            <td><strong>H</strong></td>
+                            <td>Kruskal-Wallis H</td>
+                            <td>Phi tham số</td>
+                            <td>H = 15.2</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📈 Ký Hiệu P-value & Bậc Tự Do</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4><strong>p</strong> - P-value</h4>
+                        <p>Xác suất có được kết quả quan sát hoặc cực đoan hơn nếu H0 đúng</p>
+                        <div class="formula-box">
+                            p < 0.001*** (rất có ý nghĩa)<br>
+                            p < 0.01** (có ý nghĩa)<br>
+                            p < 0.05* (có ý nghĩa)<br>
+                            p > 0.05 (không có ý nghĩa)
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4><strong>df</strong> - Degrees of Freedom</h4>
+                        <p>Bậc tự do - số thông tin độc lập trong tính toán</p>
+                        <div class="example-box">
+                            <strong>t-test:</strong> df = n - 1<br>
+                            <strong>Chi-square:</strong> df = (r-1)(c-1)<br>
+                            <strong>ANOVA:</strong> df = k - 1
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📋 Viết Tắt Thường Dùng</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Viết tắt</th>
+                            <th>Tên đầy đủ (Tiếng Anh)</th>
+                            <th>Tên Tiếng Việt</th>
+                            <th>Ý nghĩa</th>
+                        </tr>
+                        <tr>
+                            <td><strong>ANOVA</strong></td>
+                            <td>Analysis of Variance</td>
+                            <td>Phân tích phương sai</td>
+                            <td>So sánh trung bình nhiều nhóm</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ANCOVA</strong></td>
+                            <td>Analysis of Covariance</td>
+                            <td>Phân tích hiệp phương sai</td>
+                            <td>ANOVA có biến kiểm soát</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CI</strong></td>
+                            <td>Confidence Interval</td>
+                            <td>Khoảng tin cậy</td>
+                            <td>Ước tính khoảng cho tham số</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SD</strong></td>
+                            <td>Standard Deviation</td>
+                            <td>Độ lệch chuẩn</td>
+                            <td>Thước đo độ phân tán</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SE</strong></td>
+                            <td>Standard Error</td>
+                            <td>Sai số chuẩn</td>
+                            <td>Độ lệch chuẩn của phân phối mẫu</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SEM</strong></td>
+                            <td>Standard Error of Mean</td>
+                            <td>Sai số chuẩn của trung bình</td>
+                            <td>SE = s/√n</td>
+                        </tr>
+                        <tr>
+                            <td><strong>MS</strong></td>
+                            <td>Mean Square</td>
+                            <td>Trung bình bình phương</td>
+                            <td>SS/df trong ANOVA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SS</strong></td>
+                            <td>Sum of Squares</td>
+                            <td>Tổng bình phương</td>
+                            <td>Σ(x - M)² trong ANOVA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>HSD</strong></td>
+                            <td>Honestly Significant Difference</td>
+                            <td>Tukey HSD</td>
+                            <td>Post-hoc test sau ANOVA</td>
+                        </tr>
+                        <tr>
+                            <td><strong>LSD</strong></td>
+                            <td>Least Significant Difference</td>
+                            <td>Khác biệt ít nhất có ý nghĩa</td>
+                            <td>Post-hoc test Fisher</td>
+                        </tr>
+                        <tr>
+                            <td><strong>KMO</strong></td>
+                            <td>Kaiser-Meyer-Olkin</td>
+                            <td>Kiểm tra tính phù hợp EFA</td>
+                            <td>KMO > 0.6 là phù hợp</td>
+                        </tr>
+                        <tr>
+                            <td><strong>EFA</strong></td>
+                            <td>Exploratory Factor Analysis</td>
+                            <td>Phân tích nhân tố khám phá</td>
+                            <td>Tìm cấu trúc tiềm ẩn</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CFA</strong></td>
+                            <td>Confirmatory Factor Analysis</td>
+                            <td>Phân tích nhân tố khẳng định</td>
+                            <td>Kiểm tra mô hình lý thuyết</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📏 Ký Hiệu Effect Size</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Ký hiệu</th>
+                            <th>Tên</th>
+                            <th>Loại Test</th>
+                            <th>Thang đánh giá</th>
+                        </tr>
+                        <tr>
+                            <td><strong>d</strong></td>
+                            <td>Cohen's d</td>
+                            <td>t-test</td>
+                            <td>0.2=nhỏ, 0.5=trung bình, 0.8=lớn</td>
+                        </tr>
+                        <tr>
+                            <td><strong>r</strong></td>
+                            <td>Effect size r</td>
+                            <td>t-test, correlation</td>
+                            <td>0.1=nhỏ, 0.3=trung bình, 0.5=lớn</td>
+                        </tr>
+                        <tr>
+                            <td><strong>η²</strong> (eta²)</td>
+                            <td>Eta squared</td>
+                            <td>ANOVA</td>
+                            <td>0.01=nhỏ, 0.06=trung bình, 0.14=lớn</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ω²</strong> (omega²)</td>
+                            <td>Omega squared</td>
+                            <td>ANOVA</td>
+                            <td>Ước tính không thiên lệch η²</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ηp²</strong></td>
+                            <td>Partial eta squared</td>
+                            <td>ANOVA lặp lại</td>
+                            <td>Tỉ lệ biến thiên được giải thích</td>
+                        </tr>
+                        <tr>
+                            <td><strong>φ</strong> (phi)</td>
+                            <td>Phi coefficient</td>
+                            <td>Chi-square 2x2</td>
+                            <td>0.1=nhỏ, 0.3=trung bình, 0.5=lớn</td>
+                        </tr>
+                        <tr>
+                            <td><strong>V</strong></td>
+                            <td>Cramer's V</td>
+                            <td>Chi-square lớn hơn 2x2</td>
+                            <td>0.1=nhỏ, 0.3=trung bình, 0.5=lớn</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔢 Ký Hiệu Toán Học</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Ký hiệu cơ bản</h4>
+                        <p><strong>Σ</strong> (Sigma lớn) = Tổng</p>
+                        <p><strong>√</strong> = Căn bậc hai</p>
+                        <p><strong>∞</strong> = Vô cùng</p>
+                        <p><strong>≠</strong> = Không bằng</p>
+                        <p><strong>≤</strong> = Nhỏ hơn hoặc bằng</p>
+                        <p><strong>≥</strong> = Lớn hơn hoặc bằng</p>
+                    </div>
+                    <div class="card">
+                        <h4>Ký hiệu thống kê</h4>
+                        <p><strong>H0</strong> = Giả thuyết không</p>
+                        <p><strong>H1</strong> = Giả thuyết thay thế</p>
+                        <p><strong>|r|</strong> = Giá trị tuyệt đối của r</p>
+                        <p><strong>±</strong> = Cộng trừ</p>
+                        <p><strong>~</strong> = Phân phối theo</p>
+                        <p><strong>∝</strong> = Tỉ lệ thuận</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h3>💡 Lưu Ý Quan Trọng</h3>
+                <p><strong>Ký hiệu Hy Lạp</strong> thường dùng cho <strong>quần thể</strong> (population)</p>
+                <p><strong>Ký hiệu Latin</strong> thường dùng cho <strong>mẫu</strong> (sample)</p>
+                <p><strong>Chữ hoa</strong> thường là thống kê kiểm định (F, Z, T)</p>
+                <p><strong>Chữ thường</strong> thường là các tham số hoặc giá trị tính toán (p, r, s)</p>
+            </div>
+
+            <div class="subsection">
+                <h3>📖 Cách Đọc Kết Quả Thống Kê</h3>
+                <div class="example-box">
+                    <strong>Ví dụ 1:</strong> t(28) = 2.45, p = 0.021, d = 0.42
+                    <br><strong>Đọc:</strong> "t với 28 bậc tự do bằng 2.45, p-value bằng 0.021, Cohen's d bằng 0.42"
+                    <br><br>
+                    <strong>Ví dụ 2:</strong> F(2, 57) = 12.8, p < 0.001, η² = 0.31
+                    <br><strong>Đọc:</strong> "F với 2 và 57 bậc tự do bằng 12.8, p nhỏ hơn 0.001, eta-squared bằng 0.31"
+                    <br><br>
+                    <strong>Ví dụ 3:</strong> α = 0.89, CI [0.85, 0.92]
+                    <br><strong>Đọc:</strong> "Cronbach's alpha bằng 0.89, khoảng tin cậy 95% từ 0.85 đến 0.92"
+                    <br><br>
+                    <strong>Ví dụ 4:</strong> r(48) = -.65, p < 0.001, R² = 0.42
+                    <br><strong>Đọc:</strong> "r với 48 bậc tự do bằng âm 0.65, p nhỏ hơn 0.001, R-squared bằng 0.42"
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📝 Ký Hiệu Trong Báo Cáo APA</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Dấu sao (*) cho p-value</h4>
+                        <p><strong>***</strong> p < 0.001</p>
+                        <p><strong>**</strong> p < 0.01</p>
+                        <p><strong>*</strong> p < 0.05</p>
+                        <p><strong>ns</strong> = not significant (p > 0.05)</p>
+                    </div>
+                    <div class="card">
+                        <h4>Viết tắt trong bảng</h4>
+                        <p><strong>M</strong> = Mean (trung bình)</p>
+                        <p><strong>SD</strong> = Standard Deviation</p>
+                        <p><strong>SE</strong> = Standard Error</p>
+                        <p><strong>CI</strong> = Confidence Interval</p>
+                        <p><strong>LL, UL</strong> = Lower/Upper Limit</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔗 Ký Hiệu Hồi Quy (Regression)</h3>
+                <div class="table-container">
+                    <table>
+                        <tr>
+                            <th>Ký hiệu</th>
+                            <th>Tên</th>
+                            <th>Ý nghĩa</th>
+                            <th>Ví dụ</th>
+                        </tr>
+                        <tr>
+                            <td><strong>R</strong></td>
+                            <td>Multiple correlation</td>
+                            <td>Tương quan bội</td>
+                            <td>R = 0.75</td>
+                        </tr>
+                        <tr>
+                            <td><strong>R²</strong></td>
+                            <td>R-squared</td>
+                            <td>Hệ số xác định</td>
+                            <td>R² = 0.56 (56% biến thiên được giải thích)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>R²adj</strong></td>
+                            <td>Adjusted R-squared</td>
+                            <td>R² hiệu chỉnh</td>
+                            <td>R²adj = 0.52</td>
+                        </tr>
+                        <tr>
+                            <td><strong>β</strong></td>
+                            <td>Beta coefficient</td>
+                            <td>Hệ số hồi quy chuẩn hóa</td>
+                            <td>β = 0.34</td>
+                        </tr>
+                        <tr>
+                            <td><strong>B</strong></td>
+                            <td>Unstandardized coefficient</td>
+                            <td>Hệ số hồi quy chưa chuẩn hóa</td>
+                            <td>B = 2.45</td>
+                        </tr>
+                        <tr>
+                            <td><strong>SE(B)</strong></td>
+                            <td>Standard error of B</td>
+                            <td>Sai số chuẩn của B</td>
+                            <td>SE(B) = 0.58</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ví Dụ Thực Tế -->
+        <div class="content-section" id="examples">
+            <h2 class="section-title">Ví Dụ Thực Tế Tâm Lý Học</h2>
+            
+            <div class="subsection">
+                <h3>🧠 Nghiên Cứu Can Thiệp Tâm Lý</h3>
+                <div class="example-box">
+                    <strong>Mục tiêu:</strong> Đánh giá hiệu quả liệu pháp CBT cho trầm cảm
+                    <br><strong>Thiết kế:</strong> Paired samples t-test (đo trước/sau)
+                    <br><strong>H0:</strong> CBT không làm giảm điểm trầm cảm
+                    <br><strong>H1:</strong> CBT có hiệu quả làm giảm điểm trầm cảm
+                    <br><strong>Kết quả:</strong> p = 0.003 < 0.05 → Bác bỏ H0, CBT có hiệu quả
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>👥 Nghiên Cứu So Sánh Nhóm</h3>
+                <div class="example-box">
+                    <strong>Mục tiêu:</strong> So sánh mức độ lo âu giữa nam và nữ sinh viên
+                    <br><strong>Thiết kế:</strong> Independent samples t-test
+                    <br><strong>H0:</strong> Không có khác biệt lo âu giữa nam và nữ
+                    <br><strong>H1:</strong> Có khác biệt lo âu giữa nam và nữ
+                    <br><strong>Kiểm tra:</strong> Shapiro-Wilk (phân phối chuẩn), Levene's test (đồng nhất phương sai)
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🔗 Nghiên Cứu Tương Quan</h3>
+                <div class="example-box">
+                    <strong>Mục tiêu:</strong> Mối quan hệ giữa stress và hiệu suất học tập
+                    <br><strong>Thiết kế:</strong> Pearson correlation
+                    <br><strong>H0:</strong> Không có mối quan hệ giữa stress và hiệu suất
+                    <br><strong>H1:</strong> Có mối quan hệ giữa stress và hiệu suất
+                    <br><strong>Kết quả:</strong> r = -0.65, p < 0.001 → Tương quan nghịch chặt chẽ
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>📝 Phát Triển Thang Đo</h3>
+                <div class="example-box">
+                    <strong>Mục tiêu:</strong> Tạo thang đo mức độ hài lòng học tập (10 câu hỏi)
+                    <br><strong>Bước 1:</strong> Tính Cronbach's Alpha = 0.85 → "Tốt"
+                    <br><strong>Bước 2:</strong> Loại bỏ câu hỏi có tương quan thấp
+                    <br><strong>Bước 3:</strong> Alpha cuối = 0.89 → "Tốt", sẵn sàng sử dụng
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>🎯 Quy Trình Nghiên Cứu Hoàn Chỉnh</h3>
+                <div class="highlight-box">
+                    <h4>Bước 1: Thiết lập giả thuyết</h4>
+                    <p>Xác định H0 và H1 dựa trên câu hỏi nghiên cứu</p>
+                    
+                    <h4>Bước 2: Kiểm tra giả định</h4>
+                    <p>• Phân phối chuẩn (Shapiro-Wilk)<br>
+                    • Đồng nhất phương sai (Levene's test)<br>
+                    • Độ tin cậy thang đo (Cronbach's Alpha)</p>
+                    
+                    <h4>Bước 3: Chọn test phù hợp</h4>
+                    <p>Dựa trên loại dữ liệu và giả định đã kiểm tra</p>
+                    
+                    <h4>Bước 4: Thực hiện phân tích</h4>
+                    <p>Chạy test và thu thập p-value</p>
+                    
+                    <h4>Bước 5: Kết luận</h4>
+                    <p>So sánh p-value với α (0.05) và đưa ra kết luận về giả thuyết</p>
+                </div>
+            </div>
+
+            <div class="subsection">
+                <h3>⚠️ Lưu Ý Quan Trọng</h3>
+                <div class="grid">
+                    <div class="card">
+                        <h4>Về Giả Thuyết</h4>
+                        <p>• Luôn thiết lập H0 và H1 trước khi thu thập dữ liệu</p>
+                        <p>• H0 là điều bạn muốn bác bỏ, không phải chứng minh</p>
+                    </div>
+                    <div class="card">
+                        <h4>Về Phân Tích</h4>
+                        <p>• Kiểm tra giả định trước khi chọn test</p>
+                        <p>• Báo cáo đầy đủ: effect size, confidence interval</p>
+                    </div>
+                    <div class="card">
+                        <h4>Về Kết Luận</h4>
+                        <p>• "Có ý nghĩa thống kê" ≠ "Có ý nghĩa thực tiễn"</p>
+                        <p>• Cân nhắc power analysis và sample size</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Reference Panel -->
+    <div class="quick-reference">
+        <h4>📚 Tham Khảo Nhanh</h4>
+        <ul>
+            <li onclick="showTab('hypotheses')">H0 & H1</li>
+            <li onclick="showTab('distributions')">Phân phối chuẩn</li>
+            <li onclick="showTab('tests')">Các loại test</li>
+            <li onclick="showTab('errors')">Lỗi I & II</li>
+            <li onclick="showTab('cronbach')">Cronbach's α</li>
+            <li onclick="showTab('variance')">Phương sai</li>
+            <li onclick="showTab('symbols')">Ký hiệu</li>
+            <li onclick="showTab('examples')">Ví dụ</li>
+        </ul>
+        <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #ddd;">
+            <p style="font-size: 0.7rem; color: #999;">💡 Sử dụng phím tắt Ctrl+1-8 để chuyển tab nhanh</p>
+        </div>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all content sections
+            const sections = document.querySelectorAll('.content-section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.tab-button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Smooth scrolling for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            const style = document.createElement('style');
+            style.textContent = `
+                html {
+                    scroll-behavior: smooth;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case '1':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'hypotheses\')"]').click();
+                        break;
+                    case '2':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'distributions\')"]').click();
+                        break;
+                    case '3':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'tests\')"]').click();
+                        break;
+                    case '4':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'errors\')"]').click();
+                        break;
+                    case '5':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'cronbach\')"]').click();
+                        break;
+                    case '6':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'variance\')"]').click();
+                        break;
+                    case '7':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'symbols\')"]').click();
+                        break;
+                    case '8':
+                        e.preventDefault();
+                        document.querySelector('[onclick="showTab(\'examples\')"]').click();
+                        break;
+                }
+            }
+        });
+
+        // Add tooltips for better user experience
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.tab-button');
+            const shortcuts = ['Ctrl+1', 'Ctrl+2', 'Ctrl+3', 'Ctrl+4', 'Ctrl+5', 'Ctrl+6', 'Ctrl+7', 'Ctrl+8'];
+            
+            buttons.forEach((button, index) => {
+                button.title = `Phím tắt: ${shortcuts[index]}`;
+            });
+        });
+    </script>
+</body>
+</html>
