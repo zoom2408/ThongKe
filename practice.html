@@ -1,0 +1,1079 @@
+</div>
+
+    <script>
+        function showTestResult() {
+            const testType = document.getElementById('testType').value;
+            const container = document.getElementById('testResults');
+            
+            if (!testType) {
+                container.innerHTML = '';
+                return;
+            }
+            
+            const testData = getTestData(testType);
+            container.innerHTML = generateTestResult(testData);
+        }
+
+        function getTestData(testType) {
+            const testConfigs = {
+                'ttest_one': {
+                    name: 'T-test một mẫu',
+                    purpose: 'So sánh trung bình mẫu với một giá trị chuẩn',
+                    hypothesis: 'H₀: μ = μ₀ (trung bình bằng giá trị chuẩn)<br>H₁: μ ≠ μ₀ (trung bình khác giá trị chuẩn)',
+                    statistics: ['t-statistic', 'df (bậc tự do)', 'p-value', "Cohen's d"],
+                    interpretation: {
+                        significant: 'Trung bình mẫu khác biệt có ý nghĩa với giá trị chuẩn',
+                        notSignificant: 'Không có bằng chứng cho thấy trung bình mẫu khác với giá trị chuẩn'
+                    },
+                    effectSize: 'Cohen\'s d: Nhỏ (0.2), Trung bình (0.5), Lớn (0.8)',
+                    reporting: 'Kết quả t-test một mẫu cho thấy [có/không có] sự khác biệt có ý nghĩa thống kê giữa trung bình mẫu (M = XX, SD = XX) và giá trị chuẩn (μ₀ = XX), t(df) = XX, p = XX, d = XX.'
+                },
+                'ttest_independent': {
+                    name: 'T-test hai mẫu độc lập',
+                    purpose: 'So sánh trung bình của hai nhóm độc lập',
+                    hypothesis: 'H₀: μ₁ = μ₂ (hai nhóm có trung bình bằng nhau)<br>H₁: μ₁ ≠ μ₂ (hai nhóm có trung bình khác nhau)',
+                    statistics: ['t-statistic', 'df (bậc tự do)', 'p-value', "Cohen's d", "Levene's test (kiểm tra phương sai đồng nhất)"],
+                    interpretation: {
+                        significant: 'Có sự khác biệt có ý nghĩa về trung bình giữa hai nhóm',
+                        notSignificant: 'Không có bằng chứng cho thấy hai nhóm có trung bình khác nhau'
+                    },
+                    effectSize: 'Cohen\'s d: Nhỏ (0.2), Trung bình (0.5), Lớn (0.8)',
+                    reporting: 'T-test cho thấy [có/không có] sự khác biệt có ý nghĩa giữa nhóm 1 (M = XX, SD = XX) và nhóm 2 (M = XX, SD = XX), t(df) = XX, p = XX, d = XX.'
+                },
+                'ttest_paired': {
+                    name: 'T-test ghép cặp',
+                    purpose: 'So sánh hai lần đo trên cùng đối tượng',
+                    hypothesis: 'H₀: μ_diff = 0 (không có sự thay đổi)<br>H₁: μ_diff ≠ 0 (có sự thay đổi)',
+                    statistics: ['t-statistic', 'df (bậc tự do)', 'p-value', "Cohen's d", 'Trung bình hiệu số'],
+                    interpretation: {
+                        significant: 'Có sự thay đổi có ý nghĩa giữa hai lần đo',
+                        notSignificant: 'Không có bằng chứng cho thấy có sự thay đổi giữa hai lần đo'
+                    },
+                    effectSize: 'Cohen\'s d: Nhỏ (0.2), Trung bình (0.5), Lớn (0.8)',
+                    reporting: 'T-test ghép cặp cho thấy [có/không có] sự thay đổi có ý nghĩa từ đo lần 1 (M = XX, SD = XX) đến lần 2 (M = XX, SD = XX), t(df) = XX, p = XX, d = XX.'
+                },
+                'anova_one': {
+                    name: 'ANOVA một chiều',
+                    purpose: 'So sánh trung bình của 3 nhóm trở lên',
+                    hypothesis: 'H₀: μ₁ = μ₂ = μ₃ = ... (tất cả nhóm có trung bình bằng nhau)<br>H₁: Ít nhất một nhóm có trung bình khác biệt',
+                    statistics: ['F-statistic', 'df1, df2 (bậc tự do)', 'p-value', 'η² (eta squared)', 'Post-hoc tests'],
+                    interpretation: {
+                        significant: 'Có sự khác biệt có ý nghĩa giữa các nhóm. Cần post-hoc test để xác định nhóm nào khác biệt',
+                        notSignificant: 'Không có bằng chứng cho thấy các nhóm có trung bình khác nhau'
+                    },
+                    effectSize: 'η²: Nhỏ (0.01), Trung bình (0.06), Lớn (0.14)',
+                    reporting: 'ANOVA một chiều cho thấy [có/không có] sự khác biệt có ý nghĩa giữa các nhóm, F(df1, df2) = XX, p = XX, η² = XX.'
+                },
+                'pearson': {
+                    name: 'Tương quan Pearson',
+                    purpose: 'Đo mối quan hệ tuyến tính giữa hai biến liên tục',
+                    hypothesis: 'H₀: ρ = 0 (không có tương quan)<br>H₁: ρ ≠ 0 (có tương quan)',
+                    statistics: ['r (hệ số tương quan)', 'p-value', 'r² (hệ số xác định)', 'n (cỡ mẫu)'],
+                    interpretation: {
+                        significant: 'Có mối quan hệ tuyến tính có ý nghĩa giữa hai biến',
+                        notSignificant: 'Không có bằng chứng cho thấy có mối quan hệ tuyến tính'
+                    },
+                    effectSize: '|r|: Yếu (0.1), Trung bình (0.3), Mạnh (0.5)',
+                    reporting: 'Phân tích tương quan Pearson cho thấy [có/không có] mối quan hệ [thuận/nghịch] [yếu/trung bình/mạnh] có ý nghĩa giữa X và Y, r = XX, p = XX, n = XX.'
+                },
+                'spearman': {
+                    name: 'Tương quan Spearman',
+                    purpose: 'Đo mối quan hệ đơn điệu (không nhất thiết tuyến tính) dựa trên thứ hạng',
+                    hypothesis: 'H₀: ρₛ = 0 (không có tương quan thứ hạng)<br>H₁: ρₛ ≠ 0 (có tương quan thứ hạng)',
+                    statistics: ['ρₛ (hệ số tương quan Spearman)', 'p-value', 'n (cỡ mẫu)'],
+                    interpretation: {
+                        significant: 'Có mối quan hệ đơn điệu có ý nghĩa giữa hai biến',
+                        notSignificant: 'Không có bằng chứng cho thấy có mối quan hệ đơn điệu'
+                    },
+                    effectSize: '|ρₛ|: Yếu (0.1), Trung bình (0.3), Mạnh (0.5)',
+                    reporting: 'Phân tích tương quan Spearman cho thấy [có/không có] mối quan hệ [thuận/nghịch] [yếu/trung bình/mạnh] có ý nghĩa giữa X và Y, ρₛ = XX, p = XX, n = XX.'
+                },
+                'mann_whitney': {
+                    name: 'Mann-Whitney U (Wilcoxon rank-sum)',
+                    purpose: 'So sánh trung vị của hai nhóm độc lập (phi tham số)',
+                    hypothesis: 'H₀: Hai nhóm có phân phối giống nhau<br>H₁: Hai nhóm có phân phối khác nhau',
+                    statistics: ['U-statistic', 'Z-score', 'p-value', 'r (effect size)'],
+                    interpretation: {
+                        significant: 'Có sự khác biệt có ý nghĩa về phân phối giữa hai nhóm',
+                        notSignificant: 'Không có bằng chứng cho thấy hai nhóm có phân phối khác nhau'
+                    },
+                    effectSize: 'r = Z/√N: Nhỏ (0.1), Trung bình (0.3), Lớn (0.5)',
+                    reporting: 'Mann-Whitney U test cho thấy [có/không có] sự khác biệt có ý nghĩa giữa nhóm 1 (Mdn = XX) và nhóm 2 (Mdn = XX), U = XX, p = XX, r = XX.'
+                },
+                'wilcoxon': {
+                    name: 'Wilcoxon signed-rank',
+                    purpose: 'So sánh hai lần đo trên cùng đối tượng (phi tham số)',
+                    hypothesis: 'H₀: Trung vị hiệu số = 0 (không có sự thay đổi)<br>H₁: Trung vị hiệu số ≠ 0 (có sự thay đổi)',
+                    statistics: ['W-statistic', 'Z-score', 'p-value', 'r (effect size)'],
+                    interpretation: {
+                        significant: 'Có sự thay đổi có ý nghĩa giữa hai lần đo',
+                        notSignificant: 'Không có bằng chứng cho thấy có sự thay đổi giữa hai lần đo'
+                    },
+                    effectSize: 'r = Z/√N: Nhỏ (0.1), Trung bình (0.3), Lớn (0.5)',
+                    reporting: 'Wilcoxon signed-rank test cho thấy [có/không có] sự thay đổi có ý nghĩa từ đo lần 1 (Mdn = XX) đến lần 2 (Mdn = XX), W = XX, p = XX, r = XX.'
+                },
+                'kruskal': {
+                    name: 'Kruskal-Wallis',
+                    purpose: 'So sánh trung vị của 3 nhóm trở lên (phi tham số)',
+                    hypothesis: 'H₀: Tất cả nhóm có phân phối giống nhau<br>H₁: Ít nhất một nhóm có phân phối khác biệt',
+                    statistics: ['H-statistic', 'df (bậc tự do)', 'p-value', 'η² (effect size)', 'Post-hoc tests'],
+                    interpretation: {
+                        significant: 'Có sự khác biệt có ý nghĩa giữa các nhóm. Cần post-hoc test để xác định nhóm nào khác biệt',
+                        notSignificant: 'Không có bằng chứng cho thấy các nhóm có phân phối khác nhau'
+                    },
+                    effectSize: 'η²: Nhỏ (0.01), Trung bình (0.06), Lớn (0.14)',
+                    reporting: 'Kruskal-Wallis test cho thấy [có/không có] sự khác biệt có ý nghĩa giữa các nhóm, H(df) = XX, p = XX, η² = XX.'
+                },
+                'chi_square': {
+                    name: 'Chi-square test',
+                    purpose: 'Kiểm tra mối quan hệ giữa hai biến phân loại',
+                    hypothesis: 'H₀: Hai biến độc lập (không có mối quan hệ)<br>H₁: Hai biến có mối quan hệ',
+                    statistics: ['χ² (chi-square)', 'df (bậc tự do)', 'p-value', "Cramer's V", 'Expected frequencies'],
+                    interpretation: {
+                        significant: 'Có mối quan hệ có ý nghĩa giữa hai biến phân loại',
+                        notSignificant: 'Không có bằng chứng cho thấy hai biến có mối quan hệ'
+                    },
+                    effectSize: "Cramer's V: Nhỏ (0.1), Trung bình (0.3), Lớn (0.5)",
+                    reporting: 'Chi-square test cho thấy [có/không có] mối quan hệ có ý nghĩa giữa biến X và Y, χ²(df) = XX, p = XX, V = XX.'
+                }
+            };
+            
+            return testConfigs[testType];
+        }
+
+        function generateTestResult(data) {
+            return `
+                <div class="test-specific-result">
+                    <h4>🔬 ${data.name}</h4>
+                    
+                    <div class="result-section">
+                        <h5>🎯 Mục đích:</h5>
+                        <p>${data.purpose}</p>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h5>📋 Giả thuyết:</h5>
+                        <p>${data.hypothesis}</p>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h5>📊 Các chỉ số cần chú ý:</h5>
+                        <div class="statistic-grid">
+                            ${data.statistics.map(stat => `
+                                <div class="statistic-item">
+                                    <strong>${stat}</strong>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h5>💡 Cách đọc kết quả:</h5>
+                        
+                        <div class="interpretation-box significant">
+                            <strong>🟢 Nếu p ≤ 0.05 (CÓ Ý NGHĨA):</strong>
+                            <div class="conclusion-text">${data.interpretation.significant}</div>
+                        </div>
+                        
+                        <div class="interpretation-box not-significant">
+                            <strong>🔴 Nếu p > 0.05 (KHÔNG CÓ Ý NGHĨA):</strong>
+                            <div class="conclusion-text">${data.interpretation.notSignificant}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="effect-size-guide">
+                        <h5>📏 Kích thước hiệu ứng (Effect Size):</h5>
+                        <p>${data.effectSize}</p>
+                        <p><strong>Lưu ý:</strong> Kích thước hiệu ứng cho biết độ lớn thực tế của sự khác biệt, không phải chỉ ý nghĩa thống kê.</p>
+                    </div>
+                    
+                    <div class="reporting-guide">
+                        <h5>📝 Mẫu câu báo cáo kết quả:</h5>
+                        <div class="sample-text">
+                            ${data.reporting}
+                        </div>
+                        <p><strong>Ghi chú:</strong> Thay thế XX bằng các giá trị thực tế từ kết quả phân tích của bạn.</p>
+                    </div>
+                    
+                    <div class="next-step">
+                        <h4>🎯 Bước tiếp theo sau khi có kết quả:</h4>
+                        <ol>
+                            <li><strong>Kiểm tra giả định:</strong> Đảm bảo dữ liệu đáp ứng yêu cầu của kiểm định</li>
+                            <li><strong>Đánh giá effect size:</strong> Xem sự khác biệt có ý nghĩa thực tiễn không</li>
+                            <li><strong>Xem xét ý nghĩa thực tế:</strong> Kết quả có quan trọng trong bối cảnh nghiên cứu không</li>
+                            <li><strong>Viết kết luận:</strong> Trả lời câu hỏi nghiên cứu ban đầu</li>
+                        </ol>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+
+    <style>
+        .test-selector-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .test-selector {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            margin-top: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .test-selector:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .test-results-container {
+            margin: 20px 0;
+            min-height: 50px;
+        }
+
+        .test-specific-result {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 2px solid #2196f3;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .test-specific-result h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .result-section {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .result-section h5 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .statistic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .statistic-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .statistic-item strong {
+            display: block;
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .statistic-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .interpretation-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .interpretation-box.significant {
+            background: #d1f2eb;
+            border-color: #a3e4d7;
+        }
+
+        .interpretation-box.not-significant {
+            background: #fadbd8;
+            border-color: #f1948a;
+        }
+
+        .conclusion-text {
+            font-weight: bold;
+            font-size: 1.05em;
+            line-height: 1.4;
+        }
+
+        .effect-size-guide {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .reporting-guide {
+            background: #f0f8ff;
+            border: 2px dashed #4a90e2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .reporting-guide h5 {
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+
+        .sample-text {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4a90e2;
+            font-style: italic;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .step {
+                padding: 20px;
+            }
+            
+            .step-content {
+                margin-left: 50px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .flowchart {
+                flex-direction: column;
+            }
+            
+            .flowchart-arrow {
+                transform: rotate(90deg);
+                margin: 10px 0;
+            }
+
+            .statistic-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style><!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hướng dẫn từng bước phân tích thống kê</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .step {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .step-number {
+            position: absolute;
+            left: 30px;
+            top: 30px;
+            width: 40px;
+            height: 40px;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .step-content {
+            margin-left: 60px;
+        }
+
+        .step-title {
+            color: #667eea;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .step-description {
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .decision-box {
+            background: #f8f9fa;
+            border-left: 4px solid #28a745;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .decision-box.warning {
+            border-left-color: #ffc107;
+            background: #fff8e1;
+        }
+
+        .decision-box.danger {
+            border-left-color: #dc3545;
+            background: #fff5f5;
+        }
+
+        .decision-box.info {
+            border-left-color: #17a2b8;
+            background: #e6f7ff;
+        }
+
+        .criteria-list {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .criteria-list h4 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .criteria-list ul {
+            margin-left: 20px;
+        }
+
+        .criteria-list li {
+            margin-bottom: 8px;
+        }
+
+        .interpretation-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .interpretation-table th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .interpretation-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .interpretation-table tr:hover {
+            background: #f8f9fa;
+        }
+
+        .example-box {
+            background: #e3f2fd;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .example-box h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .next-step {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .next-step h4 {
+            margin-bottom: 10px;
+        }
+
+        .flowchart {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .flowchart-item {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 120px;
+            margin: 0 10px;
+        }
+
+        .flowchart-arrow {
+            font-size: 24px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .test-selector-box {
+            background: #f8f9fa;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .test-selector {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            margin-top: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .test-selector:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .test-results-container {
+            margin: 20px 0;
+            min-height: 50px;
+        }
+
+        .test-specific-result {
+            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+            border: 2px solid #2196f3;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .test-specific-result h4 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .result-section {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .result-section h5 {
+            color: #495057;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .statistic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .statistic-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #667eea;
+        }
+
+        .statistic-item strong {
+            display: block;
+            color: #667eea;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .statistic-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .interpretation-box {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .interpretation-box.significant {
+            background: #d1f2eb;
+            border-color: #a3e4d7;
+        }
+
+        .interpretation-box.not-significant {
+            background: #fadbd8;
+            border-color: #f1948a;
+        }
+
+        .conclusion-text {
+            font-weight: bold;
+            font-size: 1.05em;
+            line-height: 1.4;
+        }
+
+        .effect-size-guide {
+            background: #e8f4f8;
+            border-left: 4px solid #17a2b8;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .reporting-guide {
+            background: #f0f8ff;
+            border: 2px dashed #4a90e2;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .reporting-guide h5 {
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+
+        .sample-text {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #4a90e2;
+            font-style: italic;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Hướng dẫn từng bước phân tích thống kê</h1>
+            <p>Từ câu hỏi nghiên cứu đến kết luận cuối cùng</p>
+        </div>
+
+        <!-- Bước 1: Xác định câu hỏi nghiên cứu -->
+        <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+                <div class="step-title">🤔 Xác định câu hỏi nghiên cứu và giả thuyết</div>
+                <div class="step-description">
+                    Trước tiên, bạn cần hiểu rõ mình muốn trả lời câu hỏi gì và đặt giả thuyết nghiên cứu.
+                </div>
+
+                <div class="criteria-list">
+                    <h4>Các loại câu hỏi nghiên cứu phổ biến:</h4>
+                    <ul>
+                        <li><strong>So sánh trung bình:</strong> "Có sự khác biệt giữa nhóm A và nhóm B không?"</li>
+                        <li><strong>Tương quan:</strong> "Có mối quan hệ giữa biến X và biến Y không?"</li>
+                        <li><strong>So sánh với tiêu chuẩn:</strong> "Trung bình mẫu có khác với giá trị chuẩn không?"</li>
+                        <li><strong>So sánh nhiều nhóm:</strong> "Có sự khác biệt giữa 3 nhóm trở lên không?"</li>
+                    </ul>
+                </div>
+
+                <div class="example-box">
+                    <h4>📝 Ví dụ:</h4>
+                    <p><strong>Câu hỏi:</strong> "Có sự khác biệt về điểm thi giữa nam và nữ không?"</p>
+                    <p><strong>Giả thuyết:</strong></p>
+                    <ul>
+                        <li>H₀: Không có sự khác biệt (μ_nam = μ_nữ)</li>
+                        <li>H₁: Có sự khác biệt (μ_nam ≠ μ_nữ)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bước 2: Thống kê mô tả -->
+        <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+                <div class="step-title">📊 Chạy thống kê mô tả và đánh giá dữ liệu</div>
+                <div class="step-description">
+                    Hiểu dữ liệu của bạn trước khi tiến hành kiểm định. Xem các chỉ số và biểu đồ để đánh giá tính chất dữ liệu.
+                </div>
+
+                <table class="interpretation-table">
+                    <thead>
+                        <tr>
+                            <th>Chỉ số</th>
+                            <th>Ý nghĩa</th>
+                            <th>Cách đánh giá</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Skewness</strong></td>
+                            <td>Độ bất đối xứng</td>
+                            <td>-0.5 đến 0.5: Phân phối chuẩn<br>
+                                Ngoài khoảng này: Dữ liệu lệch</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kurtosis</strong></td>
+                            <td>Độ nhọn/ngoại lệ</td>
+                            <td>-2 đến 2: Phân phối chuẩn<br>
+                                Ngoài khoảng này: Có ngoại lệ</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Shapiro-Wilk</strong></td>
+                            <td>Kiểm tra tính chuẩn</td>
+                            <td>p > 0.05: Dữ liệu chuẩn<br>
+                                p ≤ 0.05: Dữ liệu không chuẩn</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="decision-box info">
+                    <h4>🔍 Đánh giá kết quả thống kê mô tả:</h4>
+                    <p><strong>Nếu dữ liệu CHUẨN</strong> (Skewness [-0.5, 0.5], Kurtosis [-2, 2], Shapiro-Wilk p > 0.05):</p>
+                    <p>→ Có thể dùng các kiểm định tham số (T-test, ANOVA, Pearson)</p>
+                    
+                    <p><strong>Nếu dữ liệu KHÔNG CHUẨN:</strong></p>
+                    <p>→ Nên dùng kiểm định phi tham số (Mann-Whitney, Kruskal-Wallis, Spearman)</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bước 3: Chọn kiểm định -->
+        <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+                <div class="step-title">🎯 Chọn loại kiểm định phù hợp</div>
+                <div class="step-description">
+                    Dựa vào câu hỏi nghiên cứu và tính chất dữ liệu để chọn kiểm định.
+                </div>
+
+                <div class="flowchart">
+                    <div class="flowchart-item">
+                        <strong>Câu hỏi<br>nghiên cứu</strong>
+                    </div>
+                    <div class="flowchart-arrow">→</div>
+                    <div class="flowchart-item">
+                        <strong>Kiểm tra<br>tính chuẩn</strong>
+                    </div>
+                    <div class="flowchart-arrow">→</div>
+                    <div class="flowchart-item">
+                        <strong>Chọn<br>kiểm định</strong>
+                    </div>
+                </div>
+
+                <table class="interpretation-table">
+                    <thead>
+                        <tr>
+                            <th>Mục đích</th>
+                            <th>Dữ liệu chuẩn</th>
+                            <th>Dữ liệu không chuẩn</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>So sánh 1 nhóm với tiêu chuẩn</td>
+                            <td>T-test một mẫu</td>
+                            <td>Wilcoxon signed-rank</td>
+                        </tr>
+                        <tr>
+                            <td>So sánh 2 nhóm độc lập</td>
+                            <td>T-test hai mẫu</td>
+                            <td>Mann-Whitney U</td>
+                        </tr>
+                        <tr>
+                            <td>So sánh 2 nhóm ghép cặp</td>
+                            <td>T-test ghép cặp</td>
+                            <td>Wilcoxon signed-rank</td>
+                        </tr>
+                        <tr>
+                            <td>So sánh 3+ nhóm</td>
+                            <td>ANOVA một chiều</td>
+                            <td>Kruskal-Wallis</td>
+                        </tr>
+                        <tr>
+                            <td>Tương quan 2 biến</td>
+                            <td>Pearson correlation</td>
+                            <td>Spearman correlation</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bước 4: Thực hiện kiểm định -->
+        <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+                <div class="step-title">🔬 Thực hiện kiểm định và đọc kết quả</div>
+                <div class="step-description">
+                    Chọn loại kiểm định và xem hướng dẫn đọc kết quả cụ thể.
+                </div>
+
+                <!-- Test Selection Interface -->
+                <div class="test-selector-box">
+                    <h4>🎯 Chọn loại kiểm định của bạn:</h4>
+                    <select id="testType" class="test-selector" onchange="showTestResult()">
+                        <option value="">-- Chọn loại kiểm định --</option>
+                        <option value="ttest_one">T-test một mẫu</option>
+                        <option value="ttest_independent">T-test hai mẫu độc lập</option>
+                        <option value="ttest_paired">T-test ghép cặp</option>
+                        <option value="anova_one">ANOVA một chiều</option>
+                        <option value="pearson">Tương quan Pearson</option>
+                        <option value="spearman">Tương quan Spearman</option>
+                        <option value="mann_whitney">Mann-Whitney U</option>
+                        <option value="wilcoxon">Wilcoxon signed-rank</option>
+                        <option value="kruskal">Kruskal-Wallis</option>
+                        <option value="chi_square">Chi-square</option>
+                    </select>
+                </div>
+
+                <!-- Test Results Container -->
+                <div id="testResults" class="test-results-container"></div>
+
+                <!-- General p-value interpretation table -->
+                <table class="interpretation-table">
+                    <thead>
+                        <tr>
+                            <th>Giá trị p-value</th>
+                            <th>Kết luận thống kê</th>
+                            <th>Ý nghĩa</th>
+                            <th>Ghi chú</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>p ≤ 0.001</td>
+                            <td>Rất có ý nghĩa</td>
+                            <td>Bác bỏ H₀ với độ tin cậy rất cao</td>
+                            <td>***</td>
+                        </tr>
+                        <tr>
+                            <td>0.001 < p ≤ 0.01</td>
+                            <td>Có ý nghĩa</td>
+                            <td>Bác bỏ H₀ với độ tin cậy cao</td>
+                            <td>**</td>
+                        </tr>
+                        <tr>
+                            <td>0.01 < p ≤ 0.05</td>
+                            <td>Có ý nghĩa</td>
+                            <td>Bác bỏ H₀ ở mức α = 0.05</td>
+                            <td>*</td>
+                        </tr>
+                        <tr>
+                            <td>0.05 < p ≤ 0.10</td>
+                            <td>Xu hướng có ý nghĩa</td>
+                            <td>Không bác bỏ H₀ nhưng có xu hướng</td>
+                            <td>†</td>
+                        </tr>
+                        <tr>
+                            <td>p > 0.10</td>
+                            <td>Không có ý nghĩa</td>
+                            <td>Không đủ bằng chứng bác bỏ H₀</td>
+                            <td>ns</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bước 5: Diễn giải kết quả -->
+        <div class="step">
+            <div class="step-number">5</div>
+            <div class="step-content">
+                <div class="step-title">💡 Diễn giải ý nghĩa thống kê và thực tiễn</div>
+                <div class="step-description">
+                    Không chỉ dừng lại ở "có ý nghĩa" hay "không có ý nghĩa", mà cần hiểu ý nghĩa thực tế.
+                </div>
+
+                <div class="decision-box">
+                    <h4>✅ Nếu kết quả CÓ Ý NGHĨA THỐNG KÊ (p ≤ 0.05):</h4>
+                    <ol>
+                        <li><strong>Bác bỏ H₀:</strong> "Có bằng chứng thống kê để bác bỏ giả thuyết không"</li>
+                        <li><strong>Xác định hướng:</strong> Nhóm nào cao/thấp hơn? Tương quan thuận/nghịch?</li>
+                        <li><strong>Đánh giá kích thước hiệu ứng:</strong> Sự khác biệt có lớn không?</li>
+                        <li><strong>Ý nghĩa thực tiễn:</strong> Kết quả có quan trọng trong thực tế không?</li>
+                    </ol>
+                </div>
+
+                <div class="decision-box warning">
+                    <h4>❌ Nếu kết quả KHÔNG CÓ Ý NGHĨA THỐNG KÊ (p > 0.05):</h4>
+                    <ol>
+                        <li><strong>Không bác bỏ H₀:</strong> "Không có đủ bằng chứng để bác bỏ giả thuyết không"</li>
+                        <li><strong>KHÔNG nói:</strong> "Chấp nhận H₀" hay "Không có sự khác biệt"</li>
+                        <li><strong>Kiểm tra:</strong> Kích thước mẫu có đủ lớn không? (Statistical Power)</li>
+                        <li><strong>Xem xét:</strong> Có thể có sự khác biệt nhưng mẫu chưa đủ để phát hiện</li>
+                    </ol>
+                </div>
+
+                <table class="interpretation-table">
+                    <thead>
+                        <tr>
+                            <th>Kích thước hiệu ứng</th>
+                            <th>Cohen's d</th>
+                            <th>Diễn giải</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nhỏ</td>
+                            <td>0.2 - 0.4</td>
+                            <td>Sự khác biệt nhỏ, ít ý nghĩa thực tiễn</td>
+                        </tr>
+                        <tr>
+                            <td>Trung bình</td>
+                            <td>0.5 - 0.7</td>
+                            <td>Sự khác biệt vừa phải, có ý nghĩa thực tiễn</td>
+                        </tr>
+                        <tr>
+                            <td>Lớn</td>
+                            <td>≥ 0.8</td>
+                            <td>Sự khác biệt lớn, ý nghĩa thực tiễn cao</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bước 6: Kết luận -->
+        <div class="step">
+            <div class="step-number">6</div>
+            <div class="step-content">
+                <div class="step-title">📝 Viết kết luận cuối cùng</div>
+                <div class="step-description">
+                    Tổng hợp tất cả để đưa ra kết luận hoàn chỉnh cho câu hỏi nghiên cứu ban đầu.
+                </div>
+
+                <div class="example-box">
+                    <h4>📄 Mẫu kết luận hoàn chỉnh:</h4>
+                    <p><strong>Câu hỏi:</strong> "Có sự khác biệt về điểm thi giữa nam và nữ không?"</p>
+                    
+                    <p><strong>Kết luận mẫu (có ý nghĩa):</strong></p>
+                    <p><em>"Kết quả T-test cho thấy có sự khác biệt có ý nghĩa thống kê về điểm thi giữa nam (M = 75.2, SD = 8.1) và nữ (M = 82.4, SD = 7.3), t(58) = -3.45, p = 0.001, Cohen's d = 0.91. Nữ sinh có điểm trung bình cao hơn nam sinh 7.2 điểm. Kích thước hiệu ứng lớn (d = 0.91) cho thấy sự khác biệt này có ý nghĩa thực tiễn quan trọng."</em></p>
+                    
+                    <p><strong>Kết luận mẫu (không có ý nghĩa):</strong></p>
+                    <p><em>"Kết quả T-test cho thấy không có sự khác biệt có ý nghĩa thống kê về điểm thi giữa nam (M = 75.2, SD = 8.1) và nữ (M = 77.1, SD = 7.8), t(58) = -0.94, p = 0.352. Mặc dù nữ sinh có điểm trung bình cao hơn 1.9 điểm, sự khác biệt này không đủ lớn để khẳng định có sự khác biệt thực sự trong tổng thể."</em></p>
+                </div>
+
+                <div class="next-step">
+                    <h4>🎯 Cấu trúc kết luận chuẩn:</h4>
+                    <ol>
+                        <li><strong>Nhắc lại câu hỏi nghiên cứu</strong></li>
+                        <li><strong>Báo cáo kết quả kiểm định:</strong> Test statistic, p-value, effect size</li>
+                        <li><strong>Diễn giải bằng ngôn ngữ thường:</strong> Nhóm nào cao hơn? Chênh lệch bao nhiêu?</li>
+                        <li><strong>Đánh giá ý nghĩa thực tiễn:</strong> Kết quả có quan trọng trong thực tế không?</li>
+                        <li><strong>Hạn chế và khuyến nghị:</strong> Cần nghiên cứu thêm gì?</li>
+                    </ol>
+                </div>
+
+                <div class="decision-box info">
+                    <h4>⚠️ Lưu ý quan trọng:</h4>
+                    <ul>
+                        <li><strong>Tương quan ≠ Nhân quả:</strong> Có tương quan không có nghĩa là có mối quan hệ nhân quả</li>
+                        <li><strong>Ý nghĩa thống kê ≠ Ý nghĩa thực tiễn:</strong> p < 0.05 không có nghĩa là kết quả quan trọng</li>
+                        <li><strong>Kích thước mẫu quan trọng:</strong> Mẫu lớn có thể tạo ra ý nghĩa thống kê cho sự khác biệt nhỏ</li>
+                        <li><strong>Luôn báo cáo đầy đủ:</strong> Trung bình, độ lệch chuẩn, test statistic, p-value, effect size</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
